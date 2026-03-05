@@ -49,6 +49,11 @@ logging:
   level:
     root: INFO
     org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+    org.springframework.boot.autoconfigure: DEBUG
 
 rangiffler-front:
   base-uri: 'http://localhost:3001'
+rangiffler-gateway:
+  base-uri: 'http://localhost:8080'

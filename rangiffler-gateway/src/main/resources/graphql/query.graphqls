@@ -34,6 +34,38 @@ type Feed {
     stat: [Stat!]
 }
 
+#  Для мока
+type UserConnection {
+    edges: [UserEdge!]!
+    pageInfo: PageInfo!
+    totalCount: Int!
+}
+
+type PhotoConnection {
+    edges: [PhotoEdge!]!
+    pageInfo: PageInfo!
+    totalCount: Int!
+}
+
+type UserEdge {
+    cursor: String!
+    node: User!
+}
+
+type PhotoEdge {
+    cursor: String!
+    node: Photo!
+}
+
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String
+    endCursor: String
+}
+
+# ---------
+
 type Stat {
     count: Int!
     country: Country!

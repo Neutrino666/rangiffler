@@ -1,20 +1,51 @@
 plugins {
     id 'org.springframework.boot' version '3.5.8'
+    id 'com.netflix.dgs.codegen' version '8.3.0'
 }
 
-group = 'io.student'
+group = 'guru.qa'
 version = '1.0.0'
 
+generateJava {
+    schemaPaths = ["${projectDir}/src/main/resources/graphql"] // List of directories containing schema files
+    subPackageNameClient = 'graphqlClient'
+    subPackageNameTypes = 'graphqlTypes'
+    subPackageNameDatafetchers = 'graphqlDatafetchers'
+    packageName = 'rangiffler' // The package name to use to generate sources
+    generateClientv2 = true // Enable generating the type safe query API
+    javaGenerateAllConstructor = true
+    trackInputFieldSet = true
+}
+
+// Создаем конфигурацию и исключаем зависимость
+configurations {
+    customPluginConfiguration {
+        exclude group: 'com.netflix.dgs.codegen', module: 'jackson-bom'
+    }
+}
+
 dependencies {
+    // spring
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-graphql'
+    implementation('org.springframework.boot:spring-boot-starter-web-services') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    }
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // gql
+    implementation 'org.springframework.boot:spring-boot-starter-graphql'
+    customPluginConfiguration 'com.netflix.dgs.codegen:com.netflix.dgs.codegen.gradle.plugin:4.3.1'
     implementation 'com.tailrocks.graphql:graphql-datetime-spring-boot-starter:6.0.0'
+    // anno
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
     annotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
     compileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
+    // db
+    implementation "org.flywaydb:flyway-core:${project.ext.flywayVersion}"
+    implementation "org.flywaydb:flyway-mysql:${project.ext.flywayVersion}"
+    runtimeOnly "mysql:mysql-connector-java:${project.ext.mysqlDriverVersion}"
 }
 
 tasks.register('printVersion') {
