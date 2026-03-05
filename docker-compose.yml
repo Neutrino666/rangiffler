@@ -1,0 +1,21 @@
+services:
+
+  frontend.rangiffler.dc:
+    container_name: frontend.rangiffler.dc
+    image: qaguru/rangiffler-gql-client-docker:latest
+    build:
+      context: ./rangiffler-gql-client
+      dockerfile: ./Dockerfile
+      args:
+        NPM_COMMAND: build:docker
+    ports:
+      - 80:80
+#    depends_on:
+#      gateway.rangiffler.dc:
+#        condition: service_started
+    networks:
+      - rangiffler-network
+
+networks:
+  rangiffler-network:
+    driver: bridge
