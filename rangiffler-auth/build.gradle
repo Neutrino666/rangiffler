@@ -2,7 +2,7 @@ plugins {
     id 'org.springframework.boot' version '3.5.8'
 }
 
-group = 'io.student'
+group = 'guru.qa'
 version = '1.0.0'
 
 dependencies {
@@ -12,11 +12,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // db
     implementation "org.flywaydb:flyway-core:${project.ext.flywayVersion}"
     implementation "org.flywaydb:flyway-mysql:${project.ext.flywayVersion}"
+    runtimeOnly "mysql:mysql-connector-java:${project.ext.mysqlDriverVersion}"
+    // anno
     annotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
     compileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
-    runtimeOnly "mysql:mysql-connector-java:${project.ext.mysqlDriverVersion}"
 }
 
 tasks.register('printVersion') {
