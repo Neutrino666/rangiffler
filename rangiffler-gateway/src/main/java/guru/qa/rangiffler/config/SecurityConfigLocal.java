@@ -33,7 +33,6 @@ public class SecurityConfigLocal {
     http.csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(customizer ->
             customizer.requestMatchers(
-                    "/api/session/current",
                     "/actuator/health",
                     "/graphiql/**"
                 ).permitAll()

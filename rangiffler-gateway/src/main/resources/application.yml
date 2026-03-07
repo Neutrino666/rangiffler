@@ -4,19 +4,16 @@ server:
 spring:
   application:
     name: rangiffler-gateway
+  cloud:
+    compatibility-verifier:
+      enabled: false
   graphql:
     graphiql:
       enabled: true
     schema:
       introspection:
         enabled: true
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: 'http://localhost:9000'
   datasource:
-    url: 'jdbc:mysql://localhost:3306/rangiffler-gateway?serverTimezone=UTC&createDatabaseIfNotExist=true'
     hikari:
       connection-timeout: 20000
       minimum-idle: 10
@@ -46,6 +43,8 @@ spring:
     open-in-view: false
 
 logging:
+  file:
+    path: ./logs/rangiffler-gateway
   level:
     root: INFO
     org.springframework.web: DEBUG
@@ -53,7 +52,40 @@ logging:
     org.springframework.security.oauth2: DEBUG
     org.springframework.boot.autoconfigure: DEBUG
 
+---
+spring:
+  config:
+    activate:
+      on-profile: 'local'
+  datasource:
+    url: 'jdbc:mysql://localhost:3306/rangiffler-gateway?serverTimezone=UTC&createDatabaseIfNotExist=true'
+    username: root
+    password: secret
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: 'http://localhost:9000'
 rangiffler-front:
   base-uri: 'http://localhost:3001'
 rangiffler-gateway:
   base-uri: 'http://localhost:8080'
+
+---
+spring:
+  config:
+    activate:
+      on-profile: 'docker'
+  datasource:
+    url: 'jdbc:mysql://rangiffler-all-db:3306/rangiffler-gateway?serverTimezone=UTC&createDatabaseIfNotExist=true'
+    username: root
+    password: secret
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: 'http://auth.rangiffler.dc:9000'
+rangiffler-front:
+  base-uri: 'http://frontend.rangiffler.dc'
+rangiffler-gateway:
+  base-uri: 'http://gateway.rangiffler.dc:8080'

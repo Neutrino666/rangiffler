@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import rangiffler.graphqlTypes.Country;
 import rangiffler.graphqlTypes.User;
 
+
 @Controller
 @PreAuthorize("isAuthenticated()")
 public class UserQueryController {
@@ -20,7 +21,7 @@ public class UserQueryController {
         .location(
             Country.newBuilder()
                 .code("ru")
-                .name("Russia")
+                .name("Russian Federation")
                 .build()
         )
         .build();

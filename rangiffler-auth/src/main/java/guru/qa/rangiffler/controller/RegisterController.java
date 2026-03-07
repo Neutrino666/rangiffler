@@ -35,7 +35,7 @@ public class RegisterController {
 
   @Autowired
   public RegisterController(UserService userService,
-                            @Value("${rangiffler-front.base-uri}") String frontUri) {
+      @Value("${rangiffler-front.base-uri}") String frontUri) {
     this.userService = userService;
     this.frontUri = frontUri;
   }
@@ -49,9 +49,9 @@ public class RegisterController {
 
   @PostMapping(value = "/register")
   public String registerUser(@Valid @ModelAttribute RegistrationForm registrationForm,
-                             Errors errors,
-                             Model model,
-                             HttpServletResponse response) {
+      Errors errors,
+      Model model,
+      HttpServletResponse response) {
     if (!errors.hasErrors()) {
       final String registeredUserName;
       try {
@@ -77,9 +77,9 @@ public class RegisterController {
   }
 
   private void addErrorToRegistrationModel(@Nonnull RegistrationForm registrationForm,
-                                           @Nonnull Model model,
-                                           @Nonnull String fieldName,
-                                           @Nonnull String error) {
+      @Nonnull Model model,
+      @Nonnull String fieldName,
+      @Nonnull String error) {
     BeanPropertyBindingResult errorResult = (BeanPropertyBindingResult) model.getAttribute(REG_MODEL_ERROR_BEAN_NAME);
     if (errorResult == null) {
       errorResult = new BeanPropertyBindingResult(registrationForm, "registrationForm");

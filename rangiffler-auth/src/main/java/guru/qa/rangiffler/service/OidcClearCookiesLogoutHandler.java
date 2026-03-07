@@ -3,13 +3,12 @@ package guru.qa.rangiffler.service;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.server.authorization.oidc.web.authentication.OidcLogoutAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
-
-import java.io.IOException;
 
 public class OidcClearCookiesLogoutHandler implements AuthenticationSuccessHandler {
 
@@ -22,7 +21,8 @@ public class OidcClearCookiesLogoutHandler implements AuthenticationSuccessHandl
   }
 
   @Override
-  public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+  public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+      Authentication authentication) throws IOException, ServletException {
     this.cookieHandler.logout(request, response, authentication);
     this.delegate.onAuthenticationSuccess(request, response, authentication);
   }

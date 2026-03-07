@@ -1,0 +1,87 @@
+services:
+
+  rangiffler-all-db:
+    container_name: rangiffler-all-db
+    image: mysql:8.4.7
+    environment:
+      - CREATE_DATABASES=rangiffler-auth,rangiffler-gateway
+      - MYSQL_ROOT_PASSWORD=secret
+    volumes:
+      - ./mysql/script:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p$$MYSQL_ROOT_PASSWORD' ]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    ports:
+      - 3306:3306
+    command:
+      - --max_connections=100
+    networks:
+      - rangiffler-network
+
+  auth.rangiffler.dc:
+    container_name: auth.rangiffler.dc
+    image: ${PREFIX}/rangiffler-auth-docker:latest
+    ports:
+      - 9000:9000
+    environment:
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=512m -XX:MaxHeapSize=768m
+      - LOG_PATH=/logs/rangiffler-auth/app.log
+    volumes:
+      - ./logs/rangiffler-auth:/logs/rangiffler-auth
+    healthcheck:
+      test: "wget --spider http://localhost:9000/actuator/health || exit 1"
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: always
+    depends_on:
+      rangiffler-all-db:
+        condition: service_healthy
+#      kafka:
+#        condition: service_started
+    networks:
+      - rangiffler-network
+
+  gateway.rangiffler.dc:
+    container_name: gateway.rangiffler.dc
+    image: ${PREFIX}/rangiffler-gateway-docker:latest
+    ports:
+      - 8080:8080
+    environment:
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m
+      - LOG_PATH=/logs/rangiffler-gateway/app.log
+    volumes:
+      - ./logs/rangiffler-gateway:/logs/rangiffler-gateway
+    healthcheck:
+      test: "wget --spider http://localhost:8080/actuator/health || exit 1"
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: always
+    depends_on:
+      auth.rangiffler.dc:
+        condition: service_healthy
+    networks:
+      - rangiffler-network
+
+  frontend.rangiffler.dc:
+    container_name: frontend.rangiffler.dc
+    image: ${PREFIX}/rangiffler-gql-client-docker:latest
+    build:
+      context: ./rangiffler-gql-client
+      dockerfile: ./Dockerfile
+      args:
+        NPM_COMMAND: build:docker
+    ports:
+      - 80:80
+    depends_on:
+      gateway.rangiffler.dc:
+        condition: service_started
+    networks:
+      - rangiffler-network
+
+networks:
+  rangiffler-network:
+    driver: bridge

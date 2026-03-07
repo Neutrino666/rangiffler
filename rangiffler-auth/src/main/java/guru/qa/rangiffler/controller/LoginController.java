@@ -2,13 +2,12 @@ package guru.qa.rangiffler.controller;
 
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpSession;
+import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.savedrequest.DefaultSavedRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import java.util.Arrays;
 
 @Controller
 public class LoginController {
