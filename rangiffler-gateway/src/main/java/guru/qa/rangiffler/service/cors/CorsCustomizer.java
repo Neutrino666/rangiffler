@@ -13,11 +13,11 @@ import org.springframework.web.cors.CorsConfigurationSource;
 @ParametersAreNonnullByDefault
 public class CorsCustomizer {
 
-  private final String nifflerFrontUri;
+  private final String rangifflerFrontUri;
 
   @Autowired
-  public CorsCustomizer(@Value("${rangiffler-front.base-uri}") String nifflerFrontUri) {
-    this.nifflerFrontUri = nifflerFrontUri;
+  public CorsCustomizer(@Value("${rangiffler-front.base-uri}") String rangifflerFrontUri) {
+    this.rangifflerFrontUri = rangifflerFrontUri;
   }
 
   public void corsCustomizer(HttpSecurity http) throws Exception {
@@ -25,7 +25,7 @@ public class CorsCustomizer {
       CorsConfigurationSource source = s -> {
         CorsConfiguration cc = new CorsConfiguration();
         cc.setAllowCredentials(true);
-        cc.setAllowedOrigins(List.of(nifflerFrontUri));
+        cc.setAllowedOrigins(List.of(rangifflerFrontUri));
         cc.setAllowedHeaders(List.of("*"));
         cc.setAllowedMethods(List.of("*"));
         return cc;
