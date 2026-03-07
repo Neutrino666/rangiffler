@@ -5,10 +5,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.servlet.resource.NoResourceFoundException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -22,9 +22,9 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(Exception.class)
   public String handleAnyException(Exception ex,
-                                   HttpServletRequest request,
-                                   HttpServletResponse response,
-                                   Model model) {
+      HttpServletRequest request,
+      HttpServletResponse response,
+      Model model) {
     Object statusCodeAttr = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
     int statusCode;
     if (ex instanceof NoResourceFoundException) {

@@ -5,6 +5,7 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 public class EqualPasswordsValidator implements ConstraintValidator<EqualPasswords, RegistrationForm> {
+
   @Override
   public boolean isValid(RegistrationForm form, ConstraintValidatorContext context) {
     boolean isValid = form.password().equals(form.passwordSubmit());

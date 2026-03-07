@@ -7,6 +7,11 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import guru.qa.rangiffler.service.OidcClearCookiesLogoutHandler;
 import guru.qa.rangiffler.service.cors.CorsCustomizer;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,12 +30,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-import java.util.UUID;
-
 @Configuration
 @EnableWebSecurity
 public class RangifflerAuthServiceConfig {
@@ -40,7 +39,7 @@ public class RangifflerAuthServiceConfig {
 
   @Autowired
   public RangifflerAuthServiceConfig(CorsCustomizer corsCustomizer,
-                                     @Value("${rangiffler-auth.base-uri}") String authUri) {
+      @Value("${rangiffler-auth.base-uri}") String authUri) {
     this.corsCustomizer = corsCustomizer;
     this.authUri = authUri;
   }
@@ -142,8 +141,7 @@ public class RangifflerAuthServiceConfig {
       KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
       keyPairGenerator.initialize(2048);
       keyPair = keyPairGenerator.generateKeyPair();
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
       throw new IllegalStateException(ex);
     }
     return keyPair;

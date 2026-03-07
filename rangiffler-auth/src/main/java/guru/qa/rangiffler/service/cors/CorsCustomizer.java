@@ -1,6 +1,9 @@
 package guru.qa.rangiffler.service.cors;
 
 import jakarta.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.config.Customizer;
@@ -10,10 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 @Component
 public class CorsCustomizer {
 
@@ -21,8 +20,9 @@ public class CorsCustomizer {
   private final String authUri;
 
   @Autowired
-  public CorsCustomizer(@Value("${rangiffler-front.base-uri}") String frontUri,
-                        @Value("${rangiffler-auth.base-uri}") String authUri) {
+  public CorsCustomizer(
+      @Value("${rangiffler-front.base-uri}") String frontUri,
+      @Value("${rangiffler-auth.base-uri}") String authUri) {
     this.frontUri = frontUri;
     this.authUri = authUri;
   }

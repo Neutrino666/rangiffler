@@ -5,6 +5,7 @@ import jakarta.validation.ConstraintValidatorContext;
 import java.util.Date;
 
 public class UnixEpochOrLaterValidator implements ConstraintValidator<UnixEpochOrLater, Date> {
+
   private static final long UNIX_EPOCH_TIME = 0L;
 
   @Override

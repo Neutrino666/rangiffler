@@ -22,7 +22,7 @@ public class UserService {
 
   @Autowired
   public UserService(UserRepository userRepository,
-                     PasswordEncoder passwordEncoder) {
+      PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
   }

@@ -1,7 +1,6 @@
 package guru.qa.rangiffler.controller;
 
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import rangiffler.graphqlTypes.Country;

@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 
 @ParametersAreNonnullByDefault
 public class GqlQueryPaginationAndSort {
+
   private final int page;
   private final int size;
   private final @Nullable List<String> sort;
