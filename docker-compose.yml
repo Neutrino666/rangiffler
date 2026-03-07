@@ -1,7 +1,28 @@
 services:
+
+  rangiffler-all-db:
+    container_name: rangiffler-all-db
+    image: mysql:8.4.7
+    environment:
+      - CREATE_DATABASES=rangiffler-auth,rangiffler-gateway
+      - MYSQL_ROOT_PASSWORD=secret
+    volumes:
+      - ./mysql/script:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p$$MYSQL_ROOT_PASSWORD' ]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    ports:
+      - 3306:3306
+    command:
+      - --max_connections=100
+    networks:
+      - rangiffler-network
+
   auth.rangiffler.dc:
     container_name: auth.rangiffler.dc
-    image: qaguru/rangiffler-auth-docker:latest
+    image: ${PREFIX}/rangiffler-auth-docker:latest
     ports:
       - 9000:9000
     environment:
@@ -15,17 +36,17 @@ services:
       timeout: 5s
       retries: 5
     restart: always
-#    depends_on:
-#      rangiffler-all-db:
-#        condition: service_healthy
+    depends_on:
+      rangiffler-all-db:
+        condition: service_healthy
 #      kafka:
 #        condition: service_started
     networks:
       - rangiffler-network
-  
+
   gateway.rangiffler.dc:
     container_name: gateway.rangiffler.dc
-    image: qaguru/rangiffler-gateway-docker:latest
+    image: ${PREFIX}/rangiffler-gateway-docker:latest
     ports:
       - 8080:8080
     environment:
@@ -47,7 +68,7 @@ services:
 
   frontend.rangiffler.dc:
     container_name: frontend.rangiffler.dc
-    image: qaguru/rangiffler-gql-client-docker:latest
+    image: ${PREFIX}/rangiffler-gql-client-docker:latest
     build:
       context: ./rangiffler-gql-client
       dockerfile: ./Dockerfile

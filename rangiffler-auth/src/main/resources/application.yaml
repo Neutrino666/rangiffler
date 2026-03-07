@@ -15,6 +15,9 @@ server:
 spring:
   application:
     name: rangiffler-auth
+  cloud:
+    compatibility-verifier:
+      enabled: false
   mvc:
     log-request-details: true
   web:
@@ -22,31 +25,7 @@ spring:
       cache:
         cachecontrol:
           max-age: 365d
-  security:
-    oauth2:
-      authorizationserver:
-        client:
-          oidc-client:
-            registration:
-              client-id: "client"
-              client-authentication-methods:
-                - "none"
-              authorization-grant-types:
-                - "authorization_code"
-              redirect-uris:
-                - "http://localhost:3001/authorized"
-              post-logout-redirect-uris:
-                - "http://localhost:3001/logout"
-              scopes:
-                - "openid"
-                - "profile"
-            require-authorization-consent: true
-            require-proof-key: true
-            token-settings:
-              access-token-time-to-live: 1800
-              authorization-code-time-to-live: 1800
   datasource:
-    url: 'jdbc:mysql://localhost:3306/rangiffler-auth?serverTimezone=UTC&createDatabaseIfNotExist=true'
     hikari:
       connection-timeout: 20000
       minimum-idle: 10
@@ -76,13 +55,90 @@ spring:
     open-in-view: false
 
 logging:
+  file:
+    path: ./logs/rangiffler-auth
   level:
     root: INFO
     org.springframework.web: DEBUG
     org.springframework.security: DEBUG
     org.springframework.security.oauth2: DEBUG
 
+---
+spring:
+  config:
+    activate:
+      on-profile: 'local'
+  datasource:
+    url: 'jdbc:mysql://localhost:3306/rangiffler-auth?serverTimezone=UTC&createDatabaseIfNotExist=true'
+    username: root
+    password: secret
+  security:
+    oauth2:
+      authorizationserver:
+        client:
+          oidc-client:
+            registration:
+              client-id: "client"
+              client-authentication-methods:
+                - "none"
+              authorization-grant-types:
+                - "authorization_code"
+              redirect-uris:
+                - "http://localhost:3001/authorized"
+              post-logout-redirect-uris:
+                - "http://localhost:3001/logout"
+              scopes:
+                - "openid"
+                - "profile"
+            require-authorization-consent: true
+            require-proof-key: true
+            token-settings:
+              access-token-time-to-live: 1800
+              authorization-code-time-to-live: 1800
 rangiffler-front:
   base-uri: 'http://localhost:3001'
 rangiffler-auth:
   base-uri: 'http://localhost:9000'
+  rp-id: 'localhost'
+webauthn:
+  enabled: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: 'docker'
+  datasource:
+    url: 'jdbc:mysql://rangiffler-all-db:3306/rangiffler-auth?serverTimezone=UTC&createDatabaseIfNotExist=true'
+    username: root
+    password: secret
+  security:
+    oauth2:
+      authorizationserver:
+        client:
+          oidc-client:
+            registration:
+              client-id: "client"
+              client-authentication-methods:
+                - "none"
+              authorization-grant-types:
+                - "authorization_code"
+              redirect-uris:
+                - "http://frontend.rangiffler.dc/authorized"
+              post-logout-redirect-uris:
+                - "http://frontend.rangiffler.dc/logout"
+              scopes:
+                - "openid"
+                - "profile"
+            require-authorization-consent: true
+            require-proof-key: true
+            token-settings:
+              access-token-time-to-live: 1800
+              authorization-code-time-to-live: 1800
+rangiffler-front:
+  base-uri: 'http://frontend.rangiffler.dc'
+rangiffler-auth:
+  base-uri: 'http://auth.rangiffler.dc:9000'
+  rp-id: 'http host not supported'
+webauthn:
+  enabled: false
