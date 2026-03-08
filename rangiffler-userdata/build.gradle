@@ -1,31 +1,35 @@
 plugins {
-    id 'org.springframework.boot' version '3.5.8'
+    id 'org.springframework.boot' version '3.5.5'
     id 'com.google.cloud.tools.jib' version '3.4.1'
 }
 
 group = 'guru.qa'
 version = '1.0.0'
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-authorization-server'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation project(':rangiffler-grpc-common')
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    // db
+    implementation("net.devh:grpc-server-spring-boot-starter:${project.ext.springGrpcVersion}") {
+        exclude group: 'io.grpc'
+        exclude group: 'com.google.protobuf'
+    }
+    implementation "com.google.protobuf:protobuf-java-util:${project.ext.protobufVersion}"
+    implementation "io.grpc:grpc-netty-shaded:${project.ext.grpcVersion}"
+    implementation "io.grpc:grpc-services:${project.ext.grpcVersion}"
     implementation "org.flywaydb:flyway-core:${project.ext.flywayVersion}"
     implementation "org.flywaydb:flyway-mysql:${project.ext.flywayVersion}"
     runtimeOnly "mysql:mysql-connector-java:${project.ext.mysqlDriverVersion}"
-    // anno
     annotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
     compileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
 }
 
 jib {
     container {
-        ports = ['9000']
+        ports = ['8088', '8089']
         jvmFlags = ["-Dspring.profiles.active=${System.env.PROFILE}"]
         environment = [
                 'VAULT_TOKEN': "${System.env.VAULT_TOKEN}".toString(),

@@ -51,7 +51,7 @@ bash ./gradlew clean
 if [ "$1" = "push" ]; then
   echo "### Build & push images ###"
   bash ./gradlew jib -Duser.timezone=UTC
-  docker compose push frontend.niffler.dc
+  docker compose push frontend.rangiffler.dc
 else
   echo "### Build images ###"
   bash ./gradlew jibDockerBuild -Duser.timezone=UTC

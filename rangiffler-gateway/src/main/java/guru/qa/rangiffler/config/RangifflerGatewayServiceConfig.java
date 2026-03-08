@@ -18,7 +18,6 @@ public class RangifflerGatewayServiceConfig {
   public RangifflerGatewayServiceConfig(
       @Value("${rangiffler-gateway.base-uri}") String rangifflerGatewayBaseUri
   ) {
-    ;
     this.rangifflerGatewayBaseUri = rangifflerGatewayBaseUri;
   }
 

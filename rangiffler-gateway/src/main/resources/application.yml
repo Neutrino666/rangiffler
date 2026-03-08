@@ -66,10 +66,19 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: 'http://localhost:9000'
+
+grpc:
+  client:
+    grpcUserdataClient:
+      address: 'static://localhost:8088'
+      negotiationType: PLAINTEXT
+
 rangiffler-front:
   base-uri: 'http://localhost:3001'
 rangiffler-gateway:
   base-uri: 'http://localhost:8080'
+rangiffler-userdata:
+  base-uri: 'http://localhost:8089'
 
 ---
 spring:
@@ -85,6 +94,13 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: 'http://auth.rangiffler.dc:9000'
+
+grpc:
+  client:
+    grpcUserdataClient:
+      address: 'static://userdata.rangiffler.dc:8088'
+      negotiationType: PLAINTEXT
+
 rangiffler-front:
   base-uri: 'http://frontend.rangiffler.dc'
 rangiffler-gateway:

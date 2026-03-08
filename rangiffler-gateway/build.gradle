@@ -26,6 +26,7 @@ configurations {
 }
 
 dependencies {
+    implementation project(':rangiffler-grpc-common')
     // spring
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
@@ -36,6 +37,15 @@ dependencies {
     }
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // grpc
+    implementation("net.devh:grpc-client-spring-boot-starter:${project.ext.springGrpcVersion}") {
+        exclude group: 'io.grpc'
+        exclude group: 'com.google.protobuf'
+    }
+    implementation "com.google.protobuf:protobuf-java-util:${project.ext.protobufVersion}"
+    implementation "io.grpc:grpc-netty-shaded:${project.ext.grpcVersion}"
+    implementation "io.grpc:grpc-services:${project.ext.grpcVersion}"
+    implementation "io.grpc:grpc-inprocess:${project.ext.grpcVersion}"
     // gql
     implementation 'org.springframework.boot:spring-boot-starter-graphql'
     customPluginConfiguration 'com.netflix.dgs.codegen:com.netflix.dgs.codegen.gradle.plugin:4.3.1'
@@ -60,7 +70,7 @@ jib {
         ]
         creationTime = 'USE_CURRENT_TIMESTAMP'
         labels = [
-                'maintainer': 'Dmitrii Tuchs @dtuchs',
+                'maintainer': 'Amurskii Andrey @E_eq_mc2',
                 'version'   : "${project.version}".toString()
         ]
     }
