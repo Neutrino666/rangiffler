@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+package guru.qa.grpc.rangiffler;
+
+option java_multiple_files = true;
+option java_package = "guru.qa.rangiffler.grpc";
+option java_outer_classname = "RangifflerPhotoProto";
+
+service RangifflerPhotoService {
+  rpc UpdatePhoto (PhotoRequest) returns(PhotoResponse);
+}
+
+message PhotoRequest {
+  string id = 1;
+  string src = 2;
+  string country = 3;
+  string description = 4;
+  string user = 5;
+}
+
+message PhotoResponse {
+  string id = 1;
+  string src = 2;
+  string firstname = 3;
+  string description = 4;
+  google.protobuf.Timestamp creationDate = 5;
+  string country = 6;
+  string user = 7;
+}

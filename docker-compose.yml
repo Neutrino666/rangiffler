@@ -66,22 +66,6 @@ services:
     networks:
       - rangiffler-network
 
-  frontend.rangiffler.dc:
-    container_name: frontend.rangiffler.dc
-    image: ${PREFIX}/rangiffler-gql-client-docker:latest
-    build:
-      context: ./rangiffler-gql-client
-      dockerfile: ./Dockerfile
-      args:
-        NPM_COMMAND: build:docker
-    ports:
-      - 80:80
-    depends_on:
-      gateway.rangiffler.dc:
-        condition: service_started
-    networks:
-      - rangiffler-network
-
   userdata.rangiffler.dc:
     container_name: userdata.rangiffler.dc
     image: ${PREFIX}/rangiffler-userdata-docker:latest
@@ -95,8 +79,60 @@ services:
       - ./logs/niffler-userdata:/logs/rangiffler-userdata
     restart: always
     depends_on:
-      auth.rangiffler.dc:
+      rangiffler-all-db:
         condition: service_healthy
+    networks:
+      - rangiffler-network
+
+  geo.rangiffler.dc:
+    container_name: geo.rangiffler.dc
+    image: ${PREFIX}/rangiffler-geo-docker:latest
+    ports:
+      - 8091:8091
+      - 8092:8092
+    environment:
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m
+      - LOG_PATH=/logs/rangiffler-geo/app.log
+    volumes:
+      - ./logs/niffler-geo:/logs/rangiffler-geo
+    restart: always
+    depends_on:
+      rangiffler-all-db:
+        condition: service_healthy
+    networks:
+      - rangiffler-network
+
+  photo.rangiffler.dc:
+    container_name: photo.rangiffler.dc
+    image: ${PREFIX}/rangiffler-photo-docker:latest
+    ports:
+      - 8093:8093
+      - 8094:8094
+    environment:
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m
+      - LOG_PATH=/logs/rangiffler-photo/app.log
+    volumes:
+      - ./logs/niffler-photo:/logs/rangiffler-photo
+    restart: always
+    depends_on:
+      rangiffler-all-db:
+        condition: service_healthy
+    networks:
+      - rangiffler-network
+
+  frontend.rangiffler.dc:
+    container_name: frontend.rangiffler.dc
+    image: ${PREFIX}/rangiffler-gql-client-docker:latest
+    build:
+      context: ./rangiffler-gql-client
+      dockerfile: ./Dockerfile
+      args:
+        NPM_COMMAND: build:docker
+    ports:
+      - 80:80
+    depends_on:
+      gateway.rangiffler.dc:
+        condition: service_started
     networks:
       - rangiffler-network
 
