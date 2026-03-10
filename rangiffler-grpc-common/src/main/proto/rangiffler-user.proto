@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package guru.qa.grpc.rangiffler;
+
+option java_multiple_files = true;
+option java_package = "guru.qa.rangiffler.grpc";
+option java_outer_classname = "RangifflerUserdataProto";
+
+service RangifflerUserdataService {
+  rpc CurrentUser (CurrentUserRequest) returns(UserResponse);
+}
+
+message CurrentUserRequest {
+  string username = 1;
+}
+
+message UserResponse {
+  string id = 1;
+  string username = 2;
+  string firstname = 3;
+  string surname = 4;
+  string avatar = 5;
+  FriendshipStatus friendshipStatus = 7;
+}
+
+enum FriendshipStatus {
+  UNSPECIFIED_STATUS = 0;
+  INVITE_SENT = 1;
+  INVITE_RECEIVED = 2;
+  FRIEND = 3;
+}

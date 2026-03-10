@@ -12,6 +12,18 @@
           <package value="guru.qa.rangiffler" />
         </packages>
       </persistence-unit>
+      <persistence-unit moduleName="rangiffler.rangiffler-userdata.main" name="Default">
+        <packages>
+          <package value="guru.qa.rangiffler" />
+        </packages>
+      </persistence-unit>
     </persistence-units>
+  </component>
+  <component name="MarkedApplicationProperties">
+    <option name="files">
+      <list>
+        <option value="file://$PROJECT_DIR$/rangiffler-userdata" />
+      </list>
+    </option>
   </component>
 </project>

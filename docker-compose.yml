@@ -82,6 +82,24 @@ services:
     networks:
       - rangiffler-network
 
+  userdata.rangiffler.dc:
+    container_name: userdata.rangiffler.dc
+    image: ${PREFIX}/rangiffler-userdata-docker:latest
+    ports:
+      - 8089:8089
+      - 8088:8088
+    environment:
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m
+      - LOG_PATH=/logs/rangiffler-userdata/app.log
+    volumes:
+      - ./logs/niffler-userdata:/logs/rangiffler-userdata
+    restart: always
+    depends_on:
+      auth.rangiffler.dc:
+        condition: service_healthy
+    networks:
+      - rangiffler-network
+
 networks:
   rangiffler-network:
     driver: bridge
