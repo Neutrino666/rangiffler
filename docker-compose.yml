@@ -102,6 +102,24 @@ services:
     networks:
       - rangiffler-network
 
+  photo.rangiffler.dc:
+    container_name: photo.rangiffler.dc
+    image: ${PREFIX}/rangiffler-photo-docker:latest
+    ports:
+      - 8093:8093
+      - 8094:8094
+    environment:
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m
+      - LOG_PATH=/logs/rangiffler-photo/app.log
+    volumes:
+      - ./logs/niffler-photo:/logs/rangiffler-photo
+    restart: always
+    depends_on:
+      rangiffler-all-db:
+        condition: service_healthy
+    networks:
+      - rangiffler-network
+
   frontend.rangiffler.dc:
     container_name: frontend.rangiffler.dc
     image: ${PREFIX}/rangiffler-gql-client-docker:latest

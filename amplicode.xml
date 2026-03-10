@@ -22,6 +22,11 @@
           <package value="guru.qa.rangiffler" />
         </packages>
       </persistence-unit>
+      <persistence-unit moduleName="rangiffler.rangiffler-photo.main" name="Default">
+        <packages>
+          <package value="guru.qa.rangiffler" />
+        </packages>
+      </persistence-unit>
     </persistence-units>
   </component>
   <component name="MarkedApplicationProperties">

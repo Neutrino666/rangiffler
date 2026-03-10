@@ -75,6 +75,9 @@ grpc:
     grpcGeoClient:
       address: 'static://localhost:8092'
       negotiationType: PLAINTEXT
+    grpcPhotoClient:
+      address: 'static://localhost:8094'
+      negotiationType: PLAINTEXT
 
 rangiffler-front:
   base-uri: 'http://localhost:3001'
@@ -103,6 +106,9 @@ grpc:
       negotiationType: PLAINTEXT
     grpcGeoClient:
       address: 'static://geo.rangiffler.dc:8092'
+      negotiationType: PLAINTEXT
+    grpcPhotoClient:
+      address: 'static://photo.rangiffler.dc:8094'
       negotiationType: PLAINTEXT
 
 rangiffler-front:
