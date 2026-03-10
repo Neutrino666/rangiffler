@@ -72,13 +72,14 @@ grpc:
     grpcUserdataClient:
       address: 'static://localhost:8088'
       negotiationType: PLAINTEXT
+    grpcGeoClient:
+      address: 'static://localhost:8092'
+      negotiationType: PLAINTEXT
 
 rangiffler-front:
   base-uri: 'http://localhost:3001'
 rangiffler-gateway:
   base-uri: 'http://localhost:8080'
-rangiffler-userdata:
-  base-uri: 'http://localhost:8089'
 
 ---
 spring:
@@ -99,6 +100,9 @@ grpc:
   client:
     grpcUserdataClient:
       address: 'static://userdata.rangiffler.dc:8088'
+      negotiationType: PLAINTEXT
+    grpcGeoClient:
+      address: 'static://geo.rangiffler.dc:8092'
       negotiationType: PLAINTEXT
 
 rangiffler-front:

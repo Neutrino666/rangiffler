@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package guru.qa.grpc.rangiffler;
+
+option java_multiple_files = true;
+option java_package = "guru.qa.rangiffler.grpc";
+option java_outer_classname = "RangifflerCountryProto";
+
+service RangifflerCountryService {
+  rpc GetCountries (google.protobuf.Empty) returns (CountryResponse) {}
+}
+
+message CountryResponse {
+  repeated Country allCountries = 1;
+}
+
+message Country {
+  string id = 1;
+  string code = 2;
+  string name = 3;
+  string flag = 4;
+}
