@@ -1,7 +1,7 @@
 create table if not exists `country`
 (
     id                      binary(16) unique not null default (UUID_TO_BIN(UUID(), true)),
-    code                    varchar(50)        not null,
+    code                    varchar(50) unique not null,
     `name`                  varchar(255)       not null,
     `flag`                  longblob           not null,
     primary key (id)
