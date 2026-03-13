@@ -40,9 +40,10 @@ logging:
   file:
     path: ./logs/rangiffler-userdata
   level:
-    root: DEBUG
-    org.springframework.web: DEBUG
-    org.springframework.boot.autoconfigure: DEBUG
+    root: ERROR
+    org.springframework.kafka: ERROR
+    org.springframework.web: ERROR
+    org.springframework.boot.autoconfigure: ERROR
 
 ---
 spring:
@@ -53,6 +54,16 @@ spring:
     url: 'jdbc:mysql://localhost:3306/rangiffler-userdata?serverTimezone=UTC&createDatabaseIfNotExist=true'
     username: root
     password: secret
+  kafka:
+    bootstrap-servers: 'localhost:9092'
+    consumer:
+      group-id: 'userdata'
+      auto-offset-reset: earliest
+grpc:
+  client:
+    grpcGeoClient:
+      address: 'static://localhost:8092'
+      negotiationType: PLAINTEXT
 ---
 spring:
   config:
@@ -62,3 +73,14 @@ spring:
     url: 'jdbc:mysql://rangiffler-all-db:3306/rangiffler-userdata?serverTimezone=UTC&createDatabaseIfNotExist=true'
     username: root
     password: secret
+  kafka:
+    bootstrap-servers: 'kafka:9092'
+    consumer:
+      group-id: 'userdata'
+      auto-offset-reset: earliest
+
+grpc:
+  client:
+    grpcGeoClient:
+      address: 'static://geo.rangiffler.dc:8092'
+      negotiationType: PLAINTEXT

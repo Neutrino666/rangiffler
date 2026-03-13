@@ -7,8 +7,10 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +32,7 @@ public class UserEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(name = "id", nullable = false, columnDefinition = "UUID default gen_random_uuid()")
+  @Column(name = "id", nullable = false, columnDefinition = "BINARY(16)")
   private UUID id;
 
   @Column(nullable = false, unique = true)
@@ -45,6 +47,9 @@ public class UserEntity {
   @Lob
   @Column(columnDefinition = "LONGBLOB")
   private byte[] avatar;
+
+  @Column(name = "country_id", nullable = false, columnDefinition = "BINARY(16)")
+  private UUID countryId;
 
   @OneToMany(mappedBy = "requester", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<FriendshipEntity> friendshipRequests = new ArrayList<>();

@@ -4,10 +4,12 @@ import guru.qa.rangiffler.data.Authority;
 import guru.qa.rangiffler.data.AuthorityEntity;
 import guru.qa.rangiffler.data.UserEntity;
 import guru.qa.rangiffler.data.repository.UserRepository;
+import guru.qa.rangiffler.model.UserJson;
 import jakarta.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +21,15 @@ public class UserService {
 
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
+  private final KafkaTemplate<String, UserJson> kafkaTemplate;
 
   @Autowired
   public UserService(UserRepository userRepository,
-      PasswordEncoder passwordEncoder) {
+      PasswordEncoder passwordEncoder,
+      KafkaTemplate<String, UserJson> kafkaTemplate) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
+    this.kafkaTemplate = kafkaTemplate;
   }
 
   @Transactional
@@ -44,6 +49,10 @@ public class UserService {
     writeAuthorityEntity.setAuthority(Authority.write);
 
     userEntity.addAuthorities(readAuthorityEntity, writeAuthorityEntity);
-    return userRepository.save(userEntity).getUsername();
+    String savedUser = userRepository.save(userEntity).getUsername();
+
+    kafkaTemplate.send("users", new UserJson(savedUser));
+    LOG.info("### Kafka topic [users] sent message: {}", savedUser);
+    return savedUser;
   }
 }

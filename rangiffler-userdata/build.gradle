@@ -12,11 +12,20 @@ repositories {
 
 dependencies {
     implementation project(':rangiffler-grpc-common')
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation("net.devh:grpc-server-spring-boot-starter:${project.ext.springGrpcVersion}") {
         exclude group: 'io.grpc'
         exclude group: 'com.google.protobuf'
     }
+    implementation "io.grpc:grpc-inprocess:${project.ext.grpcVersion}"
+    implementation('org.springframework.boot:spring-boot-starter-web-services') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    }
+    implementation("net.devh:grpc-client-spring-boot-starter:${project.ext.springGrpcVersion}") {
+        exclude group: 'io.grpc'
+        exclude group: 'com.google.protobuf'
+    }
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation "org.springframework.kafka:spring-kafka:${project.ext.springKafkaVersion}"
     implementation "com.google.protobuf:protobuf-java-util:${project.ext.protobufVersion}"
     implementation "io.grpc:grpc-netty-shaded:${project.ext.grpcVersion}"
     implementation "io.grpc:grpc-services:${project.ext.grpcVersion}"

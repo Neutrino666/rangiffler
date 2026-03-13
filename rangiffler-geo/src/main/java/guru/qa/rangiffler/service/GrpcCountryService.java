@@ -3,7 +3,7 @@ package guru.qa.rangiffler.service;
 import com.google.protobuf.Empty;
 import guru.qa.rangiffler.data.CountryEntity;
 import guru.qa.rangiffler.data.repository.CountryRepository;
-import guru.qa.rangiffler.grpc.Country;
+import guru.qa.rangiffler.grpc.CountryPageResponse;
 import guru.qa.rangiffler.grpc.CountryResponse;
 import guru.qa.rangiffler.grpc.RangifflerCountryServiceGrpc;
 import guru.qa.rangiffler.util.ByteAsString;
@@ -24,8 +24,8 @@ public class GrpcCountryService extends RangifflerCountryServiceGrpc.RangifflerC
 
   @Override
   @Transactional(readOnly = true)
-  public void getCountries(Empty request, StreamObserver<CountryResponse> responseObserver) {
-    CountryResponse response = CountryResponse.newBuilder()
+  public void getCountries(Empty request, StreamObserver<CountryPageResponse> responseObserver) {
+    CountryPageResponse response = CountryPageResponse.newBuilder()
         .addAllAllCountries(
             countryRepository.findAll().stream()
                 .map(this::countryFromEntity)
@@ -36,8 +36,8 @@ public class GrpcCountryService extends RangifflerCountryServiceGrpc.RangifflerC
     responseObserver.onCompleted();
   }
 
-  private Country countryFromEntity(CountryEntity ce) {
-    return Country.newBuilder()
+  private CountryResponse countryFromEntity(CountryEntity ce) {
+    return CountryResponse.newBuilder()
         .setId(ce.getId().toString())
         .setCode(ce.getCode())
         .setName(ce.getName())

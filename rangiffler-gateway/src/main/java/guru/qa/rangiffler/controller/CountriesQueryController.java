@@ -1,6 +1,6 @@
 package guru.qa.rangiffler.controller;
 
-import guru.qa.rangiffler.grpc.CountryResponse;
+import guru.qa.rangiffler.grpc.CountryPageResponse;
 import guru.qa.rangiffler.service.api.GrpcGeoClient;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class CountriesQueryController {
 
   @QueryMapping
   public List<Country> countries() {
-    CountryResponse countries = grpcGeoClient.getCountries();
+    CountryPageResponse countries = grpcGeoClient.getCountries();
     return countries.getAllCountriesList()
         .stream()
         .map(c ->

@@ -39,9 +39,10 @@ public class GrpcUserService extends RangifflerUserdataServiceGrpc.RangifflerUse
     return UserResponse.newBuilder()
         .setId(ue.getId().toString())
         .setUsername(ue.getUsername())
-        .setFirstname(ue.getFirstname())
-        .setSurname(ue.getSurname())
+        .setFirstname(ue.getFirstname() == null ? "" : ue.getFirstname())
+        .setSurname(ue.getSurname() == null ? "" : ue.getSurname())
         .setAvatar(new ByteAsString(ue.getAvatar()).string())
+        .setCountryId(ue.getCountryId().toString())
         .setFriendshipStatus(FriendshipStatus.UNSPECIFIED_STATUS)
         .build();
   }
