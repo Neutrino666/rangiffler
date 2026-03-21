@@ -24,6 +24,7 @@ subprojects {
     ext {
         dockerHubName = "qaguru"
 
+        thumbnailatorVersion = '0.4.20'
         lombokVersion = '1.18.42'
         mysqlDriverVersion = '8.0.33'
         flywayVersion = '11.14.1'

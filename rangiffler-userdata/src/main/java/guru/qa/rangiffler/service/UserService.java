@@ -2,6 +2,7 @@ package guru.qa.rangiffler.service;
 
 import guru.qa.rangiffler.data.UserEntity;
 import guru.qa.rangiffler.data.repository.UserRepository;
+import guru.qa.rangiffler.grpc.CountryValues;
 import guru.qa.rangiffler.model.UserJson;
 import java.util.UUID;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -21,12 +22,10 @@ public class UserService {
   private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
   private final UserRepository userRepository;
-  public final GrpcGeoClient grpcGeoClient;
 
   @Autowired
-  public UserService(UserRepository userRepository, GrpcGeoClient grpcGeoClient) {
+  public UserService(UserRepository userRepository) {
     this.userRepository = userRepository;
-    this.grpcGeoClient = grpcGeoClient;
   }
 
   @Transactional
@@ -38,11 +37,10 @@ public class UserService {
             () -> {
               LOG.info("### Kafka consumer record: {}", cr.toString());
 
-              UserEntity userDataEntity = new UserEntity();
-              String countryId = grpcGeoClient.getCountryByCode("ru").getId();
-              userDataEntity.setUsername(user.username());
-              userDataEntity.setCountryId(UUID.fromString(countryId));
-              UserEntity userEntity = userRepository.save(userDataEntity);
+              UserEntity ue = new UserEntity();
+              ue.setUsername(user.username());
+              ue.setCountry(GrpcUserdataService.DEFAULT_COUNTRY);
+              UserEntity userEntity = userRepository.save(ue);
 
               LOG.info(
                   "### User '{}' successfully saved to database with id: {}",

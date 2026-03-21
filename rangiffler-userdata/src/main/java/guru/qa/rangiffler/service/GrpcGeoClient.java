@@ -1,9 +1,8 @@
 package guru.qa.rangiffler.service;
 
-import com.google.protobuf.Empty;
 import guru.qa.rangiffler.grpc.CountryRequest;
 import guru.qa.rangiffler.grpc.CountryResponse;
-import guru.qa.rangiffler.grpc.RangifflerCountryServiceGrpc;
+import guru.qa.rangiffler.grpc.RangifflerGeoServiceGrpc;
 import io.grpc.StatusRuntimeException;
 import javax.annotation.ParametersAreNonnullByDefault;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class GrpcGeoClient {
 
   @GrpcClient("grpcGeoClient")
-  private RangifflerCountryServiceGrpc.RangifflerCountryServiceBlockingStub rangifflerCountryServiceBlockingStub;
+  private RangifflerGeoServiceGrpc.RangifflerGeoServiceBlockingStub rangifflerCountryServiceBlockingStub;
 
   public CountryResponse getCountryByCode(String code) {
     try {

@@ -41,7 +41,6 @@ spring:
 logging:
   file:
     path: ./logs/rangiffler-geo
-
   level:
     root: DEBUG
     org.springframework.web: DEBUG

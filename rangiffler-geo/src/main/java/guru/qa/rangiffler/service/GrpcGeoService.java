@@ -4,8 +4,9 @@ import com.google.protobuf.Empty;
 import guru.qa.rangiffler.data.CountryEntity;
 import guru.qa.rangiffler.data.repository.CountryRepository;
 import guru.qa.rangiffler.grpc.CountryPageResponse;
+import guru.qa.rangiffler.grpc.CountryRequest;
 import guru.qa.rangiffler.grpc.CountryResponse;
-import guru.qa.rangiffler.grpc.RangifflerCountryServiceGrpc;
+import guru.qa.rangiffler.grpc.RangifflerGeoServiceGrpc;
 import guru.qa.rangiffler.util.ByteAsString;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
@@ -13,12 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 @GrpcService
-public class GrpcCountryService extends RangifflerCountryServiceGrpc.RangifflerCountryServiceImplBase {
+public class GrpcGeoService extends RangifflerGeoServiceGrpc.RangifflerGeoServiceImplBase {
 
   private final CountryRepository countryRepository;
 
   @Autowired
-  public GrpcCountryService(CountryRepository countryRepository) {
+  public GrpcGeoService(CountryRepository countryRepository) {
     this.countryRepository = countryRepository;
   }
 
@@ -32,6 +33,15 @@ public class GrpcCountryService extends RangifflerCountryServiceGrpc.RangifflerC
                 .toList()
         )
         .build();
+    responseObserver.onNext(response);
+    responseObserver.onCompleted();
+  }
+
+  @Override
+  public void getCountry(CountryRequest request, StreamObserver<CountryResponse> responseObserver) {
+    CountryResponse response = countryRepository.findByCode(request.getCode())
+        .map(this::countryFromEntity)
+        .orElseThrow();
     responseObserver.onNext(response);
     responseObserver.onCompleted();
   }

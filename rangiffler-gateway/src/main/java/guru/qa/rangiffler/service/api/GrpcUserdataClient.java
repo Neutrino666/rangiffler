@@ -2,6 +2,7 @@ package guru.qa.rangiffler.service.api;
 
 import guru.qa.rangiffler.grpc.CurrentUserRequest;
 import guru.qa.rangiffler.grpc.RangifflerUserdataServiceGrpc;
+import guru.qa.rangiffler.grpc.UserRequest;
 import guru.qa.rangiffler.grpc.UserResponse;
 import io.grpc.StatusRuntimeException;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -24,8 +25,17 @@ public class GrpcUserdataClient {
       return rangifflerUserdataServiceStub.currentUser(
           CurrentUserRequest.newBuilder()
               .setUsername(username)
-              .build())
-          ;
+              .build()
+      );
+    } catch (StatusRuntimeException e) {
+      log.error("### Error while calling gRPC server ", e);
+      throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "The gRPC operation was cancelled", e);
+    }
+  }
+
+  public UserResponse updateUser(UserRequest userRequest) {
+    try {
+      return rangifflerUserdataServiceStub.updateUser(userRequest);
     } catch (StatusRuntimeException e) {
       log.error("### Error while calling gRPC server ", e);
       throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "The gRPC operation was cancelled", e);
