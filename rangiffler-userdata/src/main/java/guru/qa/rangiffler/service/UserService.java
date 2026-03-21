@@ -2,14 +2,16 @@ package guru.qa.rangiffler.service;
 
 import guru.qa.rangiffler.data.UserEntity;
 import guru.qa.rangiffler.data.repository.UserRepository;
-import guru.qa.rangiffler.grpc.CountryValues;
 import guru.qa.rangiffler.model.UserJson;
-import java.util.UUID;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
@@ -39,7 +41,7 @@ public class UserService {
 
               UserEntity ue = new UserEntity();
               ue.setUsername(user.username());
-              ue.setCountry(GrpcUserdataService.DEFAULT_COUNTRY);
+              ue.setCountry(GrpcUserService.DEFAULT_COUNTRY);
               UserEntity userEntity = userRepository.save(ue);
 
               LOG.info(
@@ -49,5 +51,16 @@ public class UserService {
               );
             }
         );
+  }
+
+  @Transactional(readOnly = true)
+  public @Nonnull
+  Page<UserEntity> allUsers(
+      String username,
+      Pageable pageable,
+      @Nullable String searchQuery) {
+    return searchQuery == null
+        ? userRepository.findByUsernameNot(username, pageable)
+        : userRepository.findByUsernameNotAndSearchQuery(username, searchQuery, pageable);
   }
 }

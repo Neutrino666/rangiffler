@@ -12,6 +12,7 @@ option java_outer_classname = "RangifflerUserdataProto";
 service RangifflerUserdataService {
   rpc CurrentUser (CurrentUserRequest) returns(UserResponse);
   rpc UpdateUser (UserRequest) returns(UserResponse);
+  rpc ListUsers (UserPageRequest) returns(UserPageResponse);
 }
 
 message UserRequest {
@@ -34,6 +35,22 @@ message UserResponse {
   string avatar = 5;
   CountryValues country = 6;
   FriendshipStatus friendshipStatus = 7;
+}
+
+message UserPageRequest {
+  string username = 1;
+  uint32 page = 2;
+  uint32 size = 3;
+  string searchQuery = 4;
+}
+
+message UserPageResponse {
+  uint64 totalElements = 1;
+  uint64 totalPages = 2;
+  bool first = 3;
+  bool last = 4;
+  uint32 size = 5;
+  repeated UserResponse edges = 6;
 }
 
 enum FriendshipStatus {
