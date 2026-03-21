@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "google/protobuf/empty.proto";
+import "rangiffler-geo.proto";
 
 package guru.qa.grpc.rangiffler;
 
@@ -10,6 +11,15 @@ option java_outer_classname = "RangifflerUserdataProto";
 
 service RangifflerUserdataService {
   rpc CurrentUser (CurrentUserRequest) returns(UserResponse);
+  rpc UpdateUser (UserRequest) returns(UserResponse);
+}
+
+message UserRequest {
+  string username = 2;
+  string firstname = 3;
+  string surname = 4;
+  string avatar = 5;
+  string country = 6;
 }
 
 message CurrentUserRequest {
@@ -22,7 +32,7 @@ message UserResponse {
   string firstname = 3;
   string surname = 4;
   string avatar = 5;
-  string countryId = 6;
+  CountryValues country = 6;
   FriendshipStatus friendshipStatus = 7;
 }
 
