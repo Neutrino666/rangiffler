@@ -20,6 +20,34 @@ services:
     networks:
       - rangiffler-network
 
+  zookeeper:
+    container_name: zookeeper
+    image: confluentinc/cp-zookeeper:7.3.2
+    ports:
+      - 2181:2181
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+    networks:
+      - rangiffler-network
+
+  kafka:
+    container_name: kafka
+    image: confluentinc/cp-kafka:7.3.2
+    ports:
+      - 9092:9092
+    depends_on:
+      zookeeper:
+        condition: service_started
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+    networks:
+      - rangiffler-network
+
   auth.rangiffler.dc:
     container_name: auth.rangiffler.dc
     image: ${PREFIX}/rangiffler-auth-docker:latest
@@ -39,8 +67,8 @@ services:
     depends_on:
       rangiffler-all-db:
         condition: service_healthy
-#      kafka:
-#        condition: service_started
+      kafka:
+        condition: service_started
     networks:
       - rangiffler-network
 
@@ -76,7 +104,7 @@ services:
       - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m
       - LOG_PATH=/logs/rangiffler-userdata/app.log
     volumes:
-      - ./logs/niffler-userdata:/logs/rangiffler-userdata
+      - ./logs/rangiffler-userdata:/logs/rangiffler-userdata
     restart: always
     depends_on:
       rangiffler-all-db:
@@ -94,7 +122,7 @@ services:
       - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m
       - LOG_PATH=/logs/rangiffler-geo/app.log
     volumes:
-      - ./logs/niffler-geo:/logs/rangiffler-geo
+      - ./logs/rangiffler-geo:/logs/rangiffler-geo
     restart: always
     depends_on:
       rangiffler-all-db:
@@ -112,7 +140,7 @@ services:
       - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m
       - LOG_PATH=/logs/rangiffler-photo/app.log
     volumes:
-      - ./logs/niffler-photo:/logs/rangiffler-photo
+      - ./logs/rangiffler-photo:/logs/rangiffler-photo
     restart: always
     depends_on:
       rangiffler-all-db:

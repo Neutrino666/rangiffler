@@ -5,6 +5,8 @@ import guru.qa.rangiffler.service.api.GrpcUserdataClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
 import rangiffler.graphqlTypes.Country;
 import rangiffler.graphqlTypes.User;
@@ -22,8 +24,9 @@ public class UserQueryController {
   }
 
   @QueryMapping
-  public User user() {
-    UserResponse u = grpcUserdataClient.getCurrentUser("xc");
+  public User user(@AuthenticationPrincipal Jwt principal) {
+    final String principalUsername = principal.getClaim("sub");
+    UserResponse u = grpcUserdataClient.getCurrentUser(principalUsername);
     return User.newBuilder()
         .id(u.getId())
         .username(u.getUsername())

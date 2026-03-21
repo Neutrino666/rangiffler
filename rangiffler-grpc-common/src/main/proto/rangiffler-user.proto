@@ -22,6 +22,7 @@ message UserResponse {
   string firstname = 3;
   string surname = 4;
   string avatar = 5;
+  string countryId = 6;
   FriendshipStatus friendshipStatus = 7;
 }
 

@@ -59,6 +59,7 @@ logging:
     path: ./logs/rangiffler-auth
   level:
     root: INFO
+    org.springframework.kafka: DEBUG
     org.springframework.web: DEBUG
     org.springframework.security: DEBUG
     org.springframework.security.oauth2: DEBUG
@@ -68,6 +69,8 @@ spring:
   config:
     activate:
       on-profile: 'local'
+  kafka:
+    bootstrap-servers: 'localhost:9092'
   datasource:
     url: 'jdbc:mysql://localhost:3306/rangiffler-auth?serverTimezone=UTC&createDatabaseIfNotExist=true'
     username: root
@@ -108,6 +111,8 @@ spring:
   config:
     activate:
       on-profile: 'docker'
+  kafka:
+    bootstrap-servers: 'kafka:9092'
   datasource:
     url: 'jdbc:mysql://rangiffler-all-db:3306/rangiffler-auth?serverTimezone=UTC&createDatabaseIfNotExist=true'
     username: root

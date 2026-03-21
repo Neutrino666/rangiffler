@@ -3,9 +3,9 @@ create table if not exists `user`
     id                      binary(16) unique  not null default (UUID_TO_BIN(UUID(), true)),
     username                varchar(50) unique not null,
     firstname               varchar(255),
-    lastName                varchar(255),
+    surname                 varchar(255),
     avatar                  longblob,
-    country                 varchar(255)          not null,
+    country_id              binary(16)         not null,
     primary key (id)
 );
 
