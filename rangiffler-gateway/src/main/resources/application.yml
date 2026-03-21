@@ -51,6 +51,10 @@ logging:
     org.springframework.security: DEBUG
     org.springframework.security.oauth2: DEBUG
     org.springframework.boot.autoconfigure: DEBUG
+dgs:
+  graphql:
+    schema-locations:
+      - "classpath*:graphql/**/*.graphql*"
 
 ---
 spring:

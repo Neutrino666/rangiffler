@@ -8,6 +8,9 @@ group = 'guru.qa'
 version = '1.0.0'
 
 generateJava {
+    typeMapping = [
+            "UserConnection": "graphql.relay.SimpleListConnection<User>"
+    ]
     schemaPaths = ["${projectDir}/src/main/resources/graphql"] // List of directories containing schema files
     subPackageNameClient = 'graphqlClient'
     subPackageNameTypes = 'graphqlTypes'
@@ -27,6 +30,7 @@ configurations {
 
 dependencies {
     implementation project(':rangiffler-grpc-common')
+    compileOnly 'com.netflix.graphql.dgs:graphql-dgs-pagination:11.1.0'
     // spring
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'

@@ -12,17 +12,17 @@
           <package value="guru.qa.rangiffler" />
         </packages>
       </persistence-unit>
-      <persistence-unit moduleName="rangiffler.rangiffler-userdata.main" name="Default">
-        <packages>
-          <package value="guru.qa.rangiffler" />
-        </packages>
-      </persistence-unit>
       <persistence-unit moduleName="rangiffler.rangiffler-geo.main" name="Default">
         <packages>
           <package value="guru.qa.rangiffler" />
         </packages>
       </persistence-unit>
       <persistence-unit moduleName="rangiffler.rangiffler-photo.main" name="Default">
+        <packages>
+          <package value="guru.qa.rangiffler" />
+        </packages>
+      </persistence-unit>
+      <persistence-unit moduleName="rangiffler.rangiffler-userdata.main" name="Default">
         <packages>
           <package value="guru.qa.rangiffler" />
         </packages>
