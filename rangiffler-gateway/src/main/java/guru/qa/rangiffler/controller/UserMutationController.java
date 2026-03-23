@@ -1,5 +1,6 @@
 package guru.qa.rangiffler.controller;
 
+import guru.qa.rangiffler.ex.IllegalGqlFieldAccessException;
 import guru.qa.rangiffler.grpc.CountryResponse;
 import guru.qa.rangiffler.grpc.UserRequest;
 import guru.qa.rangiffler.grpc.UserRequest.Builder;
@@ -16,6 +17,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
 import rangiffler.graphqlTypes.Country;
 import rangiffler.graphqlTypes.CountryInput;
+import rangiffler.graphqlTypes.FriendshipInput;
 import rangiffler.graphqlTypes.User;
 import rangiffler.graphqlTypes.UserInput;
 
@@ -30,6 +32,30 @@ public class UserMutationController {
   public UserMutationController(GrpcUserdataClient grpcUserdataClient, GrpcGeoClient grpcGeoClient) {
     this.grpcUserdataClient = grpcUserdataClient;
     this.grpcGeoClient = grpcGeoClient;
+  }
+
+  @MutationMapping
+  public User friendship(
+      @AuthenticationPrincipal Jwt principal,
+      @Valid @Argument FriendshipInput input) {
+    final String principalUsername = principal.getClaim("sub");
+
+    return switch (input.getAction()) {
+      case ADD -> {
+        UserResponse res = grpcUserdataClient.sendInvitation(principalUsername, input.getUser());
+        CountryResponse country = grpcGeoClient.getCountry(res.getCountry().name().toLowerCase());
+        yield UserQueryController.gqlUserFromGrpcUser(res, country);
+      }
+//      case ACCEPT -> UserQueryController.gqlUserFromGrpcUser(grpcUserdataClient.acceptInvitation(principalUsername, input.getUser()));
+//      case REJECT -> UserQueryController.gqlUserFromGrpcUser(grpcUserdataClient.declineInvitation(principalUsername, input.getUser()));
+//      case DELETE -> {
+//        UserResponse u = grpcUserdataClient.getCurrentUser(principalUsername);
+//        CountryResponse country = grpcGeoClient.getCountry(u.getCountry().name().toLowerCase());
+//        grpcUserdataClient.removeFriend(principalUsername, principalUsername);
+//        yield UserQueryController.gqlUserFromGrpcUser(u, country);
+//      }
+      default -> throw new IllegalGqlFieldAccessException("### Not supported " + input.getAction().name());
+    };
   }
 
   @MutationMapping

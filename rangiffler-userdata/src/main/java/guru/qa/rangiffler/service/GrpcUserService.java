@@ -1,16 +1,15 @@
 package guru.qa.rangiffler.service;
 
-import guru.qa.rangiffler.data.CountryValues;
-import guru.qa.rangiffler.data.UserEntity;
-import guru.qa.rangiffler.data.repository.UserRepository;
+import com.google.protobuf.Empty;
 import guru.qa.rangiffler.grpc.CurrentUserRequest;
+import guru.qa.rangiffler.grpc.FriendshipRequest;
 import guru.qa.rangiffler.grpc.FriendshipStatus;
 import guru.qa.rangiffler.grpc.RangifflerUserdataServiceGrpc;
 import guru.qa.rangiffler.grpc.UserPageRequest;
 import guru.qa.rangiffler.grpc.UserPageResponse;
 import guru.qa.rangiffler.grpc.UserRequest;
 import guru.qa.rangiffler.grpc.UserResponse;
-import guru.qa.rangiffler.util.ByteAsString;
+import guru.qa.rangiffler.model.UserJson;
 import io.grpc.stub.StreamObserver;
 import java.util.List;
 import net.devh.boot.grpc.server.service.GrpcService;
@@ -23,26 +22,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class GrpcUserService extends RangifflerUserdataServiceGrpc.RangifflerUserdataServiceImplBase {
 
   private final UserService userService;
-  private final UserRepository userRepository;
   public final GrpcGeoClient grpcGeoClient;
-  public static final CountryValues DEFAULT_COUNTRY = CountryValues.RU;
 
   @Autowired
-  public GrpcUserService(UserService userService, UserRepository userRepository, GrpcGeoClient grpcGeoClient) {
+  public GrpcUserService(UserService userService, GrpcGeoClient grpcGeoClient) {
     this.userService = userService;
-    this.userRepository = userRepository;
     this.grpcGeoClient = grpcGeoClient;
   }
 
   @Override
   @Transactional(readOnly = true)
   public void currentUser(CurrentUserRequest request, StreamObserver<UserResponse> responseObserver) {
-    UserResponse response = userRepository.findByUsername(request.getUsername())
-        .map(this::userFromEntity)
-        .orElse(UserResponse.newBuilder()
-            .setId("")
-            .setUsername(request.getUsername())
-            .build());
+    UserResponse response = setUserResponse(
+        userService.getCurrentUser(request.getUsername())
+    );
     responseObserver.onNext(response);
     responseObserver.onCompleted();
   }
@@ -50,34 +43,14 @@ public class GrpcUserService extends RangifflerUserdataServiceGrpc.RangifflerUse
   @Override
   @Transactional
   public void updateUser(UserRequest request, StreamObserver<UserResponse> responseObserver) {
-    UserEntity ue = userRepository.findByUsername(request.getUsername())
-        .orElseGet(() -> {
-              UserEntity emptyUser = new UserEntity();
-              emptyUser.setUsername(request.getUsername());
-              emptyUser.setCountry(DEFAULT_COUNTRY);
-              return emptyUser;
-            }
-        );
-    ue.setCountry(
-        request.getCountry().isEmpty()
-            ? DEFAULT_COUNTRY
-            : CountryValues.valueOf(request.getCountry().toUpperCase())
-    );
-    ue.setAvatar(
-        request.getAvatar().isEmpty()
-            ? null
-            : new SmallAvatar(220, 220, request.getAvatar()).bytes()
-    );
-    userRepository.save(ue);
-    ue.setFirstname(request.getFirstname().isEmpty() ? null : request.getFirstname());
-    ue.setSurname(request.getSurname().isEmpty() ? null : request.getSurname());
-    responseObserver.onNext(userFromEntity(ue));
+    UserJson user = userService.update(request);
+    responseObserver.onNext(setUserResponse(user));
     responseObserver.onCompleted();
   }
 
   @Override
   public void listUsers(UserPageRequest request, StreamObserver<UserPageResponse> responseObserver) {
-    Page<UserEntity> users = userService.allUsers(
+    Page<UserJson> users = userService.allUsers(
         request.getUsername(),
         PageRequest.of(request.getPage(), request.getSize()),
         request.getSearchQuery()
@@ -86,12 +59,56 @@ public class GrpcUserService extends RangifflerUserdataServiceGrpc.RangifflerUse
     responseObserver.onCompleted();
   }
 
-  private UserPageResponse setUserPageResponse(Page<UserEntity> users) {
+  @Override
+  public void listFriends(UserPageRequest request, StreamObserver<UserPageResponse> responseObserver) {
+    super.listFriends(request, responseObserver);
+  }
+
+  @Override
+  public void sendRequest(FriendshipRequest request,
+      StreamObserver<UserResponse> responseObserver) {
+    UserJson user = userService.createFriendshipRequest(request.getRequester(),
+        request.getAddressee());
+    responseObserver.onNext(setUserResponse(user));
+    responseObserver.onCompleted();
+  }
+
+  @Override
+  public void acceptRequest(FriendshipRequest request, StreamObserver<UserResponse> responseObserver) {
+    super.acceptRequest(request, responseObserver);
+  }
+
+  @Override
+  public void declineRequest(FriendshipRequest request, StreamObserver<UserResponse> responseObserver) {
+    super.declineRequest(request, responseObserver);
+  }
+
+  @Override
+  public void removeFriend(FriendshipRequest request, StreamObserver<Empty> responseObserver) {
+    super.removeFriend(request, responseObserver);
+  }
+
+  @Override
+  public void listOutcomeInvitations(UserPageRequest request, StreamObserver<UserPageResponse> responseObserver) {
+    Page<UserJson> outcomeInvitations = userService.outcomeInvitations(
+        request.getUsername(),
+        PageRequest.of(request.getPage(), request.getSize()),
+        request.getSearchQuery()
+    );
+    responseObserver.onNext(setUserPageResponse(outcomeInvitations));
+    responseObserver.onCompleted();
+  }
+
+  @Override
+  public void listIncomeInvitations(UserPageRequest request, StreamObserver<UserPageResponse> responseObserver) {
+    super.listIncomeInvitations(request, responseObserver);
+  }
+
+  private UserPageResponse setUserPageResponse(Page<UserJson> users) {
     List<UserResponse> userResponses = users.getContent()
         .stream()
-        .map(this::userFromEntity)
+        .map(this::setUserResponse)
         .toList();
-
     return UserPageResponse.newBuilder()
         .setTotalElements(users.getTotalElements())
         .setTotalPages(users.getTotalPages())
@@ -102,15 +119,17 @@ public class GrpcUserService extends RangifflerUserdataServiceGrpc.RangifflerUse
         .build();
   }
 
-  private UserResponse userFromEntity(UserEntity ue) {
+  private UserResponse setUserResponse(UserJson user) {
     return UserResponse.newBuilder()
-        .setId(ue.getId().toString())
-        .setUsername(ue.getUsername())
-        .setFirstname(ue.getFirstname() == null ? "" : ue.getFirstname())
-        .setSurname(ue.getSurname() == null ? "" : ue.getSurname())
-        .setAvatar(new ByteAsString(ue.getAvatar()).string())
-        .setCountry(guru.qa.rangiffler.grpc.CountryValues.valueOf(ue.getCountry().name()))
-        .setFriendshipStatus(FriendshipStatus.UNSPECIFIED_STATUS)
+        .setId(user.id() == null ? "" : user.id().toString())
+        .setUsername(user.username())
+        .setFirstname(user.firstname() == null ? "" : user.firstname())
+        .setSurname(user.surname() == null ? "" : user.surname())
+        .setAvatar(user.avatar())
+        .setCountry(guru.qa.rangiffler.grpc.CountryValues.valueOf(user.country().name()))
+        .setFriendshipStatus(user.friendshipStatus() == null
+            ? FriendshipStatus.NOT_FRIEND
+            : FriendshipStatus.valueOf(user.friendshipStatus().name()))
         .build();
   }
 }

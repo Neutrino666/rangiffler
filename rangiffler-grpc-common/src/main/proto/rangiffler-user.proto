@@ -10,9 +10,24 @@ option java_package = "guru.qa.rangiffler.grpc";
 option java_outer_classname = "RangifflerUserdataProto";
 
 service RangifflerUserdataService {
+  // current user
   rpc CurrentUser (CurrentUserRequest) returns(UserResponse);
   rpc UpdateUser (UserRequest) returns(UserResponse);
+  // All users
   rpc ListUsers (UserPageRequest) returns(UserPageResponse);
+  // CRUD friend
+  rpc ListFriends (UserPageRequest) returns(UserPageResponse);
+  rpc SendRequest (FriendshipRequest) returns (UserResponse);
+  rpc AcceptRequest (FriendshipRequest) returns (UserResponse);
+  rpc DeclineRequest (FriendshipRequest) returns (UserResponse);
+  rpc RemoveFriend (FriendshipRequest) returns (google.protobuf.Empty);
+  rpc ListOutcomeInvitations (UserPageRequest) returns(UserPageResponse);
+  rpc ListIncomeInvitations (UserPageRequest) returns(UserPageResponse);
+}
+
+message FriendshipRequest {
+  string requester = 1;
+  string addressee = 2;
 }
 
 message UserRequest {
@@ -54,8 +69,8 @@ message UserPageResponse {
 }
 
 enum FriendshipStatus {
-  UNSPECIFIED_STATUS = 0;
-  INVITE_SENT = 1;
-  INVITE_RECEIVED = 2;
+  NOT_FRIEND = 0;
+  INVITATION_SENT = 1;
+  INVITATION_RECEIVED = 2;
   FRIEND = 3;
 }

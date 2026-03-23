@@ -1,5 +1,8 @@
 package guru.qa.rangiffler.controller;
 
+import static guru.qa.rangiffler.grpc.FriendshipStatus.NOT_FRIEND;
+import static guru.qa.rangiffler.grpc.FriendshipStatus.UNRECOGNIZED;
+
 import graphql.relay.DefaultConnection;
 import graphql.relay.DefaultConnectionCursor;
 import graphql.relay.DefaultEdge;
@@ -23,11 +26,13 @@ import java.util.stream.IntStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
 import rangiffler.graphqlTypes.Country;
+import rangiffler.graphqlTypes.FriendStatus;
 import rangiffler.graphqlTypes.User;
 
 @Controller
@@ -47,7 +52,8 @@ public class UserQueryController {
   public User user(@AuthenticationPrincipal Jwt principal) {
     final String principalUsername = principal.getClaim("sub");
     UserResponse u = grpcUserdataClient.getCurrentUser(principalUsername);
-    return gqlUserFromGrpcUser(u);
+    CountryResponse country = grpcGeoClient.getCountry(u.getCountry().name().toLowerCase());
+    return gqlUserFromGrpcUser(u, country);
   }
 
   @QueryMapping
@@ -60,6 +66,27 @@ public class UserQueryController {
     checkSubQueries(env, "friends");
     final String principalUsername = principal.getClaim("sub");
     UserPageResponse users = grpcUserdataClient.listUsers(
+        UserPageRequest.newBuilder()
+            .setPage(page)
+            .setSize(size)
+            .setSearchQuery(searchQuery == null ? "" : searchQuery)
+            .setUsername(principalUsername)
+            .build()
+    );
+    return gqlUserConnectionFromGrpcUserPage(users);
+  }
+
+  @SchemaMapping(typeName = "User", field = "outcomeInvitations")
+  public DefaultConnection<User> outcomeInvitations(
+      @AuthenticationPrincipal Jwt principal,
+      @Argument int page,
+      @Argument int size,
+      @Argument @Nullable String searchQuery,
+      @Nonnull DataFetchingEnvironment env
+  ) {
+    checkSubQueries(env, "friends");
+    final String principalUsername = principal.getClaim("sub");
+    UserPageResponse users = grpcUserdataClient.listOutcomeInvitations(
         UserPageRequest.newBuilder()
             .setPage(page)
             .setSize(size)
@@ -83,7 +110,10 @@ public class UserQueryController {
   private DefaultConnection<User> gqlUserConnectionFromGrpcUserPage(UserPageResponse users) {
     List<User> pageUsers = users.getEdgesList()
         .stream()
-        .map(this::gqlUserFromGrpcUser)
+        .map(u -> {
+          CountryResponse country = grpcGeoClient.getCountry(u.getCountry().name().toLowerCase());
+          return gqlUserFromGrpcUser(u, country);
+        })
         .toList();
     List<Edge<User>> edges = IntStream.range(0, pageUsers.size())
         .mapToObj(idx -> new DefaultEdge<>(
@@ -100,14 +130,18 @@ public class UserQueryController {
     return new DefaultConnection<>(edges, pageInfo);
   }
 
-  private User gqlUserFromGrpcUser(UserResponse u) {
-    CountryResponse country = grpcGeoClient.getCountry(u.getCountry().name().toLowerCase());
+  public static User gqlUserFromGrpcUser(UserResponse u, CountryResponse country) {
     return User.newBuilder()
         .id(u.getId())
         .username(u.getUsername())
         .firstname(u.getFirstname())
         .surname(u.getSurname())
         .avatar(u.getAvatar())
+        .friendStatus(
+            u.getFriendshipStatus().equals(UNRECOGNIZED) || u.getFriendshipStatus().equals(NOT_FRIEND)
+                ? null
+                : FriendStatus.valueOf(u.getFriendshipStatus().name())
+        )
         .location(
             Country.newBuilder()
                 .code(country.getCode())

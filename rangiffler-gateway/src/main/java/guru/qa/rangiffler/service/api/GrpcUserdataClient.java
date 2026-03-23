@@ -1,6 +1,7 @@
 package guru.qa.rangiffler.service.api;
 
 import guru.qa.rangiffler.grpc.CurrentUserRequest;
+import guru.qa.rangiffler.grpc.FriendshipRequest;
 import guru.qa.rangiffler.grpc.RangifflerUserdataServiceGrpc;
 import guru.qa.rangiffler.grpc.UserPageRequest;
 import guru.qa.rangiffler.grpc.UserPageResponse;
@@ -47,6 +48,27 @@ public class GrpcUserdataClient {
   public UserPageResponse listUsers(UserPageRequest request) {
     try {
       return rangifflerUserdataServiceStub.listUsers(request);
+    } catch (StatusRuntimeException e) {
+      log.error("### Error while calling gRPC server ", e);
+      throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "The gRPC operation was cancelled", e);
+    }
+  }
+
+  public UserResponse sendInvitation(String username, String targetUsername) {
+    try {
+      return rangifflerUserdataServiceStub.sendRequest(FriendshipRequest.newBuilder()
+          .setRequester(username)
+          .setAddressee(targetUsername)
+          .build());
+    } catch (StatusRuntimeException e) {
+      log.error("### Error while calling gRPC server ", e);
+      throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "The gRPC operation was cancelled", e);
+    }
+  }
+
+  public UserPageResponse listOutcomeInvitations(UserPageRequest request) {
+    try {
+      return rangifflerUserdataServiceStub.listOutcomeInvitations(request);
     } catch (StatusRuntimeException e) {
       log.error("### Error while calling gRPC server ", e);
       throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "The gRPC operation was cancelled", e);

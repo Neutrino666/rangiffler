@@ -1,7 +1,9 @@
 package guru.qa.rangiffler.data.repository;
 
 import guru.qa.rangiffler.data.UserEntity;
+import guru.qa.rangiffler.data.projection.UserWithStatus;
 import jakarta.annotation.Nonnull;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -17,13 +19,164 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
   @Nonnull
   Optional<UserEntity> findByUsername(String username);
 
-  Page<UserEntity> findByUsernameNot(String username, Pageable pageable);
+  @Nonnull
+  @Query("""
+      select distinct new guru.qa.rangiffler.data.projection.UserWithStatus(
+        u.id, u.username, u.firstname, u.surname, u.country, f.status, u.avatar
+      )
+      from UserEntity u left join FriendshipEntity f
+      on (u = f.addressee and f.requester.username = :username)
+      where u.username <> :username
+      and (f.status = guru.qa.rangiffler.data.FriendshipStatus.PENDING or f.status is null)
+      order by u.username asc
+      """)
+  Page<UserWithStatus> findByUsernameNot(String username, Pageable pageable);
 
-  @Query("select u from UserEntity u where u.username <> :username" +
-      " and (u.username like %:searchQuery% or u.firstname like %:searchQuery% or u.surname like %:searchQuery%)")
-  Page<UserEntity> findByUsernameNotAndSearchQuery(
+  @Query("""
+      select distinct new guru.qa.rangiffler.data.projection.UserWithStatus(
+        u.id, u.username, u.firstname, u.surname, u.country, f.status, u.avatar
+      )
+      from UserEntity u left join FriendshipEntity f
+      on (u = f.addressee and f.requester.username = :username)
+      where u.username <> :username
+      and (f.status = guru.qa.rangiffler.data.FriendshipStatus.PENDING or f.status is null)
+      and (
+        u.username like %:searchQuery%
+        or u.firstname like %:searchQuery%
+        or u.surname like %:searchQuery%
+      )
+      order by u.username asc
+      """)
+  Page<UserWithStatus> findByUsernameNotAndSearchQuery(
       @Param("username") String username,
       @Param("searchQuery") String searchQuery,
       Pageable pageable
   );
+
+  @Nonnull
+  @Query("""
+      select distinct new guru.qa.rangiffler.data.projection.UserWithStatus(
+        u.id, u.username, u.firstname, u.surname, u.country, f.status, u.avatar
+      )
+      from UserEntity u join FriendshipEntity f on u = f.addressee
+      where f.status = guru.qa.rangiffler.data.FriendshipStatus.ACCEPTED
+      and f.requester = :requester
+      order by u.username asc
+      """)
+  Page<UserWithStatus> findFriends(
+      @Param("requester") UserEntity requester,
+      Pageable pageable);
+
+  @Nonnull
+  @Query("""
+      select distinct new guru.qa.rangiffler.data.projection.UserWithStatus(
+        u.id, u.username, u.firstname, u.surname, u.country, f.status, u.avatar
+      )
+      from UserEntity u join FriendshipEntity f on u = f.addressee
+      where f.status = guru.qa.rangiffler.data.FriendshipStatus.ACCEPTED
+      and f.requester = :requester
+      and (
+        u.username like %:searchQuery%
+        or u.firstname like %:searchQuery% or u.surname like %:searchQuery%
+      )
+      order by u.username asc
+      """)
+  Page<UserWithStatus> findFriends(
+      @Param("requester") UserEntity requester,
+      Pageable pageable,
+      @Param("searchQuery") String searchQuery);
+
+  @Nonnull
+  @Query("""
+      select distinct new guru.qa.rangiffler.data.projection.UserWithStatus(
+        u.id, u.username, u.firstname, u.surname, u.country, f.status, u.avatar
+      )
+      from UserEntity u join FriendshipEntity f on u = f.addressee
+      where f.status = guru.qa.rangiffler.data.FriendshipStatus.ACCEPTED 
+      and f.requester = :requester
+      order by u.username asc
+      """)
+  List<UserWithStatus> findFriends(@Param("requester") UserEntity requester);
+
+  @Nonnull
+  @Query("""
+      select distinct new guru.qa.rangiffler.data.projection.UserWithStatus(
+        u.id, u.username, u.firstname, u.surname, u.country, f.status, u.avatar
+      )
+      from UserEntity u join FriendshipEntity f on u = f.addressee
+      where f.status = guru.qa.rangiffler.data.FriendshipStatus.ACCEPTED
+      and f.requester = :requester
+      and (
+        u.username like %:searchQuery%
+        or u.firstname like %:searchQuery%
+        or u.surname like %:searchQuery%
+      )
+      order by u.username asc
+      """)
+  List<UserWithStatus> findFriends(
+      @Param("requester") UserEntity requester,
+      @Param("searchQuery") String searchQuery);
+
+  @Nonnull
+  @Query("""
+      select distinct new guru.qa.rangiffler.data.projection.UserWithStatus(
+        u.id, u.username, u.firstname, u.surname, u.country, f.status, u.avatar
+      )
+      from UserEntity u join FriendshipEntity f on u = f.addressee
+      where f.status = guru.qa.rangiffler.data.FriendshipStatus.PENDING
+      and f.requester = :requester
+      order by u.username asc
+      """)
+  Page<UserWithStatus> findOutcomeInvitations(
+      @Param("requester") UserEntity requester,
+      Pageable pageable);
+
+  @Nonnull
+  @Query("""
+      select distinct new guru.qa.rangiffler.data.projection.UserWithStatus(
+        u.id, u.username, u.firstname, u.surname, u.country, f.status, u.avatar
+      )
+      from UserEntity u join FriendshipEntity f on u = f.addressee
+      where f.status = guru.qa.rangiffler.data.FriendshipStatus.PENDING
+      and f.requester = :requester
+      and (
+        lower(u.username) like lower(concat('%', :searchQuery, '%'))
+        or lower(u.surname) like lower(concat('%', :searchQuery, '%'))
+      )
+      order by u.username asc
+      """)
+  Page<UserWithStatus> findOutcomeInvitations(
+      @Param("requester") UserEntity requester,
+      Pageable pageable,
+      @Param("searchQuery") String searchQuery);
+
+  @Nonnull
+  @Query("""
+      select distinct new guru.qa.rangiffler.data.projection.UserWithStatus(
+        u.id, u.username, u.firstname, u.surname, u.country, f.status, u.avatar
+      )
+      from UserEntity u join FriendshipEntity f on u = f.addressee
+      where f.status = guru.qa.rangiffler.data.FriendshipStatus.PENDING
+      and f.requester = :requester
+      order by u.username asc
+      """)
+  List<UserWithStatus> findOutcomeInvitations(@Param("requester") UserEntity requester);
+
+  @Nonnull
+  @Query("""
+      select distinct new guru.qa.rangiffler.data.projection.UserWithStatus(
+        u.id, u.username, u.firstname, u.surname, u.country, f.status, u.avatar
+      )
+      from UserEntity u join FriendshipEntity f on u = f.addressee
+      where f.status = guru.qa.rangiffler.data.FriendshipStatus.PENDING
+      and f.requester = :requester
+      and (
+        lower(u.username) like lower(concat('%', :searchQuery, '%'))
+        or lower(u.surname) like lower(concat('%', :searchQuery, '%'))
+      )
+      order by u.username asc
+      """)
+  List<UserWithStatus> findOutcomeInvitations(
+      @Param("requester") UserEntity requester,
+      @Param("searchQuery") String searchQuery);
 }
