@@ -20,7 +20,7 @@ service RangifflerUserdataService {
   rpc SendRequest (FriendshipRequest) returns (UserResponse);
   rpc AcceptRequest (FriendshipRequest) returns (UserResponse);
   rpc DeclineRequest (FriendshipRequest) returns (UserResponse);
-  rpc RemoveFriend (FriendshipRequest) returns (google.protobuf.Empty);
+  rpc RemoveFriend (FriendshipRequest) returns (UserResponse);
   rpc ListOutcomeInvitations (UserPageRequest) returns(UserPageResponse);
   rpc ListIncomeInvitations (UserPageRequest) returns(UserPageResponse);
 }
