@@ -7,15 +7,11 @@ import guru.qa.rangiffler.grpc.UserPageRequest;
 import guru.qa.rangiffler.grpc.UserPageResponse;
 import guru.qa.rangiffler.grpc.UserRequest;
 import guru.qa.rangiffler.grpc.UserResponse;
-import io.grpc.StatusRuntimeException;
+import guru.qa.rangiffler.service.utils.GrpcCall;
 import javax.annotation.ParametersAreNonnullByDefault;
-import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.client.inject.GrpcClient;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
-@Slf4j
 @Component
 @ParametersAreNonnullByDefault
 public class GrpcUserdataClient {
@@ -24,54 +20,72 @@ public class GrpcUserdataClient {
   private RangifflerUserdataServiceGrpc.RangifflerUserdataServiceBlockingStub rangifflerUserdataServiceStub;
 
   public UserResponse getCurrentUser(String username) {
-    try {
-      return rangifflerUserdataServiceStub.currentUser(
-          CurrentUserRequest.newBuilder()
-              .setUsername(username)
-              .build()
-      );
-    } catch (StatusRuntimeException e) {
-      log.error("### Error while calling gRPC server ", e);
-      throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "The gRPC operation was cancelled", e);
-    }
+    return GrpcCall.execute(
+        () -> rangifflerUserdataServiceStub.currentUser(
+            CurrentUserRequest.newBuilder()
+                .setUsername(username)
+                .build()
+        )
+    );
   }
 
   public UserResponse updateUser(UserRequest userRequest) {
-    try {
-      return rangifflerUserdataServiceStub.updateUser(userRequest);
-    } catch (StatusRuntimeException e) {
-      log.error("### Error while calling gRPC server ", e);
-      throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "The gRPC operation was cancelled", e);
-    }
+    return GrpcCall.execute(() -> rangifflerUserdataServiceStub.updateUser(userRequest));
   }
 
   public UserPageResponse listUsers(UserPageRequest request) {
-    try {
-      return rangifflerUserdataServiceStub.listUsers(request);
-    } catch (StatusRuntimeException e) {
-      log.error("### Error while calling gRPC server ", e);
-      throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "The gRPC operation was cancelled", e);
-    }
+    return GrpcCall.execute(() -> rangifflerUserdataServiceStub.listUsers(request));
   }
 
-  public UserResponse sendInvitation(String username, String targetUsername) {
-    try {
-      return rangifflerUserdataServiceStub.sendRequest(FriendshipRequest.newBuilder()
-          .setRequester(username)
-          .setAddressee(targetUsername)
-          .build());
-    } catch (StatusRuntimeException e) {
-      log.error("### Error while calling gRPC server ", e);
-      throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "The gRPC operation was cancelled", e);
-    }
+  public UserPageResponse listFriends(UserPageRequest request) {
+    return GrpcCall.execute(() -> rangifflerUserdataServiceStub.listFriends(request));
+  }
+
+  public UserResponse sendInvitation(String username, String targetUserId) {
+    return GrpcCall.execute(() ->
+        rangifflerUserdataServiceStub.sendRequest(
+            FriendshipRequest.newBuilder()
+                .setRequester(username)
+                .setAddressee(targetUserId)
+                .build())
+    );
   }
 
   public UserPageResponse listOutcomeInvitations(UserPageRequest request) {
-    try {
-      return rangifflerUserdataServiceStub.listOutcomeInvitations(request);
-    } catch (StatusRuntimeException e) {
-      log.error("### Error while calling gRPC server ", e);
-      throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "The gRPC operation was cancelled", e);
-    }
+    return GrpcCall.execute(() -> rangifflerUserdataServiceStub.listOutcomeInvitations(request));
+  }
+
+  public UserPageResponse listIncomeInvitations(UserPageRequest request) {
+    return GrpcCall.execute(() -> rangifflerUserdataServiceStub.listIncomeInvitations(request));
+  }
+
+  public UserResponse acceptInvitation(String username, String targetUserId) {
+    return GrpcCall.execute(
+        () -> rangifflerUserdataServiceStub.acceptRequest(
+            FriendshipRequest.newBuilder()
+                .setRequester(username)
+                .setAddressee(targetUserId)
+                .build())
+    );
+  }
+
+  public UserResponse declineInvitation(String username, String targetUserId) {
+    return GrpcCall.execute(
+        () -> rangifflerUserdataServiceStub.declineRequest(
+            FriendshipRequest.newBuilder()
+                .setRequester(username)
+                .setAddressee(targetUserId)
+                .build())
+    );
+  }
+
+  public void removeFriend(String username, String targetUserId) {
+    GrpcCall.execute(
+        () -> rangifflerUserdataServiceStub.removeFriend(
+            FriendshipRequest.newBuilder()
+                .setRequester(username)
+                .setAddressee(targetUserId)
+                .build())
+    );
   }
 }

@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -125,18 +126,6 @@ public class UserService {
 
   @Transactional(readOnly = true)
   public @Nonnull
-  List<UserJson> friends(String username,
-      @Nullable String searchQuery) {
-    List<UserWithStatus> usersFromDb = searchQuery == null
-        ? userRepository.findFriends(getRequiredUser(username))
-        : userRepository.findFriends(getRequiredUser(username), searchQuery);
-    return usersFromDb.stream()
-        .map(UserJson::fromUserEntityProjection)
-        .toList();
-  }
-
-  @Transactional(readOnly = true)
-  public @Nonnull
   Page<UserJson> friends(String username,
       Pageable pageable,
       @Nullable String searchQuery) {
@@ -148,18 +137,6 @@ public class UserService {
 
   @Transactional(readOnly = true)
   public @Nonnull
-  List<UserJson> outcomeInvitations(String username, @Nullable String searchQuery) {
-    List<UserWithStatus> usersFromDb = searchQuery == null
-        ? userRepository.findOutcomeInvitations(getRequiredUser(username))
-        : userRepository.findOutcomeInvitations(getRequiredUser(username), searchQuery);
-
-    return usersFromDb.stream()
-        .map(UserJson::fromUserEntityProjection)
-        .toList();
-  }
-
-  @Transactional(readOnly = true)
-  public @Nonnull
   Page<UserJson> outcomeInvitations(
       String username,
       Pageable pageable,
@@ -167,7 +144,17 @@ public class UserService {
     Page<UserWithStatus> usersFromDb = searchQuery == null
         ? userRepository.findOutcomeInvitations(getRequiredUser(username), pageable)
         : userRepository.findOutcomeInvitations(getRequiredUser(username), pageable, searchQuery);
+    return usersFromDb.map(UserJson::fromUserEntityProjection);
+  }
 
+  @Transactional(readOnly = true)
+  public @Nonnull Page<UserJson> incomeInvitations(
+      String username,
+      PageRequest pageable,
+      @Nullable String searchQuery) {
+    Page<UserWithStatus> usersFromDb = searchQuery == null
+        ? userRepository.findIncomeInvitations(getRequiredUser(username), pageable)
+        : userRepository.findIncomeInvitations(getRequiredUser(username), pageable, searchQuery);
     return usersFromDb.map(UserJson::fromUserEntityProjection);
   }
 
@@ -194,15 +181,15 @@ public class UserService {
 
   @Transactional
   public @Nonnull
-  UserJson acceptFriendshipRequest(String username, String targetUsername) {
-    if (Objects.equals(username, targetUsername)) {
+  UserJson acceptFriendshipRequest(String username, String userId) {
+    if (Objects.equals(username, userId)) {
       throw new SameUsernameException("Can`t accept friendship request for self user");
     }
     UserEntity currentUser = getRequiredUser(username);
-    UserEntity targetUser = getRequiredUser(targetUsername);
+    UserEntity targetUser = getRequiredUser(UUID.fromString(userId));
 
     FriendshipEntity invite = getFriendshipRequest(currentUser, targetUser)
-        .orElseThrow(() -> new NotFoundException("Can`t find invitation from username: '" + targetUsername + "'"));
+        .orElseThrow(() -> new NotFoundException("Can`t find invitation from username: '" + userId + "'"));
 
     invite.setStatus(FriendshipStatus.ACCEPTED);
     currentUser.addFriends(FriendshipStatus.ACCEPTED, targetUser);
@@ -212,12 +199,12 @@ public class UserService {
 
   @Transactional
   public @Nonnull
-  UserJson declineFriendshipRequest(String username, String targetUsername) {
-    if (Objects.equals(username, targetUsername)) {
+  UserJson declineFriendshipRequest(String username, String userId) {
+    if (Objects.equals(username, userId)) {
       throw new SameUsernameException("Can`t decline friendship request for self user");
     }
     UserEntity currentUser = getRequiredUser(username);
-    UserEntity targetUser = getRequiredUser(targetUsername);
+    UserEntity targetUser = getRequiredUser(UUID.fromString(userId));
 
     currentUser.removeInvites(targetUser);
     targetUser.removeFriends(currentUser);
@@ -228,12 +215,12 @@ public class UserService {
   }
 
   @Transactional
-  public void removeFriend(String username, String targetUsername) {
-    if (Objects.equals(username, targetUsername)) {
+  public void removeFriend(String username, String userId) {
+    if (Objects.equals(username, userId)) {
       throw new SameUsernameException("Can`t remove friendship relation for self user");
     }
     UserEntity currentUser = getRequiredUser(username);
-    UserEntity targetUser = getRequiredUser(targetUsername);
+    UserEntity targetUser = getRequiredUser(UUID.fromString(userId));
 
     currentUser.removeFriends(targetUser);
     currentUser.removeInvites(targetUser);

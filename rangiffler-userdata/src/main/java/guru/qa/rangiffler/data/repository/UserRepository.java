@@ -22,19 +22,21 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
   @Nonnull
   @Query("""
       select distinct new guru.qa.rangiffler.data.projection.UserWithStatus(
-        u.id, u.username, u.firstname, u.surname, u.country, f.status, u.avatar
+        u.id, u.username, u.firstname, u.surname, u.country, u.avatar,
+        f.status, f.addressee.id as requesterId, f.addressee.id as addresseeId
       )
       from UserEntity u left join FriendshipEntity f
       on (u = f.addressee and f.requester.username = :username)
       where u.username <> :username
       and (f.status = guru.qa.rangiffler.data.FriendshipStatus.PENDING or f.status is null)
-      order by u.username asc
+      order by f.status desc, u.username asc
       """)
   Page<UserWithStatus> findByUsernameNot(String username, Pageable pageable);
 
   @Query("""
       select distinct new guru.qa.rangiffler.data.projection.UserWithStatus(
-        u.id, u.username, u.firstname, u.surname, u.country, f.status, u.avatar
+        u.id, u.username, u.firstname, u.surname, u.country, u.avatar,
+        f.status, f.addressee.id as requesterId, f.addressee.id as addresseeId
       )
       from UserEntity u left join FriendshipEntity f
       on (u = f.addressee and f.requester.username = :username)
@@ -45,7 +47,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
         or u.firstname like %:searchQuery%
         or u.surname like %:searchQuery%
       )
-      order by u.username asc
+      order by f.status desc, u.username asc
       """)
   Page<UserWithStatus> findByUsernameNotAndSearchQuery(
       @Param("username") String username,
@@ -56,7 +58,8 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
   @Nonnull
   @Query("""
       select distinct new guru.qa.rangiffler.data.projection.UserWithStatus(
-        u.id, u.username, u.firstname, u.surname, u.country, f.status, u.avatar
+        u.id, u.username, u.firstname, u.surname, u.country, u.avatar,
+        f.status, f.addressee.id as requesterId, f.addressee.id as addresseeId
       )
       from UserEntity u join FriendshipEntity f on u = f.addressee
       where f.status = guru.qa.rangiffler.data.FriendshipStatus.ACCEPTED
@@ -70,7 +73,8 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
   @Nonnull
   @Query("""
       select distinct new guru.qa.rangiffler.data.projection.UserWithStatus(
-        u.id, u.username, u.firstname, u.surname, u.country, f.status, u.avatar
+        u.id, u.username, u.firstname, u.surname, u.country, u.avatar,
+        f.status, f.addressee.id as requesterId, f.addressee.id as addresseeId
       )
       from UserEntity u join FriendshipEntity f on u = f.addressee
       where f.status = guru.qa.rangiffler.data.FriendshipStatus.ACCEPTED
@@ -89,7 +93,8 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
   @Nonnull
   @Query("""
       select distinct new guru.qa.rangiffler.data.projection.UserWithStatus(
-        u.id, u.username, u.firstname, u.surname, u.country, f.status, u.avatar
+        u.id, u.username, u.firstname, u.surname, u.country, u.avatar,
+        f.status, f.addressee.id as requesterId, f.addressee.id as addresseeId
       )
       from UserEntity u join FriendshipEntity f on u = f.addressee
       where f.status = guru.qa.rangiffler.data.FriendshipStatus.ACCEPTED 
@@ -101,7 +106,8 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
   @Nonnull
   @Query("""
       select distinct new guru.qa.rangiffler.data.projection.UserWithStatus(
-        u.id, u.username, u.firstname, u.surname, u.country, f.status, u.avatar
+        u.id, u.username, u.firstname, u.surname, u.country, u.avatar,
+        f.status, f.addressee.id as requesterId, f.addressee.id as addresseeId
       )
       from UserEntity u join FriendshipEntity f on u = f.addressee
       where f.status = guru.qa.rangiffler.data.FriendshipStatus.ACCEPTED
@@ -120,7 +126,8 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
   @Nonnull
   @Query("""
       select distinct new guru.qa.rangiffler.data.projection.UserWithStatus(
-        u.id, u.username, u.firstname, u.surname, u.country, f.status, u.avatar
+        u.id, u.username, u.firstname, u.surname, u.country, u.avatar,
+        f.status, f.addressee.id as requesterId, f.addressee.id as addresseeId
       )
       from UserEntity u join FriendshipEntity f on u = f.addressee
       where f.status = guru.qa.rangiffler.data.FriendshipStatus.PENDING
@@ -134,7 +141,8 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
   @Nonnull
   @Query("""
       select distinct new guru.qa.rangiffler.data.projection.UserWithStatus(
-        u.id, u.username, u.firstname, u.surname, u.country, f.status, u.avatar
+        u.id, u.username, u.firstname, u.surname, u.country, u.avatar,
+        f.status, f.addressee.id as requesterId, f.addressee.id as addresseeId
       )
       from UserEntity u join FriendshipEntity f on u = f.addressee
       where f.status = guru.qa.rangiffler.data.FriendshipStatus.PENDING
@@ -153,7 +161,8 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
   @Nonnull
   @Query("""
       select distinct new guru.qa.rangiffler.data.projection.UserWithStatus(
-        u.id, u.username, u.firstname, u.surname, u.country, f.status, u.avatar
+        u.id, u.username, u.firstname, u.surname, u.country, u.avatar,
+        f.status, f.addressee.id as requesterId, f.addressee.id as addresseeId
       )
       from UserEntity u join FriendshipEntity f on u = f.addressee
       where f.status = guru.qa.rangiffler.data.FriendshipStatus.PENDING
@@ -165,7 +174,8 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
   @Nonnull
   @Query("""
       select distinct new guru.qa.rangiffler.data.projection.UserWithStatus(
-        u.id, u.username, u.firstname, u.surname, u.country, f.status, u.avatar
+        u.id, u.username, u.firstname, u.surname, u.country, u.avatar,
+        f.status, f.addressee.id as requesterId, f.addressee.id as addresseeId
       )
       from UserEntity u join FriendshipEntity f on u = f.addressee
       where f.status = guru.qa.rangiffler.data.FriendshipStatus.PENDING
@@ -178,5 +188,40 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
       """)
   List<UserWithStatus> findOutcomeInvitations(
       @Param("requester") UserEntity requester,
+      @Param("searchQuery") String searchQuery);
+
+  @Nonnull
+  @Query("""
+      select distinct new guru.qa.rangiffler.data.projection.UserWithStatus(
+        u.id, u.username, u.firstname, u.surname, u.country, u.avatar,
+        f.status, f.addressee.id as requesterId, f.addressee.id as addresseeId
+      )
+      from UserEntity u join FriendshipEntity f on u = f.requester
+      where f.status = guru.qa.rangiffler.data.FriendshipStatus.PENDING
+      and f.addressee = :addressee
+      order by u.username asc
+      """)
+  Page<UserWithStatus> findIncomeInvitations(
+      @Param("addressee") UserEntity requester,
+      Pageable pageable);
+
+  @Nonnull
+  @Query("""
+      select distinct new guru.qa.rangiffler.data.projection.UserWithStatus(
+        u.id, u.username, u.firstname, u.surname, u.country, u.avatar,
+        f.status, f.addressee.id as requesterId, f.addressee.id as addresseeId
+      )
+      from UserEntity u join FriendshipEntity f on u = f.requester
+      where f.status = guru.qa.rangiffler.data.FriendshipStatus.PENDING
+      and f.addressee = :addressee
+      and (
+        lower(u.username) like lower(concat('%', :searchQuery, '%'))
+        or lower(u.surname) like lower(concat('%', :searchQuery, '%'))
+      )
+      order by u.username asc
+      """)
+  Page<UserWithStatus> findIncomeInvitations(
+      @Param("addressee") UserEntity requester,
+      Pageable pageable,
       @Param("searchQuery") String searchQuery);
 }

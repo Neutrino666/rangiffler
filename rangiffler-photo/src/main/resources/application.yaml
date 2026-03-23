@@ -28,6 +28,8 @@ spring:
       ddl-auto: none
     properties:
       hibernate:
+        generate_statistics: true
+        format_sql: true
         jdbc:
           lob:
             non_contextual_creation: true
@@ -43,9 +45,10 @@ logging:
     path: ./logs/rangiffler-geo
 
   level:
-    root: DEBUG
+    root: INFO
     org.springframework.web: DEBUG
     org.springframework.boot.autoconfigure: DEBUG
+    org.hibernate.stat: DEBUG
 
 ---
 spring:

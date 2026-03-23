@@ -61,7 +61,13 @@ public class GrpcUserService extends RangifflerUserdataServiceGrpc.RangifflerUse
 
   @Override
   public void listFriends(UserPageRequest request, StreamObserver<UserPageResponse> responseObserver) {
-    super.listFriends(request, responseObserver);
+    Page<UserJson> friends = userService.friends(
+        request.getUsername(),
+        PageRequest.of(request.getPage(), request.getSize()),
+        request.getSearchQuery()
+    );
+    responseObserver.onNext(setUserPageResponse(friends));
+    responseObserver.onCompleted();
   }
 
   @Override
@@ -75,17 +81,26 @@ public class GrpcUserService extends RangifflerUserdataServiceGrpc.RangifflerUse
 
   @Override
   public void acceptRequest(FriendshipRequest request, StreamObserver<UserResponse> responseObserver) {
-    super.acceptRequest(request, responseObserver);
+    UserJson user = userService.acceptFriendshipRequest(request.getRequester(),
+        request.getAddressee());
+    responseObserver.onNext(setUserResponse(user));
+    responseObserver.onCompleted();
   }
 
   @Override
   public void declineRequest(FriendshipRequest request, StreamObserver<UserResponse> responseObserver) {
-    super.declineRequest(request, responseObserver);
+    UserJson user = userService.declineFriendshipRequest(request.getRequester(),
+        request.getAddressee());
+    responseObserver.onNext(setUserResponse(user));
+    responseObserver.onCompleted();
   }
 
   @Override
   public void removeFriend(FriendshipRequest request, StreamObserver<Empty> responseObserver) {
-    super.removeFriend(request, responseObserver);
+    userService.removeFriend(request.getRequester(),
+        request.getAddressee());
+    responseObserver.onNext(Empty.newBuilder().build());
+    responseObserver.onCompleted();
   }
 
   @Override
@@ -101,7 +116,13 @@ public class GrpcUserService extends RangifflerUserdataServiceGrpc.RangifflerUse
 
   @Override
   public void listIncomeInvitations(UserPageRequest request, StreamObserver<UserPageResponse> responseObserver) {
-    super.listIncomeInvitations(request, responseObserver);
+    Page<UserJson> outcomeInvitations = userService.incomeInvitations(
+        request.getUsername(),
+        PageRequest.of(request.getPage(), request.getSize()),
+        request.getSearchQuery()
+    );
+    responseObserver.onNext(setUserPageResponse(outcomeInvitations));
+    responseObserver.onCompleted();
   }
 
   private UserPageResponse setUserPageResponse(Page<UserJson> users) {

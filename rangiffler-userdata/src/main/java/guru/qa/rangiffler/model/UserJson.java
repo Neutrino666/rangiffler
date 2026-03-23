@@ -48,6 +48,14 @@ public record UserJson(
   }
 
   public static @Nonnull UserJson fromUserEntityProjection(UserWithStatus projection) {
+    FriendshipStatus status = projection.addresseeId() == null
+        ? null
+        : switch (projection.status()) {
+          case PENDING -> projection.addresseeId().equals(projection.id())
+                ? FriendshipStatus.INVITATION_SENT
+                : FriendshipStatus.INVITATION_RECEIVED;
+          case ACCEPTED -> FriendshipStatus.FRIEND;
+        };
     return new UserJson(
         projection.id(),
         projection.username(),
@@ -57,7 +65,7 @@ public record UserJson(
         projection.avatar() != null && projection.avatar().length > 0
             ? new ByteAsString(projection.avatar()).string()
             : "",
-        projection.status() == guru.qa.rangiffler.data.FriendshipStatus.PENDING ? FriendshipStatus.INVITATION_SENT : null
+        status
     );
   }
 }
