@@ -15,7 +15,6 @@ import guru.qa.rangiffler.grpc.UserRequest;
 import guru.qa.rangiffler.model.UserJson;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -99,7 +98,7 @@ public class UserService {
             ? DEFAULT_COUNTRY
             : CountryValues.valueOf(user.getCountry().toUpperCase())
     );
-    if (isPhotoString(user.getAvatar())) {
+    if (isAvatarString(user.getAvatar())) {
       ue.setAvatar(
           user.getAvatar().isEmpty()
               ? null
@@ -232,7 +231,7 @@ public class UserService {
     return UserJson.fromEntity(targetUser);
   }
 
-  public static boolean isPhotoString(@Nullable String photo) {
+  private boolean isAvatarString(@Nullable String photo) {
     return photo != null && photo.startsWith("data:image");
   }
 
