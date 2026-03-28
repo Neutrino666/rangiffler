@@ -2,6 +2,7 @@ syntax = "proto3";
 
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
+import "rangiffler-geo.proto";
 
 package guru.qa.grpc.rangiffler;
 
@@ -11,14 +12,33 @@ option java_outer_classname = "RangifflerPhotoProto";
 
 service RangifflerPhotoService {
   rpc UpdatePhoto (PhotoRequest) returns(PhotoResponse);
+  rpc CreatePhoto (PhotoRequest) returns(PhotoResponse);
+  rpc ListPhoto (FeedRequest) returns(PhotoPageResponse);
+  rpc DeletePhoto (PhotoDeleteRequest) returns(PhotoDeleteResponse);
+}
+
+message FeedRequest {
+  bool withFriends = 1;
+  string userId = 2;
+  uint32 page = 3;
+  uint32 size = 4;
+}
+
+message PhotoPageResponse {
+  uint64 totalElements = 1;
+  uint64 totalPages = 2;
+  bool first = 3;
+  bool last = 4;
+  uint32 size = 5;
+  repeated PhotoResponse edges = 6;
 }
 
 message PhotoRequest {
   string id = 1;
   string src = 2;
-  string country = 3;
+  CountryRequest country = 3;
   string description = 4;
-  string user = 5;
+  string userId = 5;
 }
 
 message PhotoResponse {
@@ -28,5 +48,19 @@ message PhotoResponse {
   string description = 4;
   google.protobuf.Timestamp creationDate = 5;
   string country = 6;
-  string user = 7;
+  string userId = 7;
+  repeated Like like = 8;
+}
+
+message Like {
+  uint32 total = 1;
+}
+
+message PhotoDeleteRequest{
+  string id = 1;
+  string userId = 2;
+}
+
+message PhotoDeleteResponse {
+  bool isDeleted = 1;
 }

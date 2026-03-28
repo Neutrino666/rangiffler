@@ -68,8 +68,7 @@ public class UserService {
   }
 
   @Transactional(readOnly = true)
-  public @Nonnull
-  UserJson getCurrentUser(String username) {
+  public @Nonnull UserJson getCurrentUser(String username) {
     return userRepository.findByUsername(username).map(UserJson::fromEntity)
         .orElseGet(() -> new UserJson(
             null,
@@ -83,8 +82,7 @@ public class UserService {
   }
 
   @Transactional
-  public @Nonnull
-  UserJson update(UserRequest user) {
+  public @Nonnull UserJson update(UserRequest user) {
     UserEntity ue = userRepository.findByUsername(user.getUsername())
         .orElseGet(() -> {
               UserEntity emptyUser = new UserEntity();
@@ -112,8 +110,7 @@ public class UserService {
   }
 
   @Transactional(readOnly = true)
-  public @Nonnull
-  Page<UserJson> allUsers(
+  public @Nonnull Page<UserJson> allUsers(
       String username,
       Pageable pageable,
       @Nullable String searchQuery) {
@@ -124,8 +121,7 @@ public class UserService {
   }
 
   @Transactional(readOnly = true)
-  public @Nonnull
-  Page<UserJson> friends(String username,
+  public @Nonnull Page<UserJson> friends(String username,
       Pageable pageable,
       @Nullable String searchQuery) {
     Page<UserWithStatus> usersFromDb = searchQuery == null
@@ -135,8 +131,7 @@ public class UserService {
   }
 
   @Transactional(readOnly = true)
-  public @Nonnull
-  Page<UserJson> outcomeInvitations(
+  public @Nonnull Page<UserJson> outcomeInvitations(
       String username,
       Pageable pageable,
       @Nullable String searchQuery) {
@@ -179,8 +174,7 @@ public class UserService {
   }
 
   @Transactional
-  public @Nonnull
-  UserJson acceptFriendshipRequest(String username, String userId) {
+  public @Nonnull UserJson acceptFriendshipRequest(String username, String userId) {
     if (Objects.equals(username, userId)) {
       throw new SameUsernameException("Can`t accept friendship request for self user");
     }
@@ -197,8 +191,7 @@ public class UserService {
   }
 
   @Transactional
-  public @Nonnull
-  UserJson declineFriendshipRequest(String username, String userId) {
+  public @Nonnull UserJson declineFriendshipRequest(String username, String userId) {
     if (Objects.equals(username, userId)) {
       throw new SameUsernameException("Can`t decline friendship request for self user");
     }

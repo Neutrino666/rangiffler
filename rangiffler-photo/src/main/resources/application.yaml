@@ -8,7 +8,7 @@ grpc:
 
 spring:
   application:
-    name: rangiffler-geo
+    name: rangiffler-photo
   datasource:
     hikari:
       connection-timeout: 20000
@@ -21,8 +21,8 @@ spring:
     enabled: true
     baseline-on-migrate: true
     baseline-version: 0
-    schemas: rangiffler-geo
-    locations: classpath:db/migration/rangiffler-geo
+    schemas: rangiffler-photo
+    locations: classpath:db/migration/rangiffler-photo
   jpa:
     hibernate:
       ddl-auto: none
@@ -42,7 +42,7 @@ spring:
       enabled: false
 logging:
   file:
-    path: ./logs/rangiffler-geo
+    path: ./logs/rangiffler-photo
 
   level:
     root: INFO

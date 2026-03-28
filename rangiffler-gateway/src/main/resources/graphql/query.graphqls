@@ -35,34 +35,12 @@ type Feed {
     stat: [Stat!]
 }
 
-#  Для мока
-
-type PhotoConnection {
-    edges: [PhotoEdge!]!
-    pageInfo: PageInfo!
-    totalCount: Int!
-}
-
-type PhotoEdge {
-    cursor: String!
-    node: Photo!
-}
-
-type PageInfo {
-    hasNextPage: Boolean!
-    hasPreviousPage: Boolean!
-    startCursor: String
-    endCursor: String
-}
-
-# ---------
-
 type Stat {
     count: Int!
     country: Country!
 }
 
-type Photo {
+type Photo @connection {
     id: ID!
     src: String!
     country: Country!

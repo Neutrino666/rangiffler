@@ -16,13 +16,13 @@ public class CountriesQueryController {
   private final GrpcGeoClient grpcGeoClient;
 
   @Autowired
-  public CountriesQueryController(GrpcGeoClient grpcGeoClient) {
+  public CountriesQueryController(final GrpcGeoClient grpcGeoClient) {
     this.grpcGeoClient = grpcGeoClient;
   }
 
   @QueryMapping
   public List<Country> countries() {
-    CountryPageResponse countries = grpcGeoClient.getCountries();
+    final CountryPageResponse countries = grpcGeoClient.getCountries();
     return countries.getAllCountriesList()
         .stream()
         .map(c ->
