@@ -9,7 +9,8 @@ version = '1.0.0'
 
 generateJava {
     typeMapping = [
-            "UserConnection": "graphql.relay.SimpleListConnection<User>"
+            "UserConnection": "graphql.relay.DefaultConnection<User>",
+            "PhotoConnection": "graphql.relay.DefaultConnection<Photo>"
     ]
     schemaPaths = ["${projectDir}/src/main/resources/graphql"] // List of directories containing schema files
     subPackageNameClient = 'graphqlClient'

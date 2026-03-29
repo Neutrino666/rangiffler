@@ -8,8 +8,10 @@ import guru.qa.rangiffler.grpc.UserPageResponse;
 import guru.qa.rangiffler.grpc.UserRequest;
 import guru.qa.rangiffler.grpc.UserResponse;
 import guru.qa.rangiffler.service.utils.GrpcCall;
+import java.util.UUID;
 import javax.annotation.ParametersAreNonnullByDefault;
 import net.devh.boot.grpc.client.inject.GrpcClient;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -27,6 +29,11 @@ public class GrpcUserdataClient {
                 .build()
         )
     );
+  }
+
+  @Cacheable(value = "getCurrentUserId", key = "#username")
+  public UUID getCurrentUserId(String username) {
+    return UUID.fromString(getCurrentUser(username).getId());
   }
 
   public UserResponse updateUser(UserRequest userRequest) {

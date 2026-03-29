@@ -7,11 +7,11 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import rangiffler.graphqlTypes.UserInput;
 
-@ParametersAreNonnullByDefault
 @NoArgsConstructor(access = AccessLevel.NONE)
-public class UserGrpcRequest {
+@ParametersAreNonnullByDefault
+public final class UserGrpcRequest {
 
-  public static UserRequest fromGqlUserInput(UserInput userInput, final String username) {
+  public static UserRequest fromGqlUserInput(final UserInput userInput, final String username) {
     Builder userBuilder = UserRequest.newBuilder();
     userBuilder.setUsername(username);
     if (userInput.hasAvatar()) {
