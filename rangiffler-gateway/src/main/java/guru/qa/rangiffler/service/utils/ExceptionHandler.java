@@ -4,7 +4,7 @@ import static guru.qa.rangiffler.service.utils.ValidationExceptionMessageResolve
 import static guru.qa.rangiffler.service.utils.ValidationExceptionMessageResolver.resolveMethodArgumentNotValidException;
 import static java.util.Objects.requireNonNull;
 
-import guru.qa.rangiffler.service.model.ErrorJson;
+import guru.qa.rangiffler.model.ErrorJson;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;

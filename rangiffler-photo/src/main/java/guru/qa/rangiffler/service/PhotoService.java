@@ -26,14 +26,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class PhotoService {
 
   private final PhotoRepository photoRepository;
+  private final GrpcUserdataClient grpcUserdataClient;
 
   @Autowired
-  public PhotoService(PhotoRepository photoRepository) {
+  public PhotoService(PhotoRepository photoRepository, GrpcUserdataClient grpcUserdataClient) {
     this.photoRepository = photoRepository;
+    this.grpcUserdataClient = grpcUserdataClient;
   }
 
   @Transactional
-  public @Nonnull PhotoJson save(PhotoRequest photo) {
+  public @Nonnull PhotoJson save(final PhotoRequest photo) {
     PhotoEntity photoEntity = new PhotoEntity();
     photoEntity.setUserId(UUID.fromString(photo.getUserId()));
     photoEntity.setCountry(photo.getCountry().getCode());
@@ -46,7 +48,7 @@ public class PhotoService {
   }
 
   @Transactional
-  public @Nonnull PhotoJson edit(PhotoRequest photo) {
+  public @Nonnull PhotoJson edit(final PhotoRequest photo) {
     return photoRepository.findByIdAndUserId(
             UUID.fromString(photo.getId()),
             UUID.fromString(photo.getUserId())
@@ -63,7 +65,7 @@ public class PhotoService {
   }
 
   @Transactional
-  public boolean delete(PhotoDeleteRequest request) {
+  public boolean delete(final PhotoDeleteRequest request) {
     try {
       photoRepository.deleteByUserIdAndId(
           UUID.fromString(request.getUserId()),
@@ -76,8 +78,11 @@ public class PhotoService {
   }
 
   @Transactional(readOnly = true)
-  public @Nonnull Page<PhotoJson> findAllByUserId(FeedRequest request, Pageable pageable) {
-    return photoRepository.findAllByUserId(UUID.fromString(request.getUserId()), pageable)
-        .map(PhotoJson::fromEntity);
+  public @Nonnull Page<PhotoJson> findAllWithFriends(FeedRequest request, Pageable pageable) {
+    final UUID userId = UUID.fromString(request.getUserId());
+    final Page<PhotoEntity> photos = request.getWithFriends()
+        ? photoRepository.findAllByUserIdIn(grpcUserdataClient.photoUsers(request), pageable)
+        : photoRepository.findAllByUserId(userId, pageable);
+    return photos.map(PhotoJson::fromEntity);
   }
 }

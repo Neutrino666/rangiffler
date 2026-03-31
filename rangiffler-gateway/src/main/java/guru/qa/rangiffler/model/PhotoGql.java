@@ -4,6 +4,7 @@ import guru.qa.rangiffler.grpc.CountryPageResponse;
 import guru.qa.rangiffler.grpc.CountryResponse;
 import guru.qa.rangiffler.grpc.PhotoResponse;
 import java.util.List;
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -15,10 +16,11 @@ import rangiffler.graphqlTypes.Photo;
 @ParametersAreNonnullByDefault
 public final class PhotoGql {
 
+  @Nonnull
   public static Photo fromGrpsPhoto(
       final PhotoResponse photo,
       final CountryPageResponse allCountries) {
-    CountryResponse country = allCountries
+    final CountryResponse country = allCountries
         .getAllCountriesList()
         .stream()
         .filter(countryRes -> countryRes.getCode().equals(photo.getCountry().toLowerCase()))
@@ -35,7 +37,7 @@ public final class PhotoGql {
                 .build()
         )
         .description(photo.getDescription())
-        .isOwner(true)
+        .isOwner(photo.getIsOwner())
         .likes(
             Likes.newBuilder()
                 .total(0)

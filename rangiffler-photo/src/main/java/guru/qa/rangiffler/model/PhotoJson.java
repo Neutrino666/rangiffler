@@ -4,7 +4,9 @@ import guru.qa.rangiffler.data.PhotoEntity;
 import guru.qa.rangiffler.util.ByteAsString;
 import java.util.Date;
 import java.util.UUID;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public record PhotoJson(
     UUID id,
     UUID userId,
@@ -14,7 +16,7 @@ public record PhotoJson(
     Date createdDate
 ) {
 
-  public static PhotoJson fromEntity(PhotoEntity pe) {
+  public static PhotoJson fromEntity(final PhotoEntity pe) {
     return new PhotoJson(
         pe.getId(),
         pe.getUserId(),

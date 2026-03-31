@@ -13,8 +13,9 @@ import org.springframework.data.jpa.repository.Query;
 public interface CountryRepository extends JpaRepository<CountryEntity, UUID> {
 
   @Nonnull
-  @Query("SELECT c FROM CountryEntity c")
+  @Query("SELECT c FROM CountryEntity c order by name")
   List<CountryEntity> findAll();
 
+  @Nonnull
   Optional<CountryEntity> findByCode(String code);
 }

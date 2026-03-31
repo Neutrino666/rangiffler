@@ -22,6 +22,9 @@ public interface PhotoRepository extends JpaRepository<PhotoEntity, UUID> {
   Page<PhotoEntity> findAllByUserId(UUID uuid, Pageable pageable);
 
   @Nonnull
+  Page<PhotoEntity> findAllByUserIdIn(List<UUID> ids, Pageable pageable);
+
+  @Nonnull
   Optional<PhotoEntity> findByIdAndUserId(UUID id, UUID userId);
 
   void deleteByUserIdAndId(UUID userId, UUID id);

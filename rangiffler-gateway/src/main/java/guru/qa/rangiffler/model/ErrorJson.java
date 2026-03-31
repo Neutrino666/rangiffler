@@ -1,4 +1,4 @@
-package guru.qa.rangiffler.service.model;
+package guru.qa.rangiffler.model;
 
 import jakarta.annotation.Nonnull;
 
