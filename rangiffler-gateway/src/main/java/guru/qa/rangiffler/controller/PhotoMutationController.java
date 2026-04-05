@@ -39,9 +39,14 @@ public class PhotoMutationController {
       final @AuthenticationPrincipal Jwt principal) {
     final String principalUsername = principal.getClaim("sub");
     final UUID userId = grpcUserdataClient.getCurrentUserId(principalUsername);
-    final PhotoResponse photoResponse = input.getId() == null
-        ? grpcPhotoClient.addPhoto(input, userId)
-        : grpcPhotoClient.updatePhoto(input, userId);
+    final PhotoResponse photoResponse;
+    if (input.getLike() != null) {
+      photoResponse = grpcPhotoClient.addLike(input, userId, principalUsername);
+    } else {
+      photoResponse = input.getId() == null
+          ? grpcPhotoClient.addPhoto(input, userId)
+          : grpcPhotoClient.updatePhoto(input, userId);
+    }
     return PhotoGql.fromGrpsPhoto(photoResponse, grpcGeoClient.getCountries());
   }
 

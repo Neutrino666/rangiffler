@@ -47,7 +47,7 @@ public class FeedQueryController {
       final @Argument Boolean withFriends,
       final @Nonnull DataFetchingEnvironment env
   ) {
-    checkSubQueries(env, "photo");
+    checkSubQueries(env, "photo", "feed");
     final String principalUsername = principal.getClaim("sub");
     return Feed.newBuilder()
         .withFriends(withFriends)
@@ -66,7 +66,9 @@ public class FeedQueryController {
   @SchemaMapping(typeName = "Feed", field = "stat")
   public List<Stat> stat(
       final @AuthenticationPrincipal Jwt principal,
-      final Feed feed) {
+      final Feed feed,
+      final @Nonnull DataFetchingEnvironment env) {
+    checkSubQueries(env, "photo", "feed");
     final String principalUsername = principal.getClaim("sub");
     return List.of(
         Stat.newBuilder()
@@ -83,14 +85,19 @@ public class FeedQueryController {
   @SchemaMapping(typeName = "Feed", field = "photos")
   public DefaultConnection<Photo> photos(
       final Feed feed,
+      final @AuthenticationPrincipal Jwt principal,
       final @Argument int page,
-      final @Argument int size) {
+      final @Argument int size,
+      final @Nonnull DataFetchingEnvironment env) {
+    checkSubQueries(env, "photo", "feed");
+    final String principalUsername = principal.getClaim("sub");
     final PhotoPageResponse grpcFeed = grpcPhotoClient.listPhotos(
         FeedRequest.newBuilder()
             .setWithFriends(feed.getWithFriends())
             .setUserId(userdataClient.getCurrentUserId(feed.getUsername()).toString())
             .setSize(size)
             .setPage(page)
+            .setUsername(principalUsername)
             .build()
     );
     return PhotoGqlPage.fromGrpcPhotoPage(grpcFeed, grpcGeoClient.getCountries());

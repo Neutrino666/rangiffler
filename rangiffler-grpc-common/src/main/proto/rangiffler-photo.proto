@@ -14,6 +14,7 @@ service RangifflerPhotoService {
   rpc UpdatePhoto (PhotoRequest) returns(PhotoResponse);
   rpc CreatePhoto (PhotoRequest) returns(PhotoResponse);
   rpc ListPhoto (FeedRequest) returns(PhotoPageResponse);
+  rpc PhotoLike (LikeRequest) returns(PhotoResponse);
   rpc DeletePhoto (PhotoDeleteRequest) returns(PhotoDeleteResponse);
 }
 
@@ -22,6 +23,7 @@ message FeedRequest {
   string userId = 2;
   uint32 page = 3;
   uint32 size = 4;
+  string username = 5;
 }
 
 message PhotoPageResponse {
@@ -41,6 +43,13 @@ message PhotoRequest {
   string userId = 5;
 }
 
+message LikeRequest {
+  string userId = 1;
+  string username = 2;
+  string photoId = 3;
+  string requesterId = 4;
+}
+
 message PhotoResponse {
   string id = 1;
   string src = 2;
@@ -50,10 +59,11 @@ message PhotoResponse {
   string country = 6;
   string userId = 7;
   repeated Like like = 8;
+  bool isOwner = 9;
 }
 
 message Like {
-  uint32 total = 1;
+  string userId = 1;
 }
 
 message PhotoDeleteRequest{

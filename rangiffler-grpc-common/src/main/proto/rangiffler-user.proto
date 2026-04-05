@@ -17,6 +17,7 @@ service RangifflerUserdataService {
   rpc ListUsers (UserPageRequest) returns(UserPageResponse);
   // CRUD friend
   rpc ListFriends (UserPageRequest) returns(UserPageResponse);
+  rpc ListFriendsIds (UsersRequest) returns(UsersResponse);
   rpc SendRequest (FriendshipRequest) returns (UserResponse);
   rpc AcceptRequest (FriendshipRequest) returns (UserResponse);
   rpc DeclineRequest (FriendshipRequest) returns (UserResponse);
@@ -50,6 +51,14 @@ message UserResponse {
   string avatar = 5;
   CountryValues country = 6;
   FriendshipStatus friendshipStatus = 7;
+}
+
+message UsersRequest {
+  string username = 1;
+}
+
+message UsersResponse{
+  repeated string id = 1;
 }
 
 message UserPageRequest {

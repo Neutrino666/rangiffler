@@ -59,6 +59,12 @@ spring:
     url: 'jdbc:mysql://localhost:3306/rangiffler-photo?serverTimezone=UTC&createDatabaseIfNotExist=true'
     username: root
     password: secret
+
+grpc:
+  client:
+    grpcUserdataClient:
+      address: 'static://localhost:8088'
+      negotiationType: PLAINTEXT
 ---
 spring:
   config:
@@ -68,3 +74,9 @@ spring:
     url: 'jdbc:mysql://rangiffler-all-db:3306/rangiffler-photo?serverTimezone=UTC&createDatabaseIfNotExist=true'
     username: root
     password: secret
+
+grpc:
+  client:
+    grpcUserdataClient:
+      address: 'static://userdata.rangiffler.dc:8088'
+      negotiationType: PLAINTEXT

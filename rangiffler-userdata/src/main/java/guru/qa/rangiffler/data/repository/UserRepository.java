@@ -31,7 +31,8 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
         or (u = f.requester and f.addressee.username = :username)
       )
       where u.username <> :username
-      and (f.status = guru.qa.rangiffler.data.FriendshipStatus.PENDING
+      and (
+        f.status = guru.qa.rangiffler.data.FriendshipStatus.PENDING
         or f.status is null
         or (f.status = guru.qa.rangiffler.data.FriendshipStatus.ACCEPTED and f.requester.id = u.id)
       )
@@ -50,7 +51,8 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
         or (u = f.requester and f.addressee.username = :username)
       )
       where u.username <> :username
-      and (f.status = guru.qa.rangiffler.data.FriendshipStatus.PENDING
+      and (
+        f.status = guru.qa.rangiffler.data.FriendshipStatus.PENDING
         or f.status is null
         or (f.status = guru.qa.rangiffler.data.FriendshipStatus.ACCEPTED and f.requester.id = u.id)
       )
@@ -109,7 +111,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
         f.status, f.addressee.id as requesterId, f.addressee.id as addresseeId
       )
       from UserEntity u join FriendshipEntity f on u = f.addressee
-      where f.status = guru.qa.rangiffler.data.FriendshipStatus.ACCEPTED 
+      where f.status = guru.qa.rangiffler.data.FriendshipStatus.ACCEPTED
       and f.requester = :requester
       order by u.username asc
       """)

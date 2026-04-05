@@ -17,9 +17,14 @@ dependencies {
         exclude group: 'io.grpc'
         exclude group: 'com.google.protobuf'
     }
+    implementation("net.devh:grpc-client-spring-boot-starter:${project.ext.springGrpcVersion}") {
+        exclude group: 'io.grpc'
+        exclude group: 'com.google.protobuf'
+    }
     implementation "com.google.protobuf:protobuf-java-util:${project.ext.protobufVersion}"
     implementation "io.grpc:grpc-netty-shaded:${project.ext.grpcVersion}"
     implementation "io.grpc:grpc-services:${project.ext.grpcVersion}"
+    implementation "io.grpc:grpc-inprocess:${project.ext.grpcVersion}"
     implementation "org.flywaydb:flyway-core:${project.ext.flywayVersion}"
     implementation "org.flywaydb:flyway-mysql:${project.ext.flywayVersion}"
     runtimeOnly "mysql:mysql-connector-java:${project.ext.mysqlDriverVersion}"
