@@ -2,6 +2,7 @@ package guru.qa.rangiffler.service.api;
 
 import guru.qa.rangiffler.grpc.CountryRequest;
 import guru.qa.rangiffler.grpc.FeedRequest;
+import guru.qa.rangiffler.grpc.LikeRequest;
 import guru.qa.rangiffler.grpc.PhotoDeleteRequest;
 import guru.qa.rangiffler.grpc.PhotoPageResponse;
 import guru.qa.rangiffler.grpc.PhotoRequest;
@@ -25,16 +26,17 @@ public class GrpcPhotoClient {
 
   public PhotoResponse addPhoto(PhotoInput photo, final UUID userId) {
     return GrpcCall.execute(() ->
-        rangifflerPhotoServiceBlockingStub.createPhoto(PhotoRequest.newBuilder()
-            .setSrc(photo.getSrc())
-            .setUserId(userId.toString())
-            .setCountry(
-                CountryRequest.newBuilder()
-                    .setCode(photo.getCountry().getCode())
-                    .build()
-            )
-            .setDescription(photo.getDescription())
-            .build())
+        rangifflerPhotoServiceBlockingStub.createPhoto(
+            PhotoRequest.newBuilder()
+                .setSrc(photo.getSrc())
+                .setUserId(userId.toString())
+                .setCountry(
+                    CountryRequest.newBuilder()
+                        .setCode(photo.getCountry().getCode())
+                        .build()
+                )
+                .setDescription(photo.getDescription())
+                .build())
     );
   }
 
@@ -52,6 +54,18 @@ public class GrpcPhotoClient {
             .setDescription(photo.getDescription())
             .build())
     );
+  }
+
+  public PhotoResponse addLike(final PhotoInput input, final UUID userId, String username) {
+    return GrpcCall.execute(() ->
+        rangifflerPhotoServiceBlockingStub.photoLike(
+            LikeRequest.newBuilder()
+                .setUserId(userId.toString())
+                .setUsername(username)
+                .setPhotoId(input.getId())
+                .setRequesterId(input.getLike().getUser())
+                .build()
+        ));
   }
 
   public Boolean deletePhoto(final UUID id, final UUID userId) {

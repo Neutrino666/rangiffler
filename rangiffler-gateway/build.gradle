@@ -12,12 +12,12 @@ generateJava {
             "UserConnection": "graphql.relay.DefaultConnection<User>",
             "PhotoConnection": "graphql.relay.DefaultConnection<Photo>"
     ]
-    schemaPaths = ["${projectDir}/src/main/resources/graphql"] // List of directories containing schema files
+    schemaPaths = ["${projectDir}/src/main/resources/graphql"]
     subPackageNameClient = 'graphqlClient'
     subPackageNameTypes = 'graphqlTypes'
     subPackageNameDatafetchers = 'graphqlDatafetchers'
-    packageName = 'rangiffler' // The package name to use to generate sources
-    generateClientv2 = true // Enable generating the type safe query API
+    packageName = 'rangiffler'
+    generateClientv2 = true
     javaGenerateAllConstructor = true
     trackInputFieldSet = true
 }

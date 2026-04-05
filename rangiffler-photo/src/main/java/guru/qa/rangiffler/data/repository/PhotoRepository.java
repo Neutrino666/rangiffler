@@ -27,5 +27,8 @@ public interface PhotoRepository extends JpaRepository<PhotoEntity, UUID> {
   @Nonnull
   Optional<PhotoEntity> findByIdAndUserId(UUID id, UUID userId);
 
+  @Nonnull
+  Optional<PhotoEntity> findById(UUID id);
+
   void deleteByUserIdAndId(UUID userId, UUID id);
 }

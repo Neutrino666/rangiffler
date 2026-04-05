@@ -4,11 +4,13 @@ import guru.qa.rangiffler.data.PhotoEntity;
 import guru.qa.rangiffler.data.repository.PhotoRepository;
 import guru.qa.rangiffler.ex.PhotoNotFoundException;
 import guru.qa.rangiffler.grpc.FeedRequest;
+import guru.qa.rangiffler.grpc.LikeRequest;
 import guru.qa.rangiffler.grpc.PhotoDeleteRequest;
 import guru.qa.rangiffler.grpc.PhotoRequest;
 import guru.qa.rangiffler.model.PhotoJson;
 import guru.qa.rangiffler.util.StringAsByte;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -65,6 +67,23 @@ public class PhotoService {
   }
 
   @Transactional
+  public PhotoJson updateLike(final LikeRequest like) {
+    if (!like.getUserId().equals(like.getRequesterId())) {
+      UUID userId = UUID.fromString(like.getUserId());
+      List<UUID> ownerWithFriends = grpcUserdataClient.photoAccessUsers(userId, like.getUsername());
+      if (!ownerWithFriends.contains(userId)) {
+        throw new RuntimeException("Photo access denied");
+      }
+    }
+    PhotoEntity photoEntity = photoRepository.findById(UUID.fromString(like.getPhotoId()))
+        .orElseThrow();
+    photoEntity.updateLikes(UUID.fromString(like.getRequesterId()));
+    return PhotoJson.fromEntity(
+        photoRepository.save(photoEntity)
+    );
+  }
+
+  @Transactional
   public boolean delete(final PhotoDeleteRequest request) {
     try {
       photoRepository.deleteByUserIdAndId(
@@ -81,7 +100,9 @@ public class PhotoService {
   public @Nonnull Page<PhotoJson> findAllWithFriends(FeedRequest request, Pageable pageable) {
     final UUID userId = UUID.fromString(request.getUserId());
     final Page<PhotoEntity> photos = request.getWithFriends()
-        ? photoRepository.findAllByUserIdIn(grpcUserdataClient.photoUsers(request), pageable)
+        ? photoRepository.findAllByUserIdIn(
+        grpcUserdataClient.photoAccessUsers(UUID.fromString(request.getUserId()), request.getUsername()),
+        pageable)
         : photoRepository.findAllByUserId(userId, pageable);
     return photos.map(PhotoJson::fromEntity);
   }

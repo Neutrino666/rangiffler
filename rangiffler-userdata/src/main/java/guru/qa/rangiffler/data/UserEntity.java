@@ -37,10 +37,10 @@ public class UserEntity implements Serializable {
   @Column(nullable = false, unique = true)
   private String username;
 
-  @Column(nullable = true)
+  @Column
   private String firstname;
 
-  @Column(nullable = true)
+  @Column
   private String surname;
 
   @Lob

@@ -1,6 +1,5 @@
 package guru.qa.rangiffler.service;
 
-import guru.qa.rangiffler.grpc.FeedRequest;
 import guru.qa.rangiffler.grpc.RangifflerUserdataServiceGrpc;
 import guru.qa.rangiffler.grpc.UsersRequest;
 import java.util.ArrayList;
@@ -19,12 +18,12 @@ public class GrpcUserdataClient {
   private RangifflerUserdataServiceGrpc.RangifflerUserdataServiceBlockingStub rangifflerUserdataServiceStub;
 
   @Nonnull
-  public List<UUID> photoUsers(final FeedRequest request) {
+  public List<UUID> photoAccessUsers(final UUID userId, final String username) {
     List<UUID> result = new ArrayList<>();
-    result.add(UUID.fromString(request.getUserId()));
+    result.add(userId);
     final List<UUID> friends = rangifflerUserdataServiceStub.listFriendsIds(
             UsersRequest.newBuilder()
-                .setUsername(request.getUsername())
+                .setUsername(username)
                 .build()
         )
         .getIdList()

@@ -2,6 +2,8 @@ package guru.qa.rangiffler.service;
 
 import com.google.protobuf.util.Timestamps;
 import guru.qa.rangiffler.grpc.FeedRequest;
+import guru.qa.rangiffler.grpc.Like;
+import guru.qa.rangiffler.grpc.LikeRequest;
 import guru.qa.rangiffler.grpc.PhotoDeleteRequest;
 import guru.qa.rangiffler.grpc.PhotoDeleteResponse;
 import guru.qa.rangiffler.grpc.PhotoPageResponse;
@@ -53,6 +55,13 @@ public class GrpcPhotoService extends RangifflerPhotoServiceGrpc.RangifflerPhoto
   }
 
   @Override
+  public void photoLike(LikeRequest request, StreamObserver<PhotoResponse> responseObserver) {
+    final PhotoJson photo = photoService.updateLike(request);
+    responseObserver.onNext(setPhotoResponse(photo, UUID.fromString(request.getRequesterId())));
+    responseObserver.onCompleted();
+  }
+
+  @Override
   public void deletePhoto(PhotoDeleteRequest request, StreamObserver<PhotoDeleteResponse> responseObserver) {
     final boolean isDeleted = photoService.delete(request);
     responseObserver.onNext(
@@ -79,6 +88,13 @@ public class GrpcPhotoService extends RangifflerPhotoServiceGrpc.RangifflerPhoto
   }
 
   private PhotoResponse setPhotoResponse(final PhotoJson photo, final UUID owner) {
+    List<Like> likes = photo.likes()
+        .stream()
+        .map(l -> Like.newBuilder()
+            .setUserId(l.userId().toString())
+            .build()
+        )
+        .toList();
     return PhotoResponse.newBuilder()
         .setId(photo.id().toString())
         .setCountry(photo.country())
@@ -87,6 +103,7 @@ public class GrpcPhotoService extends RangifflerPhotoServiceGrpc.RangifflerPhoto
         .setUserId(photo.userId().toString())
         .setCreationDate(Timestamps.fromDate(photo.createdDate()))
         .setIsOwner(owner.equals(photo.userId()))
+        .addAllLike(likes)
         .build();
   }
 }
