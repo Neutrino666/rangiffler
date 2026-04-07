@@ -6,12 +6,18 @@ import graphql.schema.SelectedField;
 import guru.qa.rangiffler.ex.TooManySubQueriesException;
 import guru.qa.rangiffler.grpc.FeedRequest;
 import guru.qa.rangiffler.grpc.PhotoPageResponse;
+import guru.qa.rangiffler.grpc.StatRequest;
+import guru.qa.rangiffler.grpc.StatResponse;
 import guru.qa.rangiffler.model.PhotoGqlPage;
+import guru.qa.rangiffler.model.StatGql;
 import guru.qa.rangiffler.service.api.GrpcGeoClient;
 import guru.qa.rangiffler.service.api.GrpcPhotoClient;
+import guru.qa.rangiffler.service.api.GrpcStatClient;
 import guru.qa.rangiffler.service.api.GrpcUserdataClient;
 import jakarta.annotation.Nonnull;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -20,23 +26,26 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
-import rangiffler.graphqlTypes.Country;
 import rangiffler.graphqlTypes.Feed;
 import rangiffler.graphqlTypes.Photo;
 import rangiffler.graphqlTypes.Stat;
 
 @Controller
 @PreAuthorize("isAuthenticated()")
+@NoArgsConstructor(access = AccessLevel.NONE)
 public class FeedQueryController {
 
   private final GrpcPhotoClient grpcPhotoClient;
+  private final GrpcStatClient grpcStatClient;
   private final GrpcUserdataClient userdataClient;
   private final GrpcGeoClient grpcGeoClient;
 
   @Autowired
-  public FeedQueryController(final GrpcPhotoClient grpcPhotoClient, final GrpcUserdataClient userdataClient,
+  public FeedQueryController(final GrpcPhotoClient grpcPhotoClient, GrpcStatClient grpcStatClient,
+      final GrpcUserdataClient userdataClient,
       GrpcGeoClient grpcGeoClient) {
     this.grpcPhotoClient = grpcPhotoClient;
+    this.grpcStatClient = grpcStatClient;
     this.userdataClient = userdataClient;
     this.grpcGeoClient = grpcGeoClient;
   }
@@ -52,34 +61,28 @@ public class FeedQueryController {
     return Feed.newBuilder()
         .withFriends(withFriends)
         .username(principalUsername)
-        .stat(List.of(
-            Stat.newBuilder()
-                .count(1)
-                .country(Country.newBuilder()
-                    .code("ru")
-                    .build())
-                .build()
-        ))
         .build();
   }
 
   @SchemaMapping(typeName = "Feed", field = "stat")
   public List<Stat> stat(
       final @AuthenticationPrincipal Jwt principal,
-      final Feed feed,
-      final @Nonnull DataFetchingEnvironment env) {
-    checkSubQueries(env, "photo", "feed");
+      final Feed feed) {
     final String principalUsername = principal.getClaim("sub");
-    return List.of(
-        Stat.newBuilder()
-            .count(1)
-            .country(
-                Country.newBuilder()
-                    .code("ru")
-                    .build()
-            )
+    final StatResponse stat = grpcStatClient.stat(
+        StatRequest.newBuilder()
+            .setUserId(userdataClient.getCurrentUserId(principalUsername).toString())
+            .setUsername(principalUsername)
+            .setWithFriends(feed.getWithFriends())
             .build()
     );
+    return stat.getStatList().stream()
+        .map(s ->
+            StatGql.fromGrpcStat(
+                s, grpcGeoClient.getCountry(s.getCountry().name().toLowerCase())
+            )
+        )
+        .toList();
   }
 
   @SchemaMapping(typeName = "Feed", field = "photos")

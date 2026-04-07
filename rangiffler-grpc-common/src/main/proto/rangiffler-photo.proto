@@ -14,8 +14,24 @@ service RangifflerPhotoService {
   rpc UpdatePhoto (PhotoRequest) returns(PhotoResponse);
   rpc CreatePhoto (PhotoRequest) returns(PhotoResponse);
   rpc ListPhoto (FeedRequest) returns(PhotoPageResponse);
+  rpc Stat (StatRequest) returns(StatResponse);
   rpc PhotoLike (LikeRequest) returns(PhotoResponse);
   rpc DeletePhoto (PhotoDeleteRequest) returns(PhotoDeleteResponse);
+}
+
+message StatRequest {
+  bool withFriends = 1;
+  string userId = 2;
+  string username = 5;
+}
+
+message StatResponse {
+  repeated CountryStat stat = 1;
+}
+
+message CountryStat {
+  uint32 count = 1;
+  CountryValues country = 2;
 }
 
 message FeedRequest {
@@ -56,7 +72,7 @@ message PhotoResponse {
   string firstname = 3;
   string description = 4;
   google.protobuf.Timestamp creationDate = 5;
-  string country = 6;
+  CountryValues country = 6;
   string userId = 7;
   repeated Like like = 8;
   bool isOwner = 9;

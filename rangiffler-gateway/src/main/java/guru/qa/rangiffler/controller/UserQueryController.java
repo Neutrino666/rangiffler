@@ -8,13 +8,15 @@ import guru.qa.rangiffler.grpc.CountryResponse;
 import guru.qa.rangiffler.grpc.UserPageRequest;
 import guru.qa.rangiffler.grpc.UserPageResponse;
 import guru.qa.rangiffler.grpc.UserResponse;
-import guru.qa.rangiffler.model.UserGql;
-import guru.qa.rangiffler.model.UserGqlPage;
+import guru.qa.rangiffler.model.user.UserGql;
+import guru.qa.rangiffler.model.user.UserGqlPage;
 import guru.qa.rangiffler.service.api.GrpcGeoClient;
 import guru.qa.rangiffler.service.api.GrpcUserdataClient;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -27,6 +29,7 @@ import rangiffler.graphqlTypes.User;
 
 @Controller
 @PreAuthorize("isAuthenticated()")
+@NoArgsConstructor(access = AccessLevel.NONE)
 public class UserQueryController {
 
   private final GrpcUserdataClient grpcUserdataClient;

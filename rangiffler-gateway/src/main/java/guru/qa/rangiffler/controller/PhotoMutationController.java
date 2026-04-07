@@ -7,6 +7,8 @@ import guru.qa.rangiffler.service.api.GrpcPhotoClient;
 import guru.qa.rangiffler.service.api.GrpcUserdataClient;
 import jakarta.validation.Valid;
 import java.util.UUID;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -19,6 +21,7 @@ import rangiffler.graphqlTypes.PhotoInput;
 
 @Controller
 @PreAuthorize("isAuthenticated()")
+@NoArgsConstructor(access = AccessLevel.NONE)
 public class PhotoMutationController {
 
   private final GrpcUserdataClient grpcUserdataClient;

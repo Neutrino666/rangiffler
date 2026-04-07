@@ -1,9 +1,10 @@
-package guru.qa.rangiffler.model;
+package guru.qa.rangiffler.model.user;
 
 import graphql.relay.DefaultConnection;
 import guru.qa.rangiffler.grpc.CountryPageResponse;
 import guru.qa.rangiffler.grpc.CountryResponse;
 import guru.qa.rangiffler.grpc.UserPageResponse;
+import guru.qa.rangiffler.model.PageGql;
 import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
 import lombok.AccessLevel;

@@ -1,14 +1,14 @@
-package guru.qa.rangiffler.model;
+package guru.qa.rangiffler.model.user;
 
 import static guru.qa.rangiffler.grpc.FriendshipStatus.NOT_FRIEND;
 import static guru.qa.rangiffler.grpc.FriendshipStatus.UNRECOGNIZED;
 
 import guru.qa.rangiffler.grpc.CountryResponse;
 import guru.qa.rangiffler.grpc.UserResponse;
+import guru.qa.rangiffler.model.CountryGql;
 import javax.annotation.ParametersAreNonnullByDefault;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import rangiffler.graphqlTypes.Country;
 import rangiffler.graphqlTypes.FriendStatus;
 import rangiffler.graphqlTypes.User;
 
@@ -28,13 +28,7 @@ public final class UserGql {
                 ? null
                 : FriendStatus.valueOf(user.getFriendshipStatus().name())
         )
-        .location(
-            Country.newBuilder()
-                .code(country.getCode())
-                .name(country.getName())
-                .flag(country.getFlag())
-                .build()
-        )
+        .location(CountryGql.fromGrpcCountry(country))
         .build();
   }
 }

@@ -1,4 +1,5 @@
 #!/bin/bash
+# Старт локального окружения: бд / kafka / zookeeper
 
 echo '### Stop and remove containers ###'
 docker stop $(docker ps -a -q)

@@ -7,13 +7,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import rangiffler.graphqlTypes.Country;
 import rangiffler.graphqlTypes.Like;
 import rangiffler.graphqlTypes.Likes;
 import rangiffler.graphqlTypes.Photo;
 
-@NoArgsConstructor(access = AccessLevel.NONE)
 @ParametersAreNonnullByDefault
+@NoArgsConstructor(access = AccessLevel.NONE)
 public final class PhotoGql {
 
   @Nonnull
@@ -23,10 +22,13 @@ public final class PhotoGql {
     final CountryResponse country = allCountries
         .getAllCountriesList()
         .stream()
-        .filter(countryRes -> countryRes.getCode().equals(photo.getCountry().toLowerCase()))
+        .filter(countryRes ->
+            countryRes.getCode()
+                .equals(photo.getCountry().name().toLowerCase())
+        )
         .findFirst()
         .orElseThrow();
-    Likes likesGql = Likes.newBuilder()
+    final Likes likesGql = Likes.newBuilder()
         .total(photo.getLikeCount())
         .likes(photo.getLikeList().stream()
             .map(l -> Like.newBuilder()
@@ -34,15 +36,10 @@ public final class PhotoGql {
                 .build())
             .toList())
         .build();
-    Country countryGql = Country.newBuilder()
-        .code(country.getCode())
-        .name(country.getName())
-        .flag(country.getFlag())
-        .build();
     return Photo.newBuilder()
         .id(photo.getId())
         .src(photo.getSrc())
-        .country(countryGql)
+        .country(CountryGql.fromGrpcCountry(country))
         .description(photo.getDescription())
         .isOwner(photo.getIsOwner())
         .likes(likesGql)

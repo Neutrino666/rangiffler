@@ -28,7 +28,7 @@ public final class PageGql<T> {
   }
 
   public DefaultConnection<T> connection() {
-    List<Edge<T>> edges = edges();
+    final List<Edge<T>> edges = edges();
     return new DefaultConnection<>(
         edges,
         pageInfo(edges)
@@ -37,10 +37,12 @@ public final class PageGql<T> {
 
   private List<Edge<T>> edges() {
     return IntStream.range(0, data.size())
-        .mapToObj(idx -> new DefaultEdge<>(
-            data.get(idx),
-            new DefaultConnectionCursor(String.valueOf(idx))
-        ))
+        .mapToObj(i ->
+            new DefaultEdge<>(
+                data.get(i),
+                new DefaultConnectionCursor(String.valueOf(i))
+            )
+        )
         .collect(Collectors.toList());
   }
 
