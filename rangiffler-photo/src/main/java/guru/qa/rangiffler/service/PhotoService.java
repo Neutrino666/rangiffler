@@ -1,5 +1,6 @@
 package guru.qa.rangiffler.service;
 
+import guru.qa.rangiffler.data.CountryValues;
 import guru.qa.rangiffler.data.PhotoEntity;
 import guru.qa.rangiffler.data.repository.PhotoRepository;
 import guru.qa.rangiffler.ex.PhotoNotFoundException;
@@ -14,7 +15,8 @@ import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import lombok.extern.slf4j.Slf4j;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -22,9 +24,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
 @Component
 @ParametersAreNonnullByDefault
+@NoArgsConstructor(access = AccessLevel.NONE)
 public class PhotoService {
 
   private final PhotoRepository photoRepository;
@@ -38,9 +40,9 @@ public class PhotoService {
 
   @Transactional
   public @Nonnull PhotoJson save(final PhotoRequest photo) {
-    PhotoEntity photoEntity = new PhotoEntity();
+    final PhotoEntity photoEntity = new PhotoEntity();
     photoEntity.setUserId(UUID.fromString(photo.getUserId()));
-    photoEntity.setCountry(photo.getCountry().getCode());
+    photoEntity.setCountry(CountryValues.valueOf(photo.getCountry().getCode().toUpperCase()));
     photoEntity.setDescription(photo.getDescription());
     photoEntity.setPhoto(new StringAsByte(photo.getSrc()).bytes());
     photoEntity.setCreatedDate(new Date());
@@ -58,7 +60,7 @@ public class PhotoService {
         .map(photoEntity -> {
           photoEntity.setDescription(photo.getDescription());
           photoEntity.setPhoto(new StringAsByte(photo.getSrc()).bytes());
-          photoEntity.setCountry(photo.getCountry().getCode());
+          photoEntity.setCountry(CountryValues.valueOf(photo.getCountry().getCode().toUpperCase()));
           return PhotoJson.fromEntity(photoRepository.save(photoEntity));
         })
         .orElseThrow(
@@ -69,13 +71,13 @@ public class PhotoService {
   @Transactional
   public PhotoJson updateLike(final LikeRequest like) {
     if (!like.getUserId().equals(like.getRequesterId())) {
-      UUID userId = UUID.fromString(like.getUserId());
-      List<UUID> ownerWithFriends = grpcUserdataClient.photoAccessUsers(userId, like.getUsername());
+      final UUID userId = UUID.fromString(like.getUserId());
+      final List<UUID> ownerWithFriends = grpcUserdataClient.photoAccessUsers(userId, like.getUsername());
       if (!ownerWithFriends.contains(userId)) {
         throw new RuntimeException("Photo access denied");
       }
     }
-    PhotoEntity photoEntity = photoRepository.findById(UUID.fromString(like.getPhotoId()))
+    final PhotoEntity photoEntity = photoRepository.findById(UUID.fromString(like.getPhotoId()))
         .orElseThrow();
     photoEntity.updateLikes(UUID.fromString(like.getRequesterId()));
     return PhotoJson.fromEntity(

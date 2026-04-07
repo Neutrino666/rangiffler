@@ -1,4 +1,4 @@
-package guru.qa.rangiffler.model;
+package guru.qa.rangiffler.model.user;
 
 import guru.qa.rangiffler.grpc.UserRequest;
 import guru.qa.rangiffler.grpc.UserRequest.Builder;

@@ -1,5 +1,6 @@
 package guru.qa.rangiffler.model;
 
+import guru.qa.rangiffler.data.CountryValues;
 import guru.qa.rangiffler.data.PhotoEntity;
 import guru.qa.rangiffler.util.ByteAsString;
 import java.util.Date;
@@ -11,7 +12,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public record PhotoJson(
     UUID id,
     UUID userId,
-    String country,
+    CountryValues country,
     String description,
     String photo,
     Date createdDate,

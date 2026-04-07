@@ -24,8 +24,8 @@ import org.hibernate.proxy.HibernateProxy;
 @Getter
 @Setter
 @Entity
-@ParametersAreNonnullByDefault
 @Table(name = "photo")
+@ParametersAreNonnullByDefault
 public class PhotoEntity implements Serializable {
 
   @Id
@@ -37,7 +37,7 @@ public class PhotoEntity implements Serializable {
   private UUID userId;
 
   @Column(nullable = false)
-  private String country;
+  private CountryValues country;
 
   @Column(unique = true)
   private String description;
@@ -86,8 +86,9 @@ public class PhotoEntity implements Serializable {
 
   @Override
   public final int hashCode() {
-    return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass()
-        .hashCode() : getClass().hashCode();
+    return this instanceof HibernateProxy
+        ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode()
+        : getClass().hashCode();
   }
 
   private boolean removeIfExist(UUID userId) {

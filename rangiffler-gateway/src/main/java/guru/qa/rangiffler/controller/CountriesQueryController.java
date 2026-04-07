@@ -1,8 +1,11 @@
 package guru.qa.rangiffler.controller;
 
 import guru.qa.rangiffler.grpc.CountryPageResponse;
+import guru.qa.rangiffler.model.CountryGql;
 import guru.qa.rangiffler.service.api.GrpcGeoClient;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,6 +14,7 @@ import rangiffler.graphqlTypes.Country;
 
 @Controller
 @PreAuthorize("isAuthenticated()")
+@NoArgsConstructor(access = AccessLevel.NONE)
 public class CountriesQueryController {
 
   private final GrpcGeoClient grpcGeoClient;
@@ -25,12 +29,7 @@ public class CountriesQueryController {
     final CountryPageResponse countries = grpcGeoClient.getCountries();
     return countries.getAllCountriesList()
         .stream()
-        .map(c ->
-            Country.newBuilder()
-                .code(c.getCode())
-                .name(c.getName())
-                .flag(c.getFlag())
-                .build())
+        .map(CountryGql::fromGrpcCountry)
         .toList();
   }
 }
