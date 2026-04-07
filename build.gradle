@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.github.ben-manes.versions' version '0.52.0'
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
@@ -44,9 +45,29 @@ subprojects {
                 : "amd64"
     }
 
-    dependencyManagement {
-        imports {
-            mavenBom "org.springframework.boot:spring-boot-dependencies:3.5.8"
+    tasks.withType(Test).configureEach {
+        options {
+            systemProperties(System.getProperties())
+        }
+        testLogging {
+            showStandardStreams = true
+            exceptionFormat = 'full'
+        }
+        useJUnitPlatform()
+    }
+}
+
+dependencyUpdates {
+    resolutionStrategy {
+        componentSelection {
+            all { ComponentSelection selection ->
+                boolean isUnstable = ['alpha', 'beta', 'rc', 'm', 'snapshot'].any { keyword ->
+                    selection.candidate.version.toLowerCase().contains(keyword)
+                }
+                if (isUnstable) {
+                    selection.reject("Unstable version: ${selection.candidate.version}")
+                }
+            }
         }
     }
 }

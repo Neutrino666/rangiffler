@@ -1,0 +1,27 @@
+{
+  "chrome": {
+    "default": "145.0",
+    "versions": {
+      "145.0": {
+        "image": "twilio/selenoid:chrome_stable_145",
+        "port": "4444",
+        "tmpfs": {
+          "/tmp": "size=512m"
+        }
+      }
+    }
+  },
+  "firefox": {
+    "default": "148.0",
+    "versions": {
+      "148.0": {
+        "image": "twilio/selenoid:firefox_stable_148",
+        "port": "4444",
+        "path": "/wd/hub",
+        "tmpfs": {
+          "/tmp": "size=512m"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,3 @@
+guru.qa.rangiffler.jupiter.extension.CookieExtension
+guru.qa.rangiffler.jupiter.extension.TestMethodContextExtension
+guru.qa.rangiffler.jupiter.extension.AllureDockerExtension
