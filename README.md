@@ -89,7 +89,7 @@ server started
   chmod +x init-database.sh
 ```
 
-# Запуск Rangiffler локального тестового окружения 'Selenoid / Allure-docker-server' в докере:
+# Запуск локального тестового окружения 'Selenoid / Allure-docker-server' в докере:
 ```sh
   bash docker-compose-tests-local-env.sh # MacOs
 ```
