@@ -10,10 +10,8 @@
 [Инструкция](https://docs.docker.com/docker-hub/access-tokens/).
 
 #### 3. Выполнить docker login с созданным access_token (в инструкции это описано)
-
-#### 4. Прописать в etc/hosts элиас для Docker-имени
-```posh
-User-MacBook-Pro rangiffler % vi /etc/hosts
+```sh
+  vi /etc/hosts # MacOs
 ```
 
 ```posh
@@ -30,14 +28,14 @@ User-MacBook-Pro rangiffler % vi /etc/hosts
 
 #### 5. Перейти в корневой каталог проекта
 
-```posh
-User-MacBook-Pro rangiffler % cd rangiffler
+```sh
+  cd rangiffler # MacOs
 ```
 
 #### 6. Запустить все сервисы
 
-```posh
-User-MacBook-Pro  rangiffler % bash docker-compose-dev.sh
+```sh
+  bash docker-compose-dev.sh # MacOs
 ```
 
 Текущая версия `docker-compose-dev.sh` **удалит все запущенные Docker контейнеры в системе**, поэтому если у вас есть
@@ -63,7 +61,7 @@ Build to Docker daemon failed, perhaps you should make sure your credentials for
 `$USER/.docker/config.json`
 с содержимым,
 
-```
+```json
  {
         "auths": {
                 "https://index.docker.io/v1/": {}
@@ -79,14 +77,19 @@ Build to Docker daemon failed, perhaps you should make sure your credentials for
 
 3. **Если вы используете Windows и контейнер с БД не стартует с ошибкой в логе:**
 
-```
+```posh
 server started
 /usr/local/bin/docker-entrypoint.sh: running /docker-entrypoint-initdb.d/init-database.sh
 /usr/local/bin/docker-entrypoint.sh: /docker-entrypoint-initdb.d/init-database.sh: /bin/bash^M: bad interpreter: No such file or directory
 ```
 
 То необходимо выполнить следующие команды в каталоге **/mysql** :
-```posh
-sed -i -e 's/\r$//' init-database.sh
-chmod +x init-database.sh
+```sh
+  sed -i -e 's/\r$//' init-database.sh # MacOs
+  chmod +x init-database.sh
+```
+
+# Запуск Rangiffler локального тестового окружения 'Selenoid / Allure-docker-server' в докере:
+```sh
+  bash docker-compose-tests-local-env.sh # MacOs
 ```

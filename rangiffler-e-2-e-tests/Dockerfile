@@ -1,6 +1,6 @@
 FROM gradle:8.14-jdk21
 
-WORKDIR /rangiffler
+WORKDIR /home/gradle/rangiffler
 ENV TZ=Europe/Moscow
 COPY ./gradle ./gradle
 COPY ./rangiffler-e-2-e-tests ./rangiffler-e-2-e-tests
@@ -11,4 +11,4 @@ COPY ./build.gradle ./
 COPY ./settings.gradle ./
 COPY ./gradle.properties ./
 
-CMD gradle test -Dtest.env=docker -Dclient.impl=api -Drepository=jpa -Duser.timezone=Europe/Moscow
+CMD gradle test -Dtest.env=docker -Duser.timezone=Europe/Moscow
