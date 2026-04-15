@@ -36,6 +36,7 @@ subprojects {
         grpcVersion = '1.75.0'
         springKafkaVersion = '3.3.10'
         springVaultVersion = '4.3.0'
+        assertjVersion = '3.27.6'
 
         dockerImage = System.getProperty("os.arch") == "aarch64" || System.getProperty("os.arch") == "arm64"
                 ? "arm64v8/eclipse-temurin:21-jdk"
