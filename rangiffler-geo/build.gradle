@@ -1,6 +1,7 @@
 plugins {
     id 'org.springframework.boot' version '3.5.5'
     id 'com.google.cloud.tools.jib' version '3.4.1'
+    id 'com.google.protobuf' version '0.9.4'
 }
 
 group = 'guru.qa'
@@ -25,6 +26,9 @@ dependencies {
     runtimeOnly "mysql:mysql-connector-java:${project.ext.mysqlDriverVersion}"
     annotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
     compileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
+    // test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation "org.assertj:assertj-core:${project.ext.assertjVersion}"
 }
 
 jib {

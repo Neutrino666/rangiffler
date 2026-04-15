@@ -2,7 +2,7 @@ package guru.qa.rangiffler.service;
 
 import com.google.protobuf.Empty;
 import guru.qa.rangiffler.data.CountryEntity;
-import guru.qa.rangiffler.data.repository.CountryRepository;
+import guru.qa.rangiffler.ex.SameCountryException;
 import guru.qa.rangiffler.grpc.CountryPageResponse;
 import guru.qa.rangiffler.grpc.CountryRequest;
 import guru.qa.rangiffler.grpc.CountryResponse;
@@ -16,11 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 @GrpcService
 public class GrpcGeoService extends RangifflerGeoServiceGrpc.RangifflerGeoServiceImplBase {
 
-  private final CountryRepository countryRepository;
+  private final GeoService geoService;
 
   @Autowired
-  public GrpcGeoService(CountryRepository countryRepository) {
-    this.countryRepository = countryRepository;
+  public GrpcGeoService(GeoService geoService) {
+    this.geoService = geoService;
   }
 
   @Override
@@ -28,7 +28,7 @@ public class GrpcGeoService extends RangifflerGeoServiceGrpc.RangifflerGeoServic
   public void getCountries(Empty request, StreamObserver<CountryPageResponse> responseObserver) {
     CountryPageResponse response = CountryPageResponse.newBuilder()
         .addAllAllCountries(
-            countryRepository.findAll().stream()
+            geoService.countries().stream()
                 .map(this::countryFromEntity)
                 .toList()
         )
@@ -39,9 +39,9 @@ public class GrpcGeoService extends RangifflerGeoServiceGrpc.RangifflerGeoServic
 
   @Override
   public void getCountry(CountryRequest request, StreamObserver<CountryResponse> responseObserver) {
-    CountryResponse response = countryRepository.findByCode(request.getCode())
+    CountryResponse response = geoService.getCountry(request.getCode())
         .map(this::countryFromEntity)
-        .orElseThrow();
+        .orElseThrow(() -> new SameCountryException(request.getCode()));
     responseObserver.onNext(response);
     responseObserver.onCompleted();
   }
