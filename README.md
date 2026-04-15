@@ -93,3 +93,6 @@ server started
 ```sh
   bash docker-compose-tests-local-env.sh # MacOs
 ```
+UI будет доступен по ссылке
+- Selenoid UI http://127.0.0.1:9091/#/
+- Allure UI http://127.0.0.1:5252/

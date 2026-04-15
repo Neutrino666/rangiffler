@@ -4,7 +4,6 @@ export PROFILE=docker
 export PREFIX="${IMAGE_PREFIX}"
 export ARCH=$(uname -m)
 
-docker compose down
 docker_containers=$(docker ps -a --format '{{.Names}}' | grep -E 'allure|selenoid')
 
 if [ ! -z "$docker_containers" ]; then
