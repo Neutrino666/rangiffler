@@ -1,8 +1,8 @@
 package guru.qa.rangiffler.service.impl;
 
+import guru.qa.rangiffler.api.AllureDockerApi;
 import guru.qa.rangiffler.model.allure.AllureProject;
 import guru.qa.rangiffler.model.allure.AllureResults;
-import guru.qa.rangiffler.api.AllureDockerApi;
 import guru.qa.rangiffler.service.RestClient;
 import java.io.IOException;
 import javax.annotation.ParametersAreNonnullByDefault;

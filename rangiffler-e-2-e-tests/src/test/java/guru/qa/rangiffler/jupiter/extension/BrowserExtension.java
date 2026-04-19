@@ -33,7 +33,7 @@ public final class BrowserExtension implements
     BROWSER = System.getenv("BROWSER") == null ? "chrome" : System.getenv("BROWSER");
     Configuration.browser = BROWSER;
     Configuration.timeout = 8000;
-//    Configuration.pageLoadStrategy = "eager";
+    Configuration.pageLoadStrategy = "eager";
     boolean isRemote = "docker".equals(System.getProperty("test.env"));
     if (isRemote) {
       Configuration.remote = "http://selenoid:4444/wd/hub";
@@ -42,7 +42,8 @@ public final class BrowserExtension implements
       Configuration.browserVersion = "145" + (isRemote ? ".0" : "");
       Configuration.browserCapabilities = new ChromeOptions()
           .addArguments("--no-sandbox")
-          .addArguments("--accept-lang=en_US");
+          .addArguments("--accept-lang=en_US")
+          .addArguments("--disable-web-security");
     } else if (BROWSER.equals("firefox")) {
       Configuration.browserVersion = "148" + (isRemote ? ".0" : "");
       Configuration.browserCapabilities = new FirefoxOptions()
