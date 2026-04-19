@@ -1,10 +1,10 @@
 package guru.qa.rangiffler.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import guru.qa.rangiffler.model.allure.AllureProject;
 import guru.qa.rangiffler.model.allure.AllureResults;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;

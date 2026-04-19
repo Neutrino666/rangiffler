@@ -22,6 +22,12 @@
 - [Gradle 9.0](https://docs.gradle.org/9.0.0/release-notes.html)
 - И многие другие
 
+### Команды bash можно запускать из документации
+.sh файлы имеют документацию **-h** (help). Пример:
+```posh
+bash some-script.sh -h
+```
+
 # Запуск Rangiffler в докере:
 
 #### 1. Создать бесплатную учетную запись на https://hub.docker.com/ (если отсутствует)
@@ -117,3 +123,36 @@ server started
 UI будет доступен по ссылке
 - Selenoid UI http://127.0.0.1:9091/#/
 - Allure UI http://127.0.0.1:5252/
+# Запуск e-2-e тестов в Docker network изолированно Rangiffler в докере:
+
+#### 1. Перейти в корневой каталог проекта
+
+```sh
+  cd rangiffler # MacOs
+```
+
+#### 2. Запустить все сервисы и тесты:
+
+```sh
+  bash docker-compose-e2e.sh # MacOs
+```
+
+#### 3. Selenoid UI доступен по адресу: http://localhost:9090/
+
+#### 5. Allure-ui доступен по адресу: http://localhost:5252/
+
+#### 4. Allure report доступен по адресу: http://localhost:5050/allure-docker-service/projects/niffler-ng/reports/latest/index.html
+
+<img src="/rangiffler-gql-client/src/assets/deer-logo.svg" width="250">
+
+# Готовность диплома
+#### 1. BE - готов для проверки
+#### 2. Unit тесты - не готовы
+#### 3. GraphQL тесты - не готовы
+#### 4. UI тесты - не готовы
+
+# Что хотелось бы реализовать но не хватило времени?
+#### 1. Хранение фото в MinIO
+#### 2. Кафка фото и лайки
+#### 3. Github actions
+#### 4. Prod deploy

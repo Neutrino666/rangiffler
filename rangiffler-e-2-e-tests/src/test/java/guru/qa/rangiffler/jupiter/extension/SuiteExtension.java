@@ -1,9 +1,8 @@
 package guru.qa.rangiffler.jupiter.extension;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public interface SuiteExtension extends BeforeAllCallback {

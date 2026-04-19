@@ -3,6 +3,7 @@ source ./docker.properties
 export COMPOSE_PROFILES=dev
 export PROFILE=docker
 export PREFIX="${IMAGE_PREFIX}"
+export ARCH=$(uname -m)
 
 docker compose down
 docker_containers=$(docker ps -a -q)
@@ -11,7 +12,7 @@ fast=false
 
 usage() {
   cat <<EOF
-Скрипт поднятия окружения и прогона тестов в docker compose.
+Скрипт поднятия Rangiffler в docker compose.
 
 Examples:
 ${0##*/} [-f]

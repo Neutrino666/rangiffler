@@ -19,7 +19,6 @@ enum DockerConfig implements Config {
     return "http://auth.rangiffler.dc:9000/";
   }
 
-
   @Nonnull
   @Override
   public String gatewayUrl() {
