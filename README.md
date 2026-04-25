@@ -22,13 +22,16 @@
 - [Gradle 9.0](https://docs.gradle.org/9.0.0/release-notes.html)
 - И многие другие
 
-### Команды bash можно запускать из документации
-.sh файлы имеют документацию **-h** (help). Пример:
-```posh
-bash some-script.sh -h
-```
-
 # Запуск Rangiffler в докере:
+
+#### 0. Докер bash скрипты
+- можно запускать из документации README.md
+- имеют документацию **-h** (help).
+
+Пример вызова документации:
+```sh
+  bash some-docker-script.sh -h
+```
 
 #### 1. Создать бесплатную учетную запись на https://hub.docker.com/ (если отсутствует)
 
@@ -89,11 +92,11 @@ Build to Docker daemon failed, perhaps you should make sure your credentials for
 с содержимым,
 
 ```json
- {
-        "auths": {
-                "https://index.docker.io/v1/": {}
-        },
-        "currentContext": "desktop-linux"
+{
+    "auths": {
+        "https://index.docker.io/v1/": {}
+    },
+    "currentContext": "desktop-linux"
 }
 ```
 

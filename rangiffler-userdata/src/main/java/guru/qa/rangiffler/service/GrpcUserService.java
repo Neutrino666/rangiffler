@@ -23,12 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class GrpcUserService extends RangifflerUserdataServiceGrpc.RangifflerUserdataServiceImplBase {
 
   private final UserService userService;
-  public final GrpcGeoClient grpcGeoClient;
 
   @Autowired
-  public GrpcUserService(UserService userService, GrpcGeoClient grpcGeoClient) {
+  public GrpcUserService(UserService userService) {
     this.userService = userService;
-    this.grpcGeoClient = grpcGeoClient;
   }
 
   @Override

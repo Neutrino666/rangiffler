@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ParametersAreNonnullByDefault
-public final class GrpcGeoClient {
+public class GrpcGeoClient {
 
   private static final Empty EMPTY = Empty.getDefaultInstance();
 

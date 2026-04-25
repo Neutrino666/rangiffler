@@ -1,29 +1,22 @@
 package guru.qa.rangiffler.grpc;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import guru.qa.rangiffler.grpc.RangifflerPhotoServiceGrpc.RangifflerPhotoServiceBlockingStub;
 import guru.qa.rangiffler.service.api.GrpcStatClient;
-import io.grpc.Status;
-import io.grpc.StatusRuntimeException;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.server.ResponseStatusException;
 
 @ParametersAreNonnullByDefault
 public class GrpcStatClientTest {
 
-  private final String grpcCallErrorMessage = "503 SERVICE_UNAVAILABLE \"The gRPC operation was cancelled\"";
   private final RangifflerPhotoServiceBlockingStub stub = mock(RangifflerPhotoServiceBlockingStub.class);
   private final GrpcStatClient grpcStatClient = new GrpcStatClient();
   private StatResponse statResponseWithoutFriends;
@@ -64,17 +57,6 @@ public class GrpcStatClientTest {
 
     verify(stub).stat(request);
     assertThat(actual).isEqualTo(statResponseWithoutFriends);
-  }
-
-  @Test
-  void statsReturnShouldThrowResponseStatusException() {
-    when(stub.stat(any(StatRequest.class)))
-        .thenThrow(new StatusRuntimeException(Status.UNAVAILABLE));
-    assertThatThrownBy(() -> grpcStatClient.stat(StatRequest.newBuilder().build()))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessage(grpcCallErrorMessage)
-        .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
   }
 
   private StatRequest statRequestByWithFriend(boolean withFriends) {

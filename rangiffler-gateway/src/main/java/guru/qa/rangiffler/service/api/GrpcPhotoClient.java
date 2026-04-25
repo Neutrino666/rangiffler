@@ -19,7 +19,7 @@ import rangiffler.graphqlTypes.PhotoInput;
 @Slf4j
 @Component
 @ParametersAreNonnullByDefault
-public final class GrpcPhotoClient {
+public class GrpcPhotoClient {
 
   @GrpcClient("grpcPhotoClient")
   private RangifflerPhotoServiceGrpc.RangifflerPhotoServiceBlockingStub stub;

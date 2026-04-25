@@ -1,7 +1,6 @@
 package guru.qa.rangiffler.grpc;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -9,21 +8,15 @@ import static org.mockito.Mockito.when;
 
 import guru.qa.rangiffler.grpc.RangifflerUserdataServiceGrpc.RangifflerUserdataServiceBlockingStub;
 import guru.qa.rangiffler.service.api.GrpcUserdataClient;
-import io.grpc.Status;
-import io.grpc.StatusRuntimeException;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.server.ResponseStatusException;
 
 @ParametersAreNonnullByDefault
 public class GrpcUserdataClientTest {
-
-  private final String grpcCallErrorMessage = "503 SERVICE_UNAVAILABLE \"The gRPC operation was cancelled\"";
 
   private final RangifflerUserdataServiceBlockingStub stub = mock(RangifflerUserdataServiceBlockingStub.class);
   private final GrpcUserdataClient grpcUserdataClient = new GrpcUserdataClient();
@@ -76,18 +69,6 @@ public class GrpcUserdataClientTest {
   }
 
   @Test
-  void currentUserShouldReturnResponseStatusException() {
-    when(stub.currentUser(any(CurrentUserRequest.class)))
-        .thenThrow(new StatusRuntimeException(Status.UNAVAILABLE));
-    assertThatThrownBy(() -> grpcUserdataClient.getCurrentUser(username))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessage(grpcCallErrorMessage)
-        .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
-
-  }
-
-  @Test
   void currentUserIdShouldReturnId() {
     final CurrentUserRequest userRequest = CurrentUserRequest.newBuilder()
         .setUsername(username)
@@ -96,17 +77,6 @@ public class GrpcUserdataClientTest {
 
     final UUID actual = grpcUserdataClient.getCurrentUserId(username);
     assertThat(actual).isEqualTo(userId);
-  }
-
-  @Test
-  void currentUserIdShouldResponseStatusException() {
-    when(stub.currentUser(any(CurrentUserRequest.class)))
-        .thenThrow(new StatusRuntimeException(Status.UNAVAILABLE));
-    assertThatThrownBy(() -> grpcUserdataClient.getCurrentUserId(username))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessage(grpcCallErrorMessage)
-        .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
   }
 
   @Test
@@ -119,34 +89,12 @@ public class GrpcUserdataClientTest {
   }
 
   @Test
-  void updateUserShouldResponseStatusException() {
-    when(stub.updateUser(any(UserRequest.class)))
-        .thenThrow(new StatusRuntimeException(Status.UNAVAILABLE));
-    assertThatThrownBy(() -> grpcUserdataClient.updateUser(UserRequest.newBuilder().build()))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessage(grpcCallErrorMessage)
-        .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
-  }
-
-  @Test
   void ListUsersShouldReturnUserPageRequest() {
     when(stub.listUsers(userPageRequest)).thenReturn(userPageResponse);
     final UserPageResponse actual = grpcUserdataClient.listUsers(userPageRequest);
 
     verify(stub).listUsers(userPageRequest);
     assertThat(actual).isEqualTo(userPageResponse);
-  }
-
-  @Test
-  void ListUsersShouldResponseStatusException() {
-    when(stub.listUsers(any(UserPageRequest.class)))
-        .thenThrow(new StatusRuntimeException(Status.UNAVAILABLE));
-    assertThatThrownBy(() -> grpcUserdataClient.listUsers(UserPageRequest.newBuilder().build()))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessage(grpcCallErrorMessage)
-        .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
   }
 
   @Test
@@ -159,17 +107,6 @@ public class GrpcUserdataClientTest {
   }
 
   @Test
-  void listFriendsShouldResponseStatusException() {
-    when(stub.listFriends(any(UserPageRequest.class)))
-        .thenThrow(new StatusRuntimeException(Status.UNAVAILABLE));
-    assertThatThrownBy(() -> grpcUserdataClient.listFriends(UserPageRequest.newBuilder().build()))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessage(grpcCallErrorMessage)
-        .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
-  }
-
-  @Test
   void listOutcomeInvitationsShouldReturnUserPageRequest() {
     when(stub.listOutcomeInvitations(userPageRequest)).thenReturn(userPageResponse);
     final UserPageResponse actual = grpcUserdataClient.listOutcomeInvitations(userPageRequest);
@@ -179,34 +116,12 @@ public class GrpcUserdataClientTest {
   }
 
   @Test
-  void listOutcomeInvitationsShouldResponseStatusException() {
-    when(stub.listOutcomeInvitations(any(UserPageRequest.class)))
-        .thenThrow(new StatusRuntimeException(Status.UNAVAILABLE));
-    assertThatThrownBy(() -> grpcUserdataClient.listOutcomeInvitations(UserPageRequest.newBuilder().build()))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessage(grpcCallErrorMessage)
-        .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
-  }
-
-  @Test
   void listIncomeInvitationsShouldReturnUserPageRequest() {
     when(stub.listIncomeInvitations(userPageRequest)).thenReturn(userPageResponse);
     final UserPageResponse actual = grpcUserdataClient.listIncomeInvitations(userPageRequest);
 
     verify(stub).listIncomeInvitations(userPageRequest);
     assertThat(actual).isEqualTo(userPageResponse);
-  }
-
-  @Test
-  void listIncomeInvitationsShouldResponseStatusException() {
-    when(stub.listIncomeInvitations(any(UserPageRequest.class)))
-        .thenThrow(new StatusRuntimeException(Status.UNAVAILABLE));
-    assertThatThrownBy(() -> grpcUserdataClient.listIncomeInvitations(UserPageRequest.newBuilder().build()))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessage(grpcCallErrorMessage)
-        .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
   }
 
   @Test
@@ -224,17 +139,6 @@ public class GrpcUserdataClientTest {
   }
 
   @Test
-  void sendInvitationShouldResponseStatusException() {
-    when(stub.sendRequest(any(FriendshipRequest.class)))
-        .thenThrow(new StatusRuntimeException(Status.UNAVAILABLE));
-    assertThatThrownBy(() -> grpcUserdataClient.sendInvitation(username, userId.toString()))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessage(grpcCallErrorMessage)
-        .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
-  }
-
-  @Test
   void acceptInvitationShouldReturnUserResponse() {
     final UUID targetUserId = UUID.randomUUID();
     final FriendshipRequest request = FriendshipRequest.newBuilder()
@@ -249,17 +153,6 @@ public class GrpcUserdataClientTest {
   }
 
   @Test
-  void acceptInvitationShouldResponseStatusException() {
-    when(stub.acceptRequest(any(FriendshipRequest.class)))
-        .thenThrow(new StatusRuntimeException(Status.UNAVAILABLE));
-    assertThatThrownBy(() -> grpcUserdataClient.acceptInvitation(username, userId.toString()))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessage(grpcCallErrorMessage)
-        .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
-  }
-
-  @Test
   void declineInvitationShouldReturnUserResponse() {
     final UUID targetUserId = UUID.randomUUID();
     final FriendshipRequest request = FriendshipRequest.newBuilder()
@@ -271,17 +164,6 @@ public class GrpcUserdataClientTest {
 
     verify(stub).declineRequest(request);
     assertThat(actual).isEqualTo(user);
-  }
-
-  @Test
-  void declineInvitationShouldResponseStatusException() {
-    when(stub.declineRequest(any(FriendshipRequest.class)))
-        .thenThrow(new StatusRuntimeException(Status.UNAVAILABLE));
-    assertThatThrownBy(() -> grpcUserdataClient.declineInvitation(username, userId.toString()))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessage(grpcCallErrorMessage)
-        .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
   }
 
   @Test

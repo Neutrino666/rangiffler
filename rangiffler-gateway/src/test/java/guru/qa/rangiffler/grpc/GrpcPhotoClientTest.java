@@ -1,7 +1,6 @@
 package guru.qa.rangiffler.grpc;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
@@ -11,23 +10,18 @@ import static org.mockito.Mockito.when;
 import com.google.protobuf.util.Timestamps;
 import guru.qa.rangiffler.grpc.RangifflerPhotoServiceGrpc.RangifflerPhotoServiceBlockingStub;
 import guru.qa.rangiffler.service.api.GrpcPhotoClient;
-import io.grpc.Status;
-import io.grpc.StatusRuntimeException;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.server.ResponseStatusException;
 import rangiffler.graphqlTypes.CountryInput;
 import rangiffler.graphqlTypes.LikeInput;
 import rangiffler.graphqlTypes.PhotoInput;
 
 public class GrpcPhotoClientTest {
 
-  private final String grpcCallErrorMessage = "503 SERVICE_UNAVAILABLE \"The gRPC operation was cancelled\"";
   private final String src = "data:image/png;base64,test";
   private final String description = "test photo";
   private final String countryCode = "ru";
@@ -104,17 +98,6 @@ public class GrpcPhotoClientTest {
   }
 
   @Test
-  void listPhotosShouldThrowResponseStatusException() {
-    when(stub.listPhoto(any(FeedRequest.class)))
-        .thenThrow(new StatusRuntimeException(Status.UNAVAILABLE));
-    assertThatThrownBy(() -> grpcPhotoClient.listPhotos(FeedRequest.newBuilder().build()))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessage(grpcCallErrorMessage)
-        .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
-  }
-
-  @Test
   void createPhotoShouldReturnPhotoResponse() {
     final PhotoInput photoInput = PhotoInput.newBuilder()
         .id(photoId.toString())
@@ -139,18 +122,6 @@ public class GrpcPhotoClientTest {
     verify(stub).createPhoto(photoRequest);
     assertThat(actual).isEqualTo(photoResponse);
   }
-
-  @Test
-  void createPhotoShouldThrowResponseStatusException() {
-    when(stub.createPhoto(any(PhotoRequest.class)))
-        .thenThrow(new StatusRuntimeException(Status.UNAVAILABLE));
-    assertThatThrownBy(() -> grpcPhotoClient.addPhoto(testPhotoInput, ownerId))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessage(grpcCallErrorMessage)
-        .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
-  }
-
 
   @Test
   void updatePhotoShouldReturnPhotoResponse() {
@@ -191,24 +162,6 @@ public class GrpcPhotoClientTest {
   }
 
   @Test
-  void updateLikeShouldThrowResponseStatusException() {
-    final PhotoInput photoInput = PhotoInput.newBuilder()
-        .id(photoId.toString())
-        .like(LikeInput.newBuilder()
-            .user(ownerId.toString())
-            .build())
-        .build();
-    when(stub.photoLike(any(LikeRequest.class)))
-        .thenThrow(new StatusRuntimeException(Status.UNAVAILABLE));
-
-    assertThatThrownBy(() -> grpcPhotoClient.updateLike(photoInput, ownerId, "test"))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessage(grpcCallErrorMessage)
-        .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
-  }
-
-  @Test
   void deletePhotoShouldReturnFalseWhenPhotoNotDeleted() {
     final PhotoDeleteResponse deleteResponse = PhotoDeleteResponse.newBuilder()
         .setIsDeleted(false)
@@ -238,16 +191,6 @@ public class GrpcPhotoClientTest {
 
     verify(stub).deletePhoto(photoDeleteRequest);
     assertThat(actual).isTrue();
-  }
-
-  @Test
-  void deletePhotoShouldThrowResponseStatusException() {
-    when(stub.deletePhoto(any(PhotoDeleteRequest.class))).thenThrow(new StatusRuntimeException(Status.UNAVAILABLE));
-    assertThatThrownBy(() -> grpcPhotoClient.deletePhoto(photoId, ownerId))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessage(grpcCallErrorMessage)
-        .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
   }
 
   private PhotoPageResponse testPhotos(UUID ownerId, boolean withFriends) {

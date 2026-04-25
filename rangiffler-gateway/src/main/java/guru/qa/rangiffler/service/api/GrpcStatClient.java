@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 @ParametersAreNonnullByDefault
 @NoArgsConstructor(access = AccessLevel.NONE)
-public final class GrpcStatClient {
+public class GrpcStatClient {
 
   @GrpcClient("grpcPhotoClient")
   private RangifflerPhotoServiceGrpc.RangifflerPhotoServiceBlockingStub stub;
