@@ -14,7 +14,7 @@ public class NoWhitespaceValidatorTest {
   private final ConstraintValidatorContext context = Mockito.mock(ConstraintValidatorContext.class);
 
   @ValueSource(strings = {
-      "foo ", "foo bar"
+      "foo ", "foo bar", " foo"
   })
   @ParameterizedTest
   void shouldReturnFalseForStringsWithSpaces(String input) {

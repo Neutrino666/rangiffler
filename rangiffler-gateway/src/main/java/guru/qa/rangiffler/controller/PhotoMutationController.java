@@ -44,7 +44,7 @@ public class PhotoMutationController {
     final UUID userId = grpcUserdataClient.getCurrentUserId(principalUsername);
     final PhotoResponse photoResponse;
     if (input.getLike() != null) {
-      photoResponse = grpcPhotoClient.addLike(input, userId, principalUsername);
+      photoResponse = grpcPhotoClient.updateLike(input, userId, principalUsername);
     } else {
       photoResponse = input.getId() == null
           ? grpcPhotoClient.addPhoto(input, userId)
