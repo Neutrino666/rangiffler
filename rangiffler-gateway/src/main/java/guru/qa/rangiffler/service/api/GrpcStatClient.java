@@ -16,11 +16,11 @@ import org.springframework.stereotype.Component;
 public final class GrpcStatClient {
 
   @GrpcClient("grpcPhotoClient")
-  private RangifflerPhotoServiceGrpc.RangifflerPhotoServiceBlockingStub rangifflerPhotoServiceBlockingStub;
+  private RangifflerPhotoServiceGrpc.RangifflerPhotoServiceBlockingStub stub;
 
   public StatResponse stat(final StatRequest request) {
-    return GrpcCall.execute(() ->
-        rangifflerPhotoServiceBlockingStub.stat(request)
+    return new GrpcCall().execute(() ->
+        stub.stat(request)
     );
   }
 }
