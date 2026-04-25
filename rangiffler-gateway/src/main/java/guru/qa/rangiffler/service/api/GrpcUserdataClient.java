@@ -19,11 +19,12 @@ import org.springframework.stereotype.Component;
 public class GrpcUserdataClient {
 
   @GrpcClient("grpcUserdataClient")
-  private RangifflerUserdataServiceGrpc.RangifflerUserdataServiceBlockingStub rangifflerUserdataServiceStub;
+  private RangifflerUserdataServiceGrpc.RangifflerUserdataServiceBlockingStub stub;
+  private final GrpcCall grpcCall = new GrpcCall();
 
   public UserResponse getCurrentUser(String username) {
-    return GrpcCall.execute(
-        () -> rangifflerUserdataServiceStub.currentUser(
+    return grpcCall.execute(
+        () -> stub.currentUser(
             CurrentUserRequest.newBuilder()
                 .setUsername(username)
                 .build()
@@ -37,20 +38,20 @@ public class GrpcUserdataClient {
   }
 
   public UserResponse updateUser(UserRequest userRequest) {
-    return GrpcCall.execute(() -> rangifflerUserdataServiceStub.updateUser(userRequest));
+    return grpcCall.execute(() -> stub.updateUser(userRequest));
   }
 
   public UserPageResponse listUsers(UserPageRequest request) {
-    return GrpcCall.execute(() -> rangifflerUserdataServiceStub.listUsers(request));
+    return grpcCall.execute(() -> stub.listUsers(request));
   }
 
   public UserPageResponse listFriends(UserPageRequest request) {
-    return GrpcCall.execute(() -> rangifflerUserdataServiceStub.listFriends(request));
+    return grpcCall.execute(() -> stub.listFriends(request));
   }
 
   public UserResponse sendInvitation(String username, String targetUserId) {
-    return GrpcCall.execute(() ->
-        rangifflerUserdataServiceStub.sendRequest(
+    return grpcCall.execute(() ->
+        stub.sendRequest(
             FriendshipRequest.newBuilder()
                 .setRequester(username)
                 .setAddressee(targetUserId)
@@ -59,16 +60,16 @@ public class GrpcUserdataClient {
   }
 
   public UserPageResponse listOutcomeInvitations(UserPageRequest request) {
-    return GrpcCall.execute(() -> rangifflerUserdataServiceStub.listOutcomeInvitations(request));
+    return grpcCall.execute(() -> stub.listOutcomeInvitations(request));
   }
 
   public UserPageResponse listIncomeInvitations(UserPageRequest request) {
-    return GrpcCall.execute(() -> rangifflerUserdataServiceStub.listIncomeInvitations(request));
+    return grpcCall.execute(() -> stub.listIncomeInvitations(request));
   }
 
   public UserResponse acceptInvitation(String username, String targetUserId) {
-    return GrpcCall.execute(
-        () -> rangifflerUserdataServiceStub.acceptRequest(
+    return grpcCall.execute(
+        () -> stub.acceptRequest(
             FriendshipRequest.newBuilder()
                 .setRequester(username)
                 .setAddressee(targetUserId)
@@ -77,8 +78,8 @@ public class GrpcUserdataClient {
   }
 
   public UserResponse declineInvitation(String username, String targetUserId) {
-    return GrpcCall.execute(
-        () -> rangifflerUserdataServiceStub.declineRequest(
+    return grpcCall.execute(
+        () -> stub.declineRequest(
             FriendshipRequest.newBuilder()
                 .setRequester(username)
                 .setAddressee(targetUserId)
@@ -87,8 +88,8 @@ public class GrpcUserdataClient {
   }
 
   public UserResponse removeFriend(String username, String targetUserId) {
-    return GrpcCall.execute(
-        () -> rangifflerUserdataServiceStub.removeFriend(
+    return grpcCall.execute(
+        () -> stub.removeFriend(
             FriendshipRequest.newBuilder()
                 .setRequester(username)
                 .setAddressee(targetUserId)

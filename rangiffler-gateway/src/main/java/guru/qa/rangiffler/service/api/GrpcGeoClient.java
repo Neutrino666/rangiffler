@@ -13,23 +13,25 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ParametersAreNonnullByDefault
-public class GrpcGeoClient {
+public final class GrpcGeoClient {
+
+  private static final Empty EMPTY = Empty.getDefaultInstance();
 
   @GrpcClient("grpcGeoClient")
-  private RangifflerGeoServiceGrpc.RangifflerGeoServiceBlockingStub rangifflerGeoServiceBlockingStub;
-  private static final Empty EMPTY = Empty.getDefaultInstance();
+  private RangifflerGeoServiceGrpc.RangifflerGeoServiceBlockingStub stub;
+  private final GrpcCall grpcCall = new GrpcCall();
 
   @Cacheable("getCountries")
   public CountryPageResponse getCountries() {
-    return GrpcCall.execute(() ->
-        rangifflerGeoServiceBlockingStub.getCountries(EMPTY)
+    return grpcCall.execute(() ->
+        stub.getCountries(EMPTY)
     );
   }
 
   @Cacheable(value = "getCountry", key = "#code")
   public CountryResponse getCountry(String code) {
-    return GrpcCall.execute(() ->
-        rangifflerGeoServiceBlockingStub.getCountry(CountryRequest.newBuilder().setCode(code).build())
+    return grpcCall.execute(() ->
+        stub.getCountry(CountryRequest.newBuilder().setCode(code).build())
     );
   }
 }

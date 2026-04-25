@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,8 +55,8 @@ public class GrpcGeoServiceTest {
 
   @BeforeEach
   void before() {
-    CountryEntity country1 = new CountryEntity();
-    CountryEntity country2 = new CountryEntity();
+    final CountryEntity country1 = new CountryEntity();
+    final CountryEntity country2 = new CountryEntity();
 
     country1.setId(UUID.randomUUID());
     country1.setCode("ru");
@@ -86,7 +87,7 @@ public class GrpcGeoServiceTest {
     verify(countryPageResponse).onCompleted();
 
     final CountryPageResponse actual = countriesPageResponseCaptor.getValue();
-    List<CountryResponse> expectedCountries = testCountries.stream()
+    final List<CountryResponse> expectedCountries = testCountries.stream()
         .map(this::countryFromEntity)
         .toList();
 
@@ -100,8 +101,8 @@ public class GrpcGeoServiceTest {
 
   @Test
   void shouldExistCountry() {
-    CountryEntity firstCountry = testCountries.getFirst();
-    CountryRequest request = CountryRequest.newBuilder()
+    final CountryEntity firstCountry = testCountries.getFirst();
+    final CountryRequest request = CountryRequest.newBuilder()
         .setCode(firstCountry.getCode())
         .build();
     grpcGeoService.getCountry(request, countryResponse);
@@ -121,7 +122,7 @@ public class GrpcGeoServiceTest {
   @Test
   void shouldThrowIfNotExistCountry() {
     final String badCode = "notFound";
-    CountryRequest request = CountryRequest.newBuilder()
+    final CountryRequest request = CountryRequest.newBuilder()
         .setCode(badCode)
         .build();
     assertThatThrownBy(() -> grpcGeoService.getCountry(request, countryResponse))
@@ -129,7 +130,7 @@ public class GrpcGeoServiceTest {
         .hasMessage("Can`t find country by code: '%s'".formatted(badCode));
   }
 
-  private CountryResponse countryFromEntity(CountryEntity ce) {
+  private CountryResponse countryFromEntity(@Nonnull final CountryEntity ce) {
     return CountryResponse.newBuilder()
         .setId(ce.getId().toString())
         .setCode(ce.getCode())

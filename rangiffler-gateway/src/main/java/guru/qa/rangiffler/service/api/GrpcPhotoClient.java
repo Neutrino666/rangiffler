@@ -19,14 +19,15 @@ import rangiffler.graphqlTypes.PhotoInput;
 @Slf4j
 @Component
 @ParametersAreNonnullByDefault
-public class GrpcPhotoClient {
+public final class GrpcPhotoClient {
 
   @GrpcClient("grpcPhotoClient")
-  private RangifflerPhotoServiceGrpc.RangifflerPhotoServiceBlockingStub rangifflerPhotoServiceBlockingStub;
+  private RangifflerPhotoServiceGrpc.RangifflerPhotoServiceBlockingStub stub;
+  private final GrpcCall grpcCall = new GrpcCall();
 
   public PhotoResponse addPhoto(PhotoInput photo, final UUID userId) {
-    return GrpcCall.execute(() ->
-        rangifflerPhotoServiceBlockingStub.createPhoto(
+    return grpcCall.execute(() ->
+        stub.createPhoto(
             PhotoRequest.newBuilder()
                 .setSrc(photo.getSrc())
                 .setUserId(userId.toString())
@@ -41,8 +42,8 @@ public class GrpcPhotoClient {
   }
 
   public PhotoResponse updatePhoto(final PhotoInput photo, final UUID userId) {
-    return GrpcCall.execute(() ->
-        rangifflerPhotoServiceBlockingStub.updatePhoto(PhotoRequest.newBuilder()
+    return grpcCall.execute(() ->
+        stub.updatePhoto(PhotoRequest.newBuilder()
             .setId(photo.getId())
             .setUserId(userId.toString())
             .setSrc(photo.getSrc())
@@ -56,9 +57,9 @@ public class GrpcPhotoClient {
     );
   }
 
-  public PhotoResponse addLike(final PhotoInput input, final UUID userId, String username) {
-    return GrpcCall.execute(() ->
-        rangifflerPhotoServiceBlockingStub.photoLike(
+  public PhotoResponse updateLike(final PhotoInput input, final UUID userId, String username) {
+    return grpcCall.execute(() ->
+        stub.photoLike(
             LikeRequest.newBuilder()
                 .setUserId(userId.toString())
                 .setUsername(username)
@@ -69,8 +70,8 @@ public class GrpcPhotoClient {
   }
 
   public Boolean deletePhoto(final UUID id, final UUID userId) {
-    return GrpcCall.execute(() ->
-        rangifflerPhotoServiceBlockingStub.deletePhoto(PhotoDeleteRequest.newBuilder()
+    return grpcCall.execute(() ->
+        stub.deletePhoto(PhotoDeleteRequest.newBuilder()
             .setId(id.toString())
             .setUserId(userId.toString())
             .build())
@@ -78,8 +79,8 @@ public class GrpcPhotoClient {
   }
 
   public PhotoPageResponse listPhotos(FeedRequest request) {
-    return GrpcCall.execute(() ->
-        rangifflerPhotoServiceBlockingStub.listPhoto(request)
+    return grpcCall.execute(() ->
+        stub.listPhoto(request)
     );
   }
 }

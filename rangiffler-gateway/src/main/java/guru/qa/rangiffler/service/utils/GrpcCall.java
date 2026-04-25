@@ -15,7 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 @NoArgsConstructor(access = AccessLevel.NONE)
 public final class GrpcCall {
 
-  public static <T extends MessageOrBuilder> T execute(Supplier<T> grpcCall) {
+  public <T extends MessageOrBuilder> T execute(Supplier<T> grpcCall) {
     try {
       return grpcCall.get();
     } catch (StatusRuntimeException e) {
