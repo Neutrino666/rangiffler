@@ -94,7 +94,7 @@ public class FeedQueryController {
       final @Nonnull DataFetchingEnvironment env) {
     checkSubQueries(env, "photo", "feed");
     final String principalUsername = principal.getClaim("sub");
-    final PhotoPageResponse grpcFeed = grpcPhotoClient.listPhotos(
+    final PhotoPageResponse grpcFeed = grpcPhotoClient.listPhoto(
         FeedRequest.newBuilder()
             .setWithFriends(feed.getWithFriends())
             .setUserId(userdataClient.getCurrentUserId(feed.getUsername()).toString())

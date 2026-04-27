@@ -13,11 +13,12 @@ import guru.qa.rangiffler.grpc.UsersResponse;
 import guru.qa.rangiffler.model.UserJson;
 import io.grpc.stub.StreamObserver;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Stream;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.transaction.annotation.Transactional;
 
 @GrpcService
 public class GrpcUserService extends RangifflerUserdataServiceGrpc.RangifflerUserdataServiceImplBase {
@@ -30,7 +31,6 @@ public class GrpcUserService extends RangifflerUserdataServiceGrpc.RangifflerUse
   }
 
   @Override
-  @Transactional(readOnly = true)
   public void currentUser(CurrentUserRequest request, StreamObserver<UserResponse> responseObserver) {
     final UserResponse response = setUserResponse(
         userService.getCurrentUser(request.getUsername())
@@ -40,7 +40,6 @@ public class GrpcUserService extends RangifflerUserdataServiceGrpc.RangifflerUse
   }
 
   @Override
-  @Transactional
   public void updateUser(UserRequest request, StreamObserver<UserResponse> responseObserver) {
     final UserJson user = userService.update(request);
     responseObserver.onNext(setUserResponse(user));
@@ -71,20 +70,19 @@ public class GrpcUserService extends RangifflerUserdataServiceGrpc.RangifflerUse
 
   @Override
   public void listFriendsIds(UsersRequest request, StreamObserver<UsersResponse> responseObserver) {
-    final List<String> ids = userService.friendsIds(
-        request.getUsername()
-    );
+    final Stream<UUID> ids = userService.friendsIds(request.getUsername());
     responseObserver.onNext(
         UsersResponse
             .newBuilder()
-            .addAllId(ids)
+            .addAllId(ids.map(UUID::toString).toList())
             .build()
     );
     responseObserver.onCompleted();
   }
 
   @Override
-  public void sendRequest(FriendshipRequest request,
+  public void sendRequest(
+      FriendshipRequest request,
       StreamObserver<UserResponse> responseObserver) {
     final UserJson user = userService.createFriendshipRequest(request.getRequester(),
         request.getAddressee());
@@ -129,12 +127,12 @@ public class GrpcUserService extends RangifflerUserdataServiceGrpc.RangifflerUse
 
   @Override
   public void listIncomeInvitations(UserPageRequest request, StreamObserver<UserPageResponse> responseObserver) {
-    final Page<UserJson> outcomeInvitations = userService.incomeInvitations(
+    final Page<UserJson> incomeInvitations = userService.incomeInvitations(
         request.getUsername(),
         PageRequest.of(request.getPage(), request.getSize()),
         request.getSearchQuery()
     );
-    responseObserver.onNext(setUserPageResponse(outcomeInvitations));
+    responseObserver.onNext(setUserPageResponse(incomeInvitations));
     responseObserver.onCompleted();
   }
 

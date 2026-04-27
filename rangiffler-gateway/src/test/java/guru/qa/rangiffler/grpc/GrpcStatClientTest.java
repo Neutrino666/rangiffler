@@ -1,6 +1,7 @@
 package guru.qa.rangiffler.grpc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -42,7 +43,7 @@ public class GrpcStatClientTest {
   @Test
   void statsReturnShouldReturnStatWithFriends() {
     final StatRequest request = statRequestByWithFriend(true);
-    when(stub.stat(request)).thenReturn(statResponseWithFriends);
+    when(stub.stat(eq(request))).thenReturn(statResponseWithFriends);
     final StatResponse actual = grpcStatClient.stat(request);
 
     verify(stub).stat(request);
@@ -52,7 +53,7 @@ public class GrpcStatClientTest {
   @Test
   void statsReturnShouldReturnStatWithoutFriends() {
     final StatRequest request = statRequestByWithFriend(false);
-    when(stub.stat(request)).thenReturn(statResponseWithoutFriends);
+    when(stub.stat(eq(request))).thenReturn(statResponseWithoutFriends);
     final StatResponse actual = grpcStatClient.stat(request);
 
     verify(stub).stat(request);

@@ -2,6 +2,7 @@ package guru.qa.rangiffler.grpc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -61,7 +62,7 @@ public class GrpcUserdataClientTest {
     final CurrentUserRequest userRequest = CurrentUserRequest.newBuilder()
         .setUsername(username)
         .build();
-    when(stub.currentUser(userRequest)).thenReturn(user);
+    when(stub.currentUser(eq(userRequest))).thenReturn(user);
     final UserResponse actual = grpcUserdataClient.getCurrentUser(username);
 
     verify(stub).currentUser(userRequest);
@@ -73,7 +74,7 @@ public class GrpcUserdataClientTest {
     final CurrentUserRequest userRequest = CurrentUserRequest.newBuilder()
         .setUsername(username)
         .build();
-    when(stub.currentUser(userRequest)).thenReturn(user);
+    when(stub.currentUser(eq(userRequest))).thenReturn(user);
 
     final UUID actual = grpcUserdataClient.getCurrentUserId(username);
     assertThat(actual).isEqualTo(userId);
@@ -90,7 +91,7 @@ public class GrpcUserdataClientTest {
 
   @Test
   void ListUsersShouldReturnUserPageRequest() {
-    when(stub.listUsers(userPageRequest)).thenReturn(userPageResponse);
+    when(stub.listUsers(eq(userPageRequest))).thenReturn(userPageResponse);
     final UserPageResponse actual = grpcUserdataClient.listUsers(userPageRequest);
 
     verify(stub).listUsers(userPageRequest);
@@ -99,7 +100,7 @@ public class GrpcUserdataClientTest {
 
   @Test
   void listFriendsShouldReturnUserPageRequest() {
-    when(stub.listFriends(userPageRequest)).thenReturn(userPageResponse);
+    when(stub.listFriends(eq(userPageRequest))).thenReturn(userPageResponse);
     final UserPageResponse actual = grpcUserdataClient.listFriends(userPageRequest);
 
     verify(stub).listFriends(userPageRequest);
@@ -108,7 +109,7 @@ public class GrpcUserdataClientTest {
 
   @Test
   void listOutcomeInvitationsShouldReturnUserPageRequest() {
-    when(stub.listOutcomeInvitations(userPageRequest)).thenReturn(userPageResponse);
+    when(stub.listOutcomeInvitations(eq(userPageRequest))).thenReturn(userPageResponse);
     final UserPageResponse actual = grpcUserdataClient.listOutcomeInvitations(userPageRequest);
 
     verify(stub).listOutcomeInvitations(userPageRequest);
@@ -117,7 +118,7 @@ public class GrpcUserdataClientTest {
 
   @Test
   void listIncomeInvitationsShouldReturnUserPageRequest() {
-    when(stub.listIncomeInvitations(userPageRequest)).thenReturn(userPageResponse);
+    when(stub.listIncomeInvitations(eq(userPageRequest))).thenReturn(userPageResponse);
     final UserPageResponse actual = grpcUserdataClient.listIncomeInvitations(userPageRequest);
 
     verify(stub).listIncomeInvitations(userPageRequest);
@@ -131,7 +132,7 @@ public class GrpcUserdataClientTest {
         .setRequester(username)
         .setAddressee(targetUserId.toString())
         .build();
-    when(stub.sendRequest(request)).thenReturn(user);
+    when(stub.sendRequest(eq(request))).thenReturn(user);
     final UserResponse actual = grpcUserdataClient.sendInvitation(username, targetUserId.toString());
 
     verify(stub).sendRequest(request);
@@ -145,7 +146,7 @@ public class GrpcUserdataClientTest {
         .setRequester(username)
         .setAddressee(targetUserId.toString())
         .build();
-    when(stub.acceptRequest(request)).thenReturn(user);
+    when(stub.acceptRequest(eq(request))).thenReturn(user);
     final UserResponse actual = grpcUserdataClient.acceptInvitation(username, targetUserId.toString());
 
     verify(stub).acceptRequest(request);
@@ -159,7 +160,7 @@ public class GrpcUserdataClientTest {
         .setRequester(username)
         .setAddressee(targetUserId.toString())
         .build();
-    when(stub.declineRequest(request)).thenReturn(user);
+    when(stub.declineRequest(eq(request))).thenReturn(user);
     final UserResponse actual = grpcUserdataClient.declineInvitation(username, targetUserId.toString());
 
     verify(stub).declineRequest(request);
@@ -173,7 +174,7 @@ public class GrpcUserdataClientTest {
         .setRequester(username)
         .setAddressee(targetUserId.toString())
         .build();
-    when(stub.removeFriend(request)).thenReturn(user);
+    when(stub.removeFriend(eq(request))).thenReturn(user);
     final UserResponse actual = grpcUserdataClient.removeFriend(username, targetUserId.toString());
 
     verify(stub).removeFriend(request);
@@ -187,7 +188,7 @@ public class GrpcUserdataClientTest {
         .setRequester(username)
         .setAddressee(targetUserId.toString())
         .build();
-    when(stub.removeFriend(request)).thenReturn(user);
+    when(stub.removeFriend(eq(request))).thenReturn(user);
     final UserResponse actual = grpcUserdataClient.removeFriend(username, targetUserId.toString());
 
     verify(stub).removeFriend(request);
