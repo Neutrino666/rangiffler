@@ -2,9 +2,10 @@ package guru.qa.rangiffler.grpc;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.lenient;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.google.protobuf.Empty;
 import guru.qa.rangiffler.grpc.RangifflerGeoServiceGrpc.RangifflerGeoServiceBlockingStub;
@@ -37,19 +38,17 @@ public class GrpcGeoClientTest {
         .setFlag("data:image/png;base64,2")
         .build();
     testCountries = List.of(country1, country2);
-    lenient().when(grpcGeoClient.getCountry("ru")).thenReturn(country1);
-    lenient().when(grpcGeoClient.getCountries()).thenReturn(collectCountryPage());
   }
 
   @Test
   void getCountryShouldReturnCountryResponse() {
     final CountryResponse expected = testCountries.getFirst();
+    final CountryRequest request = CountryRequest.newBuilder()
+        .setCode(expected.getCode())
+        .build();
+    when(stub.getCountry(eq(request))).thenReturn(expected);
     final CountryResponse actual = grpcGeoClient.getCountry(expected.getCode());
-    verify(stub).getCountry(
-        CountryRequest.newBuilder()
-            .setCode(expected.getCode())
-            .build()
-    );
+    verify(stub).getCountry(request);
     assertThat(actual)
         .isNotNull()
         .hasNoNullFieldsOrProperties()
@@ -59,8 +58,11 @@ public class GrpcGeoClientTest {
   @Test
   void getCountriesShouldReturnCountryResponseList() {
     final CountryPageResponse expected = collectCountryPage();
+    final Empty request = Empty.newBuilder().build();
+    final CountryPageResponse response = collectCountryPage();
+    when(stub.getCountries(eq(request))).thenReturn(response);
     final CountryPageResponse actual = grpcGeoClient.getCountries();
-    verify(stub).getCountries(Empty.newBuilder().build());
+    verify(stub).getCountries(request);
     assertThat(actual.getAllCountriesList())
         .isNotEmpty()
         .hasSize(2);

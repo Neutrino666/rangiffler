@@ -24,7 +24,7 @@ public record UserJson(
     @Nullable String surname,
     @JsonProperty("country")
     CountryValues country,
-    @JsonProperty("photo")
+    @JsonProperty("avatar")
     @Nullable String avatar,
     @JsonProperty("friendshipStatus")
     @Nullable FriendshipStatus friendshipStatus) {

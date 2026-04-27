@@ -78,7 +78,7 @@ public class GrpcPhotoClient {
     ).getIsDeleted();
   }
 
-  public PhotoPageResponse listPhotos(FeedRequest request) {
+  public PhotoPageResponse listPhoto(FeedRequest request) {
     return grpcCall.execute(() ->
         stub.listPhoto(request)
     );

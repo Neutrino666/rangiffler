@@ -2,6 +2,7 @@ package guru.qa.rangiffler.grpc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -77,22 +78,22 @@ public class GrpcPhotoClientTest {
         .description(description)
         .build();
 
-    lenient().when(stub.listPhoto(feedRequestWithFriends)).thenReturn(photosWithFriends);
-    lenient().when(stub.listPhoto(feedRequestWithoutFriends)).thenReturn(photosWithoutFriends);
+    lenient().when(stub.listPhoto(eq(feedRequestWithFriends))).thenReturn(photosWithFriends);
+    lenient().when(stub.listPhoto(eq(feedRequestWithoutFriends))).thenReturn(photosWithoutFriends);
     lenient().when(stub.updatePhoto(any(PhotoRequest.class))).thenReturn(photoResponse);
     lenient().when(stub.photoLike(any(LikeRequest.class))).thenReturn(photoResponse);
   }
 
   @Test
   void listPhotosShouldReturnPhotoPageResponseWithFriends() {
-    final PhotoPageResponse actual = grpcPhotoClient.listPhotos(feedRequestWithFriends);
+    final PhotoPageResponse actual = grpcPhotoClient.listPhoto(feedRequestWithFriends);
     verify(stub).listPhoto(feedRequestWithFriends);
     assertThat(actual).isEqualTo(photosWithFriends);
   }
 
   @Test
   void listPhotosShouldReturnPhotoPageResponseWithoutFriends() {
-    final PhotoPageResponse actual = grpcPhotoClient.listPhotos(feedRequestWithoutFriends);
+    final PhotoPageResponse actual = grpcPhotoClient.listPhoto(feedRequestWithoutFriends);
     verify(stub).listPhoto(feedRequestWithoutFriends);
     assertThat(actual).isEqualTo(photosWithoutFriends);
   }
@@ -115,8 +116,7 @@ public class GrpcPhotoClientTest {
         )
         .setDescription(photoInput.getDescription())
         .build();
-    when(stub.createPhoto(photoRequest)).thenReturn(photoResponse);
-    when(grpcPhotoClient.addPhoto(photoInput, ownerId)).thenReturn(photoResponse);
+    when(stub.createPhoto(eq(photoRequest))).thenReturn(photoResponse);
     final PhotoResponse actual = grpcPhotoClient.addPhoto(photoInput, ownerId);
 
     verify(stub).createPhoto(photoRequest);
@@ -170,7 +170,7 @@ public class GrpcPhotoClientTest {
         .setId(photoId.toString())
         .setUserId(ownerId.toString())
         .build();
-    when(stub.deletePhoto(any(PhotoDeleteRequest.class))).thenReturn(deleteResponse);
+    when(stub.deletePhoto(eq(request))).thenReturn(deleteResponse);
     final Boolean isDeleted = grpcPhotoClient.deletePhoto(photoId, ownerId);
 
     verify(stub).deletePhoto(request);
@@ -186,7 +186,7 @@ public class GrpcPhotoClientTest {
         .setId(photoId.toString())
         .setUserId(ownerId.toString())
         .build();
-    when(stub.deletePhoto(any(PhotoDeleteRequest.class))).thenReturn(deleteResponse);
+    when(stub.deletePhoto(eq(photoDeleteRequest))).thenReturn(deleteResponse);
     final Boolean actual = grpcPhotoClient.deletePhoto(photoId, ownerId);
 
     verify(stub).deletePhoto(photoDeleteRequest);
