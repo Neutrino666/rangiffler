@@ -38,8 +38,7 @@ public class GrpcPhotoService extends RangifflerPhotoServiceGrpc.RangifflerPhoto
   private final StatService statService;
 
   @Autowired
-  public GrpcPhotoService(PhotoService photoService,
-      StatService statService) {
+  public GrpcPhotoService(PhotoService photoService, StatService statService) {
     this.photoService = photoService;
     this.statService = statService;
   }

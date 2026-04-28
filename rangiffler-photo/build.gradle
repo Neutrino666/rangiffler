@@ -30,6 +30,9 @@ dependencies {
     runtimeOnly "mysql:mysql-connector-java:${project.ext.mysqlDriverVersion}"
     annotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
     compileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
+    // test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation "org.assertj:assertj-core:${project.ext.assertjVersion}"
 }
 
 jib {

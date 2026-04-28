@@ -53,7 +53,7 @@ public class PhotoEntity implements Serializable {
       fetch = FetchType.LAZY, orphanRemoval = true)
   private List<LikeEntity> likes = new ArrayList<>();
 
-  public void updateLikes(UUID userId) {
+  public void updateLike(UUID userId) {
     if (!removeIfExist(userId)) {
       LikeEntity like = new LikeEntity();
       like.setUserId(userId);

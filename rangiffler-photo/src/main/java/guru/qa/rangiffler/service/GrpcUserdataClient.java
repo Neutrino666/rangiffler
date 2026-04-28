@@ -15,13 +15,13 @@ import org.springframework.stereotype.Component;
 public class GrpcUserdataClient {
 
   @GrpcClient("grpcUserdataClient")
-  private RangifflerUserdataServiceGrpc.RangifflerUserdataServiceBlockingStub rangifflerUserdataServiceStub;
+  private RangifflerUserdataServiceGrpc.RangifflerUserdataServiceBlockingStub stub;
 
   @Nonnull
   public List<UUID> photoAccessUsers(final UUID userId, final String username) {
     List<UUID> result = new ArrayList<>();
     result.add(userId);
-    final List<UUID> friends = rangifflerUserdataServiceStub.listFriendsIds(
+    final List<UUID> friends = stub.listFriendsIds(
             UsersRequest.newBuilder()
                 .setUsername(username)
                 .build()
