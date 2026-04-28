@@ -22,6 +22,27 @@
 - [Gradle 9.0](https://docs.gradle.org/9.0.0/release-notes.html)
 - И многие другие
 
+# Готовность диплома
+#### 1. BE - готово
+#### 2. Unit тесты - готово.
+| Сервис   | Unit тестов |
+|----------|-------------|
+| auth     | 8           |
+| gateway  | 23          |
+| geo      | 3           |
+| photo    | 26          |
+| userdata | 36          |
+#### 3. GraphQL тесты - не готово
+#### 4. UI тесты - не готово
+#### 5. Инфра докер - готово
+#### 6. Kafka - готово
+
+# Что хотелось бы реализовать но не хватило времени?
+#### 1. Хранение фото в MinIO
+#### 2. Кафка фото и лайки
+#### 3. Github actions
+#### 4. Prod deploy
+
 # Запуск Rangiffler в докере:
 
 #### 0. Докер bash скрипты
@@ -147,24 +168,3 @@ UI будет доступен по ссылке
 #### 4. Allure report доступен по адресу: http://localhost:5050/allure-docker-service/projects/niffler-ng/reports/latest/index.html
 
 <img src="/rangiffler-gql-client/src/assets/deer-logo.svg" width="250">
-
-# Готовность диплома
-#### 1. BE - готово
-#### 2. Unit тесты - готово.
-| Сервис   | Unit тестов |
-|----------|-------------|
-| auth     | 8           |
-| gateway  | 23          |
-| geo      | 3           |
-| photo    | 26          |
-| userdata | 36          |
-#### 3. GraphQL тесты - не готово
-#### 4. UI тесты - не готово
-#### 5. Инфра докер - готово
-#### 6. Kafka - готово
-
-# Что хотелось бы реализовать но не хватило времени?
-#### 1. Хранение фото в MinIO
-#### 2. Кафка фото и лайки
-#### 3. Github actions
-#### 4. Prod deploy
