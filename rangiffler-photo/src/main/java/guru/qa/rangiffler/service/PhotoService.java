@@ -71,15 +71,18 @@ public class PhotoService {
   @Transactional
   public PhotoJson updateLike(final LikeRequest like) {
     if (!like.getUserId().equals(like.getRequesterId())) {
+      final UUID requesterId = UUID.fromString(like.getRequesterId());
       final UUID userId = UUID.fromString(like.getUserId());
       final List<UUID> ownerWithFriends = grpcUserdataClient.photoAccessUsers(userId, like.getUsername());
-      if (!ownerWithFriends.contains(userId)) {
+      if (!ownerWithFriends.contains(requesterId)) {
         throw new RuntimeException("Photo access denied");
       }
     }
     final PhotoEntity photoEntity = photoRepository.findById(UUID.fromString(like.getPhotoId()))
-        .orElseThrow();
-    photoEntity.updateLikes(UUID.fromString(like.getRequesterId()));
+        .orElseThrow(
+            () -> new PhotoNotFoundException("Can`t find photo by given id: " + like.getPhotoId())
+        );
+    photoEntity.updateLike(UUID.fromString(like.getRequesterId()));
     return PhotoJson.fromEntity(
         photoRepository.save(photoEntity)
     );

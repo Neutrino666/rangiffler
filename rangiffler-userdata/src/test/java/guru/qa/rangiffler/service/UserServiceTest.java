@@ -31,6 +31,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,6 +46,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+@ParametersAreNonnullByDefault
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
