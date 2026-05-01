@@ -1,7 +1,5 @@
 package guru.qa.rangiffler.jupiter.meta;
 
-import guru.qa.rangiffler.jupiter.extension.ApiLoginExtension;
-import guru.qa.rangiffler.jupiter.extension.BrowserExtension;
 import guru.qa.rangiffler.jupiter.extension.UserExtension;
 import io.qameta.allure.junit5.AllureJunit5;
 import java.lang.annotation.ElementType;
@@ -13,11 +11,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith({
-    BrowserExtension.class,
     AllureJunit5.class,
     UserExtension.class,
-    ApiLoginExtension.class,
 })
-public @interface WebTest {
+public @interface RestTest {
 
 }

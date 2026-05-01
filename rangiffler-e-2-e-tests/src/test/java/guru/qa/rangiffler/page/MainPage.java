@@ -15,6 +15,7 @@ public final class MainPage extends BasePage<MainPage> {
 
   @Step("Проверка загрузки главной страницы")
   public @Nonnull MainPage checkThatPageLoaded() {
+    header.checkThatComponentLoaded();
     return this;
   }
 }

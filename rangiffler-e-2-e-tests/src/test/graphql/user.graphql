@@ -11,3 +11,113 @@ query GetUser {
         }
     }
 }
+
+query GetFriends($page: Int, $size: Int, $searchQuery: String) {
+    user {
+        friends(page: $page, size: $size, searchQuery: $searchQuery) {
+            edges {
+                node {
+                    id
+                    username
+                    firstname
+                    surname
+                    avatar
+                    location {
+                        code
+                        name
+                        flag
+                    }
+                    friendStatus
+                }
+            }
+            pageInfo {
+                hasPreviousPage
+                hasNextPage
+            }
+        }
+    }
+}
+
+query GetInvitations($page: Int, $size: Int, $searchQuery: String) {
+    user {
+        incomeInvitations(page: $page, size: $size, searchQuery: $searchQuery) {
+            edges {
+                node {
+                    id
+                    username
+                    firstname
+                    surname
+                    avatar
+                    location {
+                        code
+                        name
+                        flag
+                    }
+                    friendStatus
+                }
+            }
+            pageInfo {
+                hasPreviousPage
+                hasNextPage
+            }
+        }
+    }
+}
+
+query GetOutcomeInvitations($page: Int, $size: Int, $searchQuery: String) {
+    user {
+        outcomeInvitations(page: $page, size: $size, searchQuery: $searchQuery) {
+            edges {
+                node {
+                    id
+                    username
+                    firstname
+                    surname
+                    avatar
+                    location {
+                        code
+                        name
+                        flag
+                    }
+                    friendStatus
+                }
+            }
+            pageInfo {
+                hasPreviousPage
+                hasNextPage
+            }
+        }
+    }
+}
+
+query GetPeople($page: Int, $size: Int, $searchQuery: String) {
+    users(page: $page, size: $size, searchQuery: $searchQuery) {
+        edges {
+            node {
+                id
+                username
+                firstname
+                surname
+                avatar
+                location {
+                    code
+                    name
+                    flag
+                }
+                friendStatus
+            }
+        }
+        pageInfo {
+            hasPreviousPage
+            hasNextPage
+        }
+    }
+}
+
+mutation FriendshipAction($input: FriendshipInput!) {
+    friendship(input: $input) {
+        id
+        username
+        friendStatus
+    }
+}

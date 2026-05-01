@@ -22,7 +22,7 @@ enum DockerConfig implements Config {
   @Nonnull
   @Override
   public String gatewayUrl() {
-    return "http://gateway.rangiffler.dc:8090/";
+    return "http://gateway.rangiffler.dc:8080/";
   }
 
   @Nonnull

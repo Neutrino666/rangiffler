@@ -1,6 +1,6 @@
 package guru.qa.rangiffler.jupiter.extension;
 
-import guru.qa.rangiffler.api.core.ThreadSafeCookieStore;
+import guru.qa.rangiffler.api.rest.core.ThreadSafeCookieStore;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;

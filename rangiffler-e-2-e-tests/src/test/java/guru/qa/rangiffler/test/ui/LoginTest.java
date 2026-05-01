@@ -1,7 +1,9 @@
 package guru.qa.rangiffler.test.ui;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.rangiffler.jupiter.annotation.User;
 import guru.qa.rangiffler.jupiter.meta.WebTest;
+import guru.qa.rangiffler.model.UserJson;
 import guru.qa.rangiffler.page.auth.LoginPage;
 import guru.qa.rangiffler.page.auth.WelcomePage;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -22,12 +24,14 @@ public class LoginTest {
         .goToLoginPage();
   }
 
+  @User
   @Test
   @DisplayName("Успешный вход")
-  void mainPageShouldBeDisplayedAfterSuccessLogin() {
-    loginPage.login("admin", "admin")
-        .getHeader()
-        .checkThatComponentLoaded();
+  void mainPageShouldBeDisplayedAfterSuccessLogin(UserJson user) {
+    String username = user.getUsername();
+    String password = user.getTestData().password();
+    loginPage.login(username, password)
+        .checkThatPageLoaded();
   }
 
   @Test
