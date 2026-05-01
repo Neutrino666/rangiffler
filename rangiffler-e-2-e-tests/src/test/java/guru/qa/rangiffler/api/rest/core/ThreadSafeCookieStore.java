@@ -1,10 +1,11 @@
-package guru.qa.rangiffler.api.core;
+package guru.qa.rangiffler.api.rest.core;
 
 import java.net.CookieManager;
 import java.net.CookieStore;
 import java.net.HttpCookie;
 import java.net.URI;
 import java.util.List;
+import javax.annotation.Nonnull;
 
 public enum ThreadSafeCookieStore implements CookieStore {
   INSTANCE;
@@ -12,6 +13,15 @@ public enum ThreadSafeCookieStore implements CookieStore {
   private final ThreadLocal<CookieStore> cs = ThreadLocal.withInitial(
       ThreadSafeCookieStore::inMemoryCookieStore
   );
+
+  public @Nonnull String value(final String name) {
+    return cs.get().getCookies()
+        .stream()
+        .filter(c -> c.getName().equals(name))
+        .findFirst()
+        .orElseThrow()
+        .getValue();
+  }
 
   @Override
   public void add(URI uri, HttpCookie cookie) {

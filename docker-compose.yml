@@ -170,7 +170,7 @@ services:
     image: ${PREFIX}/rangiffler-e-2-e-tests:latest
     build:
       context: ./
-      dockerfile: ./rangiffler-e-2-e-test/Dockerfile
+      dockerfile: ./rangiffler-e-2-e-tests/Dockerfile
     environment:
       - ALLURE_DOCKER_API=${ALLURE_DOCKER_API:-http://allure:5050}
       - BUILD_URL=${BUILD_URL:-http://allure:5252}
