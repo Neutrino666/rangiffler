@@ -12,7 +12,6 @@ import guru.qa.rangiffler.jupiter.annotation.Token;
 import guru.qa.rangiffler.jupiter.annotation.User;
 import guru.qa.rangiffler.model.TestData;
 import guru.qa.rangiffler.model.UserJson;
-import guru.qa.rangiffler.page.MainPage;
 import guru.qa.rangiffler.service.impl.AuthApiClient;
 import guru.qa.rangiffler.service.impl.UsersGraphQLClient;
 import java.util.List;
@@ -36,7 +35,7 @@ public final class ApiLoginExtension implements
       ApiLoginExtension.class);
   private final Config CFG = Config.getInstance();
 
-  private final AuthApiClient authApiClient = new AuthApiClient(null);
+  private final AuthApiClient authApiClient = new AuthApiClient();
   private final boolean setupBrowser;
 
   private ApiLoginExtension(boolean setupBrowser) {
@@ -154,6 +153,5 @@ public final class ApiLoginExtension implements
             ThreadSafeCookieStore.INSTANCE.value("JSESSIONID")
         )
     );
-    Selenide.open(MainPage.URL, MainPage.class).checkThatPageLoaded();
   }
 }

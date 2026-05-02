@@ -5,8 +5,9 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.rangiffler.helpers.SelenideUtils;
 import guru.qa.rangiffler.page.BasePage;
-import guru.qa.rangiffler.page.MainPage;
+import guru.qa.rangiffler.page.TravelsPage;
 import io.qameta.allure.Step;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -22,14 +23,14 @@ public final class LoginPage extends BasePage<LoginPage> {
   private final SelenideElement passwordInput = $("input[ name = 'password' ]").as("Поле ввода: пароль");
   private final SelenideElement submitBtn = $("button[ type = 'submit' ]").as("Кнопка: авторизоваться");
   private final SelenideElement registerLink = $(".form__link").as("Ссылка на страницу регистрации");
-  private final SelenideElement formError = $(".form__error").as("Ошибка авторизации");
+  private final SelenideElement formError = $(".form__error").as("Ошибка в форме авторизации");
 
   @Step("Авторизация username: '{username}' password: '{password}'")
-  public @Nonnull MainPage login(final String username, final String password) {
+  public @Nonnull TravelsPage login(final String username, final String password) {
     setUsername(username);
     setPassword(password);
     submit();
-    return new MainPage();
+    return new TravelsPage();
   }
 
   @Step("Открытие страницы регистрации")
@@ -64,8 +65,7 @@ public final class LoginPage extends BasePage<LoginPage> {
 
   @Step("Проверяем что страница прогрузилась")
   public @Nonnull LoginPage checkThatPageLoaded() {
-    usernameInput.should(visible);
-    passwordInput.should(visible);
+    SelenideUtils.visibleAndInteractable(usernameInput, passwordInput, submitBtn, registerLink);
     return this;
   }
 }

@@ -4,9 +4,9 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.rangiffler.helpers.SelenideUtils;
 import guru.qa.rangiffler.page.auth.LoginPage;
 import io.qameta.allure.Step;
-import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -30,8 +30,8 @@ public final class Header extends BaseComponent<Header> {
 
   @Step("Проверяем что страница прогрузилась")
   public @Nonnull Header checkThatComponentLoaded() {
-    Stream.of(self, menuBtn, exitBtn, mainPageLink)
-        .forEach(el -> el.should(visible));
+    self.shouldBe(visible);
+    SelenideUtils.visibleAndInteractable(menuBtn, exitBtn, mainPageLink);
     return this;
   }
 }

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import guru.qa.rangiffler.api.rest.core.CodeInterceptor;
 import guru.qa.rangiffler.api.rest.user.AuthApi;
 import guru.qa.rangiffler.api.rest.user.OAuth2Api;
+import guru.qa.rangiffler.helpers.TestPrefix;
 import guru.qa.rangiffler.jupiter.extension.ApiLoginExtension;
 import io.qameta.allure.Step;
 import java.io.IOException;
@@ -63,7 +64,7 @@ public final class AuthApiClient extends RestClient implements AuthApi {
   }
 
   @Nonnull
-  @Step("[REST API] login OAuth2")
+  @Step(TestPrefix.REST + "login OAuth2")
   public String login(String username, String password) {
     String codeVerifier = generateCodeVerifier();
     String codeChallenge = generateCodeChallenge(codeVerifier);
@@ -97,21 +98,21 @@ public final class AuthApiClient extends RestClient implements AuthApi {
 
   @Nonnull
   @Override
-  @Step("[REST API] Получаем форму регистрации")
+  @Step(TestPrefix.REST + "Получаем форму регистрации")
   public Call<ResponseBody> requestRegisterForm() {
     return oAuth2Api.requestRegisterForm();
   }
 
   @Nonnull
   @Override
-  @Step("[REST API] Регистрация нового пользователя")
+  @Step(TestPrefix.REST + "Регистрация нового пользователя")
   public Call<Void> register(String username, String password, String passwordSubmit, String csrf) {
     return oAuth2Api.register(username, password, password, csrf);
   }
 
   @Nonnull
   @Override
-  @Step("[REST API] authorize")
+  @Step(TestPrefix.REST + "authorize")
   public Call<ResponseBody> authorize(
       String responseType, String clientId, String scope, String redirectUri,
       String codeChallenge, String codeChallengeMethod
@@ -121,7 +122,7 @@ public final class AuthApiClient extends RestClient implements AuthApi {
 
   @Nonnull
   @Override
-  @Step("[REST API] Логинимся")
+  @Step(TestPrefix.REST + "Логинимся")
   public Call<Void> login(String username, String password, String csrf) {
     return oAuth2Api.login(
         username,
@@ -132,7 +133,7 @@ public final class AuthApiClient extends RestClient implements AuthApi {
 
   @Nonnull
   @Override
-  @Step("[REST API] Получаем токен")
+  @Step(TestPrefix.REST + "Получаем токен")
   public Call<JsonNode> token(String code, String redirectUri, String codeVerifier, String grantType, String clientId) {
     return oAuth2Api.token(
         code,
@@ -146,8 +147,8 @@ public final class AuthApiClient extends RestClient implements AuthApi {
   @Nonnull
   private String findCsrf(Response<ResponseBody> authorizeResponse) {
     if (authorizeResponse.isSuccessful() && authorizeResponse.body() != null) {
-      Pattern pattern = Pattern.compile("_csrf\".+?value.+?\"%s?\"\\/>".formatted(tokenLengthPattern));
-      Matcher matcherOld = null;
+      final Pattern pattern = Pattern.compile("_csrf\".+?value.+?\"%s?\"\\/>".formatted(tokenLengthPattern));
+      final Matcher matcherOld;
       try {
         matcherOld = pattern.matcher(authorizeResponse.body().string());
       } catch (IOException e) {
