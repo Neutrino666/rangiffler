@@ -1,14 +1,14 @@
 package guru.qa.rangiffler.jupiter.annotation;
 
-import guru.qa.rangiffler.model.CountryCode;
-import guru.qa.rangiffler.model.PhotoFile;
+import guru.qa.rangiffler.model.Country;
+import guru.qa.rangiffler.model.Image;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Photo {
 
-  PhotoFile file() default PhotoFile.MAN;
+  Image file() default Image.CYBER_DUCK;
 
-  CountryCode code() default CountryCode.RU;
+  Country code() default Country.RU;
 }

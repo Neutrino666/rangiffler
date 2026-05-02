@@ -9,7 +9,7 @@ import guru.qa.GetPeopleQuery;
 import guru.qa.GetUserQuery;
 import guru.qa.GetUserQuery.User;
 import guru.qa.rangiffler.helpers.RandomDataUtils;
-import guru.qa.rangiffler.helpers.TestPrefix;
+import guru.qa.rangiffler.model.TestPrefix;
 import guru.qa.rangiffler.jupiter.extension.UserExtension;
 import guru.qa.rangiffler.model.FriendshipJson;
 import guru.qa.rangiffler.model.UserJson;

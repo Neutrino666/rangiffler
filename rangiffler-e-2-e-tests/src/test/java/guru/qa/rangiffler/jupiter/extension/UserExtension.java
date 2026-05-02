@@ -29,7 +29,7 @@ public final class UserExtension implements
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(
       UserExtension.class);
   public static final String DEFAULT_PASSWORD = "12345";
-  private final AuthApiClient authApiClient = new AuthApiClient(null);
+  private final AuthApiClient authApiClient = new AuthApiClient();
 
   @Override
   public void beforeEach(ExtensionContext context) {

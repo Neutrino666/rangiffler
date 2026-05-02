@@ -7,10 +7,12 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 @ParametersAreNonnullByDefault
-public enum PhotoFile {
+public enum Country {
 
-  MAN("cyberpunk-duck.png"),
-  DOG("man.jpeg");
+  RU("ru", "Russian Federation"),
+  US("us", "United States"),
+  KZ("kz", "Kazakhstan");
 
-  private final String value;
+  private final String code;
+  private final String name;
 }

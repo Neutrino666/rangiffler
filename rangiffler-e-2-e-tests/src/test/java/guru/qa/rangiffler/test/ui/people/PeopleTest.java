@@ -1,8 +1,8 @@
-package guru.qa.rangiffler.test.ui;
+package guru.qa.rangiffler.test.ui.people;
 
 import static io.qameta.allure.SeverityLevel.BLOCKER;
 
-import guru.qa.rangiffler.helpers.TestPrefix;
+import guru.qa.rangiffler.model.TestPrefix;
 import guru.qa.rangiffler.jupiter.annotation.ApiLogin;
 import guru.qa.rangiffler.jupiter.annotation.User;
 import guru.qa.rangiffler.jupiter.meta.WebTest;

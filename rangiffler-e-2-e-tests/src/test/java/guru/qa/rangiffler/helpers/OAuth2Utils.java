@@ -5,11 +5,15 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
-public class OAuth2Utils {
+@ParametersAreNonnullByDefault
+public final class OAuth2Utils {
 
   private final static SecureRandom SECURE_RANDOM = new SecureRandom();
 
+  @Nonnull
   public static String generateCodeVerifier() {
     byte[] code = new byte[32];
     SECURE_RANDOM.nextBytes(code);
@@ -18,6 +22,7 @@ public class OAuth2Utils {
         .encodeToString(code);
   }
 
+  @Nonnull
   public static String generateCodeChallenge(String codeVerifier) {
     try {
       MessageDigest md = MessageDigest.getInstance("SHA-256");
