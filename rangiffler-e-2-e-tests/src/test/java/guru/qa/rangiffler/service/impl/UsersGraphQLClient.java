@@ -9,6 +9,7 @@ import guru.qa.GetPeopleQuery;
 import guru.qa.GetUserQuery;
 import guru.qa.GetUserQuery.User;
 import guru.qa.rangiffler.helpers.RandomDataUtils;
+import guru.qa.rangiffler.helpers.TestPrefix;
 import guru.qa.rangiffler.jupiter.extension.UserExtension;
 import guru.qa.rangiffler.model.FriendshipJson;
 import guru.qa.rangiffler.model.UserJson;
@@ -31,7 +32,7 @@ public final class UsersGraphQLClient extends GraphQLClient {
   }
 
   @Nonnull
-  @Step("[GraphQL] Текущий пользователь")
+  @Step(TestPrefix.GRAPHQL + "Текущий пользователь")
   public UserJson currentUser() {
     User userGql = response(new GetUserQuery(), token).user;
     return new UserJson(
@@ -47,7 +48,7 @@ public final class UsersGraphQLClient extends GraphQLClient {
   }
 
   @Nonnull
-  @Step("[GraphQL] Друзья")
+  @Step(TestPrefix.GRAPHQL + "Друзья")
   public List<UserJson> friendsQuery(Integer page, Integer size, String searchQuery) {
     GetFriendsQuery friendsQuery = GetFriendsQuery.builder()
         .page(page)
@@ -74,7 +75,7 @@ public final class UsersGraphQLClient extends GraphQLClient {
   }
 
   @Nonnull
-  @Step("[GraphQL] Входящие запросы дружбы")
+  @Step(TestPrefix.GRAPHQL + "Входящие запросы дружбы")
   public List<UserJson> invitationsQuery(Integer page, Integer size, String searchQuery) {
     GetInvitationsQuery invitationsQuery = GetInvitationsQuery.builder()
         .page(page)
@@ -101,7 +102,7 @@ public final class UsersGraphQLClient extends GraphQLClient {
   }
 
   @Nonnull
-  @Step("[GraphQL] Исходящие запросы дружбы")
+  @Step(TestPrefix.GRAPHQL + "Исходящие запросы дружбы")
   public List<UserJson> outcomeInvitationsQuery(Integer page, Integer size, String searchQuery) {
     GetOutcomeInvitationsQuery outcomeInvitationsQuery = GetOutcomeInvitationsQuery.builder()
         .page(page)
@@ -128,7 +129,7 @@ public final class UsersGraphQLClient extends GraphQLClient {
   }
 
   @Nonnull
-  @Step("[GraphQL] Все пользователи")
+  @Step(TestPrefix.GRAPHQL + "Все пользователи")
   public List<UserJson> peopleQuery(Integer page, Integer size, String searchQuery) {
     GetPeopleQuery peopleQuery = GetPeopleQuery.builder()
         .page(page)
@@ -172,7 +173,7 @@ public final class UsersGraphQLClient extends GraphQLClient {
   }
 
   @Nonnull
-  @Step("[GraphQL] Создание входящих запросов дружбы")
+  @Step(TestPrefix.GRAPHQL + "Создание входящих запросов дружбы")
   public List<UserJson> createIncomeInvitation(UserJson user, int count) {
     final List<UsersGraphQLClient> result = IntStream.range(0, count)
         .mapToObj(i -> create(RandomDataUtils.getRandomUserName()))
@@ -182,7 +183,7 @@ public final class UsersGraphQLClient extends GraphQLClient {
   }
 
   @Nonnull
-  @Step("[GraphQL] Создание исходящих запросов дружбы")
+  @Step(TestPrefix.GRAPHQL + "Создание исходящих запросов дружбы")
   public List<UserJson> createOutcomeInvitation(int count) {
     final List<UserJson> result = IntStream.range(0, count)
         .mapToObj(i -> create(RandomDataUtils.getRandomUserName()))
@@ -193,7 +194,7 @@ public final class UsersGraphQLClient extends GraphQLClient {
   }
 
   @Nonnull
-  @Step("[GraphQL] Создание друзей")
+  @Step(TestPrefix.GRAPHQL + "Создание друзей")
   public List<UserJson> createFriends(UserJson user, int count) {
     final List<UserJson> result = createIncomeInvitation(user, count);
     result.forEach(this::acceptFriend);

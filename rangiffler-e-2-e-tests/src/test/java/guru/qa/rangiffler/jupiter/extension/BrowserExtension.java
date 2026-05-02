@@ -69,7 +69,7 @@ public final class BrowserExtension implements
 
   @Override
   public void afterEach(ExtensionContext context) throws Exception {
-    if (WebDriverRunner.hasWebDriverStarted()) {
+    while (WebDriverRunner.hasWebDriverStarted()) {
       Selenide.closeWebDriver();
     }
   }

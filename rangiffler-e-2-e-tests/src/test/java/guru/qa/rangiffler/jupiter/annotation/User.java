@@ -11,6 +11,8 @@ public @interface User {
 
   String username() default "";
 
+  Photo[] photos() default {};
+
   int friends() default 0;
 
   int incomeInvitations() default 0;
