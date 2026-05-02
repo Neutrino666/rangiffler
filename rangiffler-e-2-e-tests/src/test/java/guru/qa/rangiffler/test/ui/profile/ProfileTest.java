@@ -1,8 +1,8 @@
-package guru.qa.rangiffler.test.ui;
+package guru.qa.rangiffler.test.ui.profile;
 
 import static io.qameta.allure.SeverityLevel.BLOCKER;
 
-import guru.qa.rangiffler.helpers.TestPrefix;
+import guru.qa.rangiffler.model.TestPrefix;
 import guru.qa.rangiffler.jupiter.annotation.ApiLogin;
 import guru.qa.rangiffler.jupiter.annotation.User;
 import guru.qa.rangiffler.jupiter.meta.WebTest;
@@ -17,8 +17,8 @@ import org.junit.jupiter.api.Test;
 @WebTest
 @Tag("smoke")
 @Severity(BLOCKER)
-@Feature("Профиль")
-@DisplayName(TestPrefix.UI + "Профиль " + ProfilePage.ICON)
+@Feature("Profile")
+@DisplayName(TestPrefix.UI + "Profile " + ProfilePage.ICON)
 @ParametersAreNonnullByDefault
 public class ProfileTest {
 
@@ -27,6 +27,8 @@ public class ProfileTest {
   @ApiLogin
   @DisplayName(TestPrefix.UI_POSITIVE + "Просмотр страницы")
   void mainPageShouldBeDisplayedAfterSuccessLogin() {
-    ProfilePage.open().checkThatPageLoaded();
+    ProfilePage.open()
+        .checkThatPageLoaded()
+        .checkIsPresentFallbackAvatar();
   }
 }

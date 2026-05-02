@@ -2,15 +2,21 @@ package guru.qa.rangiffler.model;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @Getter
-@RequiredArgsConstructor
 @ParametersAreNonnullByDefault
 public enum PhotoFile {
 
-  MAN("cyberpunk-duck.png"),
-  DOG("man.jpeg");
+  CYBER_DUCK("cyberpunk-duck.png"),
+  MAN("man.jpeg");
 
-  private final String value;
+  @ToString.Include
+  private final String fileName;
+  private final String dirResources;
+
+  PhotoFile(String value) {
+    this.fileName = value;
+    this.dirResources = "img/" + value;
+  }
 }

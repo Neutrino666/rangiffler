@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import guru.qa.rangiffler.api.rest.core.CodeInterceptor;
 import guru.qa.rangiffler.api.rest.user.AuthApi;
 import guru.qa.rangiffler.api.rest.user.OAuth2Api;
-import guru.qa.rangiffler.helpers.TestPrefix;
+import guru.qa.rangiffler.model.TestPrefix;
 import guru.qa.rangiffler.jupiter.extension.ApiLoginExtension;
 import io.qameta.allure.Step;
 import java.io.IOException;

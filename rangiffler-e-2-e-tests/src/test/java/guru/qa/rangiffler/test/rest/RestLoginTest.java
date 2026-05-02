@@ -3,7 +3,7 @@ package guru.qa.rangiffler.test.rest;
 import static io.qameta.allure.SeverityLevel.BLOCKER;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import guru.qa.rangiffler.helpers.TestPrefix;
+import guru.qa.rangiffler.model.TestPrefix;
 import guru.qa.rangiffler.jupiter.annotation.ApiLogin;
 import guru.qa.rangiffler.jupiter.annotation.Token;
 import guru.qa.rangiffler.jupiter.annotation.User;

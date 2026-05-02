@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UserJson {
+public final class UserJson {
 
   @JsonProperty("id")
   UUID id;

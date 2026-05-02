@@ -1,4 +1,4 @@
-package guru.qa.rangiffler.helpers;
+package guru.qa.rangiffler.model;
 
 public interface TestPrefix {
 

@@ -1,8 +1,8 @@
 create table if not exists `user`
 (
     id                      binary(16) unique  not null default (UUID_TO_BIN(UUID(), true)),
-    username                varchar(50) unique not null,
-    password                varchar(255)       not null,
+    username                varchar(12) unique not null,
+    password                varchar(12)       not null,
     enabled                 boolean            not null,
     account_non_expired     boolean            not null,
     account_non_locked      boolean            not null,
