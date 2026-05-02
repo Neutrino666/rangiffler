@@ -7,8 +7,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import guru.qa.rangiffler.api.rest.core.CodeInterceptor;
 import guru.qa.rangiffler.api.rest.user.AuthApi;
 import guru.qa.rangiffler.api.rest.user.OAuth2Api;
-import guru.qa.rangiffler.model.TestPrefix;
 import guru.qa.rangiffler.jupiter.extension.ApiLoginExtension;
+import guru.qa.rangiffler.model.TestPrefix;
+import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import java.io.IOException;
 import java.net.CookieStore;
@@ -51,6 +52,7 @@ public final class AuthApiClient extends RestClient implements AuthApi {
   }
 
   @Nonnull
+  @Step(TestPrefix.REST + "Регистрация нового пользователя")
   public Response<Void> register(String username, String password, int statusCode) {
     Response<ResponseBody> authorizeResponse = execute(this::requestRegisterForm);
     return execute(() -> register(
@@ -68,29 +70,38 @@ public final class AuthApiClient extends RestClient implements AuthApi {
   public String login(String username, String password) {
     String codeVerifier = generateCodeVerifier();
     String codeChallenge = generateCodeChallenge(codeVerifier);
-    Response<ResponseBody> authorizeResponse = execute(
-        () -> authorize(
-            RESPONSE_TYPE,
-            CLIENT_ID,
-            SCOPE,
-            REDIRECT_URI,
-            codeChallenge,
-            SHA)
-    );
-    execute(
-        () -> login(
-            username,
-            password,
-            findCsrf(authorizeResponse)
+    Response<ResponseBody> authorizeResponse = Allure.step(
+        TestPrefix.REST + "authorize",
+        () -> execute(
+            () -> authorize(
+                RESPONSE_TYPE,
+                CLIENT_ID,
+                SCOPE,
+                REDIRECT_URI,
+                codeChallenge,
+                SHA)
         )
     );
-    Response<JsonNode> tokenResponse = execute(
-        () -> token(
-            ApiLoginExtension.getCode(),
-            REDIRECT_URI,
-            codeVerifier,
-            GRANT_TYPE,
-            CLIENT_ID
+    Allure.step(
+        TestPrefix.REST + "Логинимся",
+        () -> execute(
+            () -> login(
+                username,
+                password,
+                findCsrf(authorizeResponse)
+            )
+        )
+    );
+    Response<JsonNode> tokenResponse = Allure.step(
+        TestPrefix.REST + "Получаем токен",
+        () -> execute(
+            () -> token(
+                ApiLoginExtension.getCode(),
+                REDIRECT_URI,
+                codeVerifier,
+                GRANT_TYPE,
+                CLIENT_ID
+            )
         )
     );
     return tokenResponse.body().get("id_token").asText();
@@ -98,21 +109,18 @@ public final class AuthApiClient extends RestClient implements AuthApi {
 
   @Nonnull
   @Override
-  @Step(TestPrefix.REST + "Получаем форму регистрации")
   public Call<ResponseBody> requestRegisterForm() {
     return oAuth2Api.requestRegisterForm();
   }
 
   @Nonnull
   @Override
-  @Step(TestPrefix.REST + "Регистрация нового пользователя")
   public Call<Void> register(String username, String password, String passwordSubmit, String csrf) {
     return oAuth2Api.register(username, password, password, csrf);
   }
 
   @Nonnull
   @Override
-  @Step(TestPrefix.REST + "authorize")
   public Call<ResponseBody> authorize(
       String responseType, String clientId, String scope, String redirectUri,
       String codeChallenge, String codeChallengeMethod
@@ -122,7 +130,6 @@ public final class AuthApiClient extends RestClient implements AuthApi {
 
   @Nonnull
   @Override
-  @Step(TestPrefix.REST + "Логинимся")
   public Call<Void> login(String username, String password, String csrf) {
     return oAuth2Api.login(
         username,
@@ -133,7 +140,6 @@ public final class AuthApiClient extends RestClient implements AuthApi {
 
   @Nonnull
   @Override
-  @Step(TestPrefix.REST + "Получаем токен")
   public Call<JsonNode> token(String code, String redirectUri, String codeVerifier, String grantType, String clientId) {
     return oAuth2Api.token(
         code,

@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class RandomDataUtils {
+public final class RandomDataUtils {
 
   private static final Faker faker = new Faker();
 

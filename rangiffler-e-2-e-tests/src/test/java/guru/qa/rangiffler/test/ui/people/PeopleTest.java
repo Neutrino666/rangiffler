@@ -1,4 +1,4 @@
-package guru.qa.rangiffler.test.ui;
+package guru.qa.rangiffler.test.ui.people;
 
 import static io.qameta.allure.SeverityLevel.BLOCKER;
 

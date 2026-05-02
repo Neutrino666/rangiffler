@@ -12,9 +12,10 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.rangiffler.helpers.SelenideUtils;
 import guru.qa.rangiffler.model.Country;
-import guru.qa.rangiffler.model.PhotoFile;
+import guru.qa.rangiffler.model.Image;
 import guru.qa.rangiffler.page.components.Header;
 import io.qameta.allure.Step;
+import java.awt.image.BufferedImage;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import lombok.Getter;
@@ -67,7 +68,7 @@ public final class ProfilePage extends BasePage<ProfilePage> {
   }
 
   @Step(ICON + "Set firstname")
-  public @Nonnull ProfilePage setAvatar(PhotoFile photo) {
+  public @Nonnull ProfilePage setAvatar(Image photo) {
     avatarInput.uploadFromClasspath(photo.getDirResources());
     return this;
   }
@@ -107,6 +108,12 @@ public final class ProfilePage extends BasePage<ProfilePage> {
   @Step(ICON + "Save")
   public @Nonnull ProfilePage save() {
     save.click();
+    return this;
+  }
+
+  @Step(ICON + "check image diff")
+  public @Nonnull ProfilePage assertAvatar(final BufferedImage expected) {
+    assertScreen(expected, uploadedAvatar);
     return this;
   }
 }

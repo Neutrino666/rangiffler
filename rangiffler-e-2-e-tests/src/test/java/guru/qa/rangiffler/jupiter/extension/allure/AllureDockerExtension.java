@@ -1,6 +1,7 @@
-package guru.qa.rangiffler.jupiter.extension;
+package guru.qa.rangiffler.jupiter.extension.allure;
 
 import guru.qa.rangiffler.config.Config;
+import guru.qa.rangiffler.jupiter.extension.SuiteExtension;
 import guru.qa.rangiffler.model.allure.AllureResults;
 import guru.qa.rangiffler.model.allure.DecodedAllureFile;
 import guru.qa.rangiffler.service.impl.AllureDockerApiClient;
@@ -19,7 +20,8 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 @ParametersAreNonnullByDefault
 public final class AllureDockerExtension implements SuiteExtension {
 
-  private static final boolean inDocker = "docker".equals(System.getProperty("test.env"));
+  public static final boolean IN_DOCKER = "docker".equals(System.getProperty("test.env"));
+
   private static final Base64.Encoder encoder = Base64.getEncoder();
   private static final Path allureResultsDirectory = Path.of("./rangiffler-e-2-e-tests/build/allure-results");
   private static final String projectId = Config.projectId;
@@ -29,7 +31,7 @@ public final class AllureDockerExtension implements SuiteExtension {
 
   @Override
   public void beforeSuite(ExtensionContext context) {
-    if (inDocker) {
+    if (IN_DOCKER) {
       try {
         allureDockerApiClient.createProjectIfNotExist(projectId);
         allureDockerApiClient.clean(projectId);
@@ -42,7 +44,7 @@ public final class AllureDockerExtension implements SuiteExtension {
 
   @Override
   public void afterSuite() {
-    if (inDocker && !allureBroken) {
+    if (IN_DOCKER && !allureBroken) {
       try (Stream<Path> paths = Files.walk(allureResultsDirectory).filter(Files::isRegularFile)) {
         List<DecodedAllureFile> filesToSend = new ArrayList<>();
         for (Path allureResult : paths.toList()) {

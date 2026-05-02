@@ -1,3 +1,10 @@
+# Rangiffler
+Проект посвященный путешествиям. Микросервисный web сайт посвященный путешествиям. С возможностью добавления друзей
+и публикаций фото которые будут доступны друзьям.
+
+# Структура проекта
+<img src="services.png" width="600">
+
 ## **Технологии, использованные в Rangiffler 1.0**
 - [Spring Authorization Server](https://spring.io/projects/spring-authorization-server)
 - [Spring OAuth 2.0 Resource Server](https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/index.html)
@@ -22,6 +29,99 @@
 - [Gradle 9.0](https://docs.gradle.org/9.0.0/release-notes.html)
 - И многие другие
 
+# Минимальные предусловия для работы с проектом Rangiffler
+
+#### 0. Если у вас ОС Windows
+
+Во-первых, и в-главных, необходимо использовать [bash terminal](https://www.geeksforgeeks.org/working-on-git-bash/), а
+не powershell.
+[Полезное и короткое видео о git bash](https://www.youtube.com/watch?v=zM9Mb-otqww)
+Обязательно добавьте bash терминал в [качестве терминала в вашей IDE (IDEA, PyCharm)](https://stackoverflow.com/questions/20573213/embed-git-bash-in-pycharm-as-external-tool-and-work-with-it-in-pycharm-window-w)
+
+#### 1. Установить docker (Если не установлен)
+
+[Установка на Windows](https://docs.docker.com/desktop/install/windows-install/)
+
+[Установка на Mac](https://docs.docker.com/desktop/install/mac-install/) (Для ARM и Intel разные пакеты)
+
+[Установка на Linux](https://docs.docker.com/desktop/install/linux-install/)
+
+После установки и запуска docker daemon необходимо убедиться в работе команд docker, например `docker -v`:
+
+```bash
+  docker -v
+```
+
+#### 2. Спуллить контейнер postgres:15.1, zookeeper и kafka версии 7.3.2
+
+```bash
+ docker pull mysql:8.4.7
+ docker pull confluentinc/cp-zookeeper:7.3.2
+ docker pull confluentinc/cp-kafka:7.3.2
+```
+
+После `pull` вы увидите спуленный image командой `docker images`
+
+```posh
+mitriis-MacBook-Pro ~ % docker images            
+REPOSITORY                 TAG              IMAGE ID       CREATED         SIZE
+mysql                      8.4.7            9f3ec01f884d   10 days ago     1.07GB
+confluentinc/cp-kafka      7.3.2            db97697f6e28   12 months ago   457MB
+confluentinc/cp-zookeeper  7.3.2            6fe5551964f5   7 years ago     451MB
+
+```
+
+#### 3. Создать volume для сохранения данных из БД в docker на вашем компьютере
+
+```bash
+  docker volume create pgdata
+```
+
+#### 4. Запустить БД, zookeeper и kafka 3-мя последовательными командами:
+
+Запустив скрипт (Для Windows необходимо использовать bash terminal: gitbash, cygwin или wsl)
+
+```bash
+  bash localenv.sh
+```
+
+[Про IP zookeeper](https://github.com/confluentinc/cp-docker-images/issues/801#issuecomment-692085103)
+
+Если вы используете Windows и контейнер с БД не стартует с ошибкой в логе:
+
+```
+server started
+/usr/local/bin/docker-entrypoint.sh: running /docker-entrypoint-initdb.d/init-database.sh
+/usr/local/bin/docker-entrypoint.sh: /docker-entrypoint-initdb.d/init-database.sh: /bin/bash^M: bad interpreter: No such file or directory
+```
+
+То необходимо выполнить следующие команды в каталоге /postgres/script :
+
+```
+sed -i -e 's/\r$//' init-database.sh
+chmod +x init-database.sh
+```
+
+#### 5. Установить Java версии 21. Это необходимо, т.к. проект использует синтаксис Java 21
+
+Версию установленной Java необходимо проверить командой `java -version`
+
+```posh
+User-MacBook-Pro ~ % java -version
+openjdk version "21.0.1" 2023-10-17 LTS
+OpenJDK Runtime Environment Temurin-21.0.1+12 (build 21.0.1+12-LTS)
+OpenJDK 64-Bit Server VM Temurin-21.0.1+12 (build 21.0.1+12-LTS, mixed mode)
+```
+
+Если у вас несколько версий Java одновременно - то хотя бы одна из них должна быть 21
+Если java не установлена вовсе, то рекомендую установить OpenJDK (например,
+из https://adoptium.net/en-GB/temurin/releases/)
+
+#### 6. Установить пакетый менеджер для сборки front-end npm
+
+[Инструкция](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
+Рекомендованная версия Node.js - 22.6.0
+
 # Готовность диплома
 #### 1. ✅ BE
 #### 2. ✅ Unit тесты
@@ -38,17 +138,17 @@
 #### 5. ✅ REST тесты 
 - авторизация 6 шт
 #### 6. ❌ UI тесты
-Экспериментально реализована концепция смайл = страница.
+Экспериментально реализована концепция смайл == страница.
 
 | Страница         | Смайл    | количество | Готовность |
 |------------------|----------|------------|------------|
 | Welcome          | нет      | 1          | ✅         |
 | Авторизация      | нет      | 2          | ✅         |
 | Регистрация      | нет      | 9          | ✅         |
-| People           | 👤 👤 👤 | 1          | ❌         |
-| Profile          | 👤       | 1          | ❌         |
-| Travels          | 🌎        | ❌          | ❌       |
-| **всего**        |          | **14**     | ---------- |
+| People           | 👤 👤 👤 | 1          | ❌          |
+| Profile          | 👤       | 5          | ✅         |
+| Travels          | 🌎        | 0          | ❌         |
+| **всего**        |          | **18**     | ---------- |
 #### 7. ✅ Инфра докер
 #### 8. ✅ Kafka
 
@@ -179,7 +279,5 @@ UI будет доступен по ссылке
 #### 3. Selenoid UI доступен по адресу: http://localhost:9090/
 
 #### 5. Allure-ui доступен по адресу: http://localhost:5252/
-
-#### 4. Allure report доступен по адресу: http://localhost:5050/allure-docker-service/projects/niffler-ng/reports/latest/index.html
 
 <img src="/rangiffler-gql-client/src/assets/deer-logo.svg" width="250">

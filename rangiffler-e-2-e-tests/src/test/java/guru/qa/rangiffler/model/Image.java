@@ -1,12 +1,13 @@
 package guru.qa.rangiffler.model;
 
+import guru.qa.rangiffler.jupiter.extension.allure.AllureDockerExtension;
 import javax.annotation.ParametersAreNonnullByDefault;
 import lombok.Getter;
 import lombok.ToString;
 
 @Getter
 @ParametersAreNonnullByDefault
-public enum PhotoFile {
+public enum Image {
 
   CYBER_DUCK("cyberpunk-duck.png"),
   MAN("man.jpeg");
@@ -15,8 +16,11 @@ public enum PhotoFile {
   private final String fileName;
   private final String dirResources;
 
-  PhotoFile(String value) {
+  Image(String value) {
+    final String imgPrefix = AllureDockerExtension.IN_DOCKER
+        ? "img/docker/profile/"
+        : "img/profile/";
     this.fileName = value;
-    this.dirResources = "img/" + value;
+    this.dirResources = imgPrefix + value;
   }
 }
