@@ -278,7 +278,7 @@ UI будет доступен по ссылке
   bash docker-compose-e2e.sh # MacOs
 ```
 
-#### 3. Selenoid UI доступен по адресу: http://localhost:9090/
+#### 3. Selenoid UI доступен по адресу: http://localhost:9091/
 
 #### 5. Allure-ui доступен по адресу: http://localhost:5252/
 
