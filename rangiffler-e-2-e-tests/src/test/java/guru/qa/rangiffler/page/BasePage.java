@@ -8,6 +8,7 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.rangiffler.config.Config;
 import guru.qa.rangiffler.helpers.ScreenDiffResult;
+import guru.qa.rangiffler.model.TestIcon;
 import io.qameta.allure.Step;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -24,7 +25,7 @@ public abstract class BasePage<T extends BasePage<?>> {
   protected final @Nonnull SelenideElement snackbar = $(".MuiAlert-message").as("Alert");
 
   @SuppressWarnings("unchecked")
-  @Step("Check snackbar exist: '{text}'")
+  @Step(TestIcon.UNDEFINED + "Check snackbar exist: '{text}'")
   public T checkSnackbarText(String text) {
     snackbar.shouldHave(text(text));
     return (T) this;

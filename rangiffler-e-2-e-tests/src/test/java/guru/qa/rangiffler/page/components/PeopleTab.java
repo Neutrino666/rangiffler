@@ -8,14 +8,14 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static guru.qa.rangiffler.condition.PeopleCondition.containsAllPeopleInAnyOrder;
-import static guru.qa.rangiffler.page.PeoplePage.ICON;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.rangiffler.helpers.SelenideUtils;
+import guru.qa.rangiffler.model.TestIcon;
 import guru.qa.rangiffler.model.UserJson;
-import guru.qa.rangiffler.page.PeoplePage;
 import guru.qa.rangiffler.model.enums.PeopleTabSelector;
+import guru.qa.rangiffler.page.PeoplePage;
 import io.qameta.allure.Step;
 import java.util.List;
 import java.util.stream.Stream;
@@ -76,7 +76,7 @@ public final class PeopleTab extends BaseComponent<Header> {
     super($(selector.getValue()));
   }
 
-  @Step(ICON + "Проверка загрузки")
+  @Step(TestIcon.PEOPLE + "Проверка загрузки")
   public @Nonnull PeopleTab checkThatPageLoaded() {
     SelenideUtils.visible(self);
     SelenideUtils.visibleAndInteractable(submitBtn);
@@ -89,7 +89,7 @@ public final class PeopleTab extends BaseComponent<Header> {
     return new PeoplePage();
   }
 
-  @Step(ICON + "Проверка наполнения таблицы")
+  @Step(TestIcon.PEOPLE + "Проверка наполнения таблицы")
   public PeopleTab assertPeople(List<UserJson> expectedPeople) {
     people.shouldHave(containsAllPeopleInAnyOrder(expectedPeople));
     return this;
@@ -99,26 +99,26 @@ public final class PeopleTab extends BaseComponent<Header> {
     return assertPeople(Stream.of(expectedPeople).toList());
   }
 
-  @Step(ICON + "Вбиваем в поисковую строку '{text}'")
+  @Step(TestIcon.PEOPLE + "Вбиваем в поисковую строку '{text}'")
   public PeopleTab search(final String text) {
     searchInput.setValue(text);
     submitBtn.click();
     return this;
   }
 
-  @Step(ICON + "Проверка сообщения о не найденных пользователях")
+  @Step(TestIcon.PEOPLE + "Проверка сообщения о не найденных пользователях")
   public PeopleTab checkNoUsersMessage() {
     empty.shouldHave(text("There are no users yet"));
     return this;
   }
 
-  @Step(ICON + "Проверка присутствуют пользователи")
+  @Step(TestIcon.PEOPLE + "Проверка присутствуют пользователи")
   public PeopleTab existPeople() {
     people.shouldHave(sizeGreaterThanOrEqual(1));
     return this;
   }
 
-  @Step(ICON + "Изменение статуса дружбы на '{button}'")
+  @Step(TestIcon.PEOPLE + "Изменение статуса дружбы на '{button}'")
   public PeopleTab changeFriendship(final UserJson targetUser, CrudButton button) {
     findUserInTable(targetUser).$$("button")
         .findBy(text(button.name()))
@@ -126,13 +126,13 @@ public final class PeopleTab extends BaseComponent<Header> {
     return this;
   }
 
-  @Step(ICON + "Изменение статуса дружбы на '{button}'")
+  @Step(TestIcon.PEOPLE + "Изменение статуса дружбы на '{button}'")
   public PeopleTab checkWaiting(final UserJson targetUser) {
     findUserInTable(targetUser).$$("td").last().shouldHave(text("Waiting..."), visible);
     return this;
   }
 
-  @Step(ICON + "Изменение статуса дружбы на '{button}'")
+  @Step(TestIcon.PEOPLE + "Изменение статуса дружбы на '{button}'")
   public PeopleTab checkButtonsByUser(final UserJson targetUser, final CrudButton... buttons) {
     List<String> expectedTexts = Stream.of(buttons).map(CrudButton::getValue).toList();
     findUserInTable(targetUser).$$("button")

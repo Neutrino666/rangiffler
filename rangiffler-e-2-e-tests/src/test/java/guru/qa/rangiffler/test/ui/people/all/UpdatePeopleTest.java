@@ -6,6 +6,7 @@ import static io.qameta.allure.SeverityLevel.NORMAL;
 import guru.qa.rangiffler.jupiter.annotation.ApiLogin;
 import guru.qa.rangiffler.jupiter.annotation.User;
 import guru.qa.rangiffler.jupiter.meta.WebTest;
+import guru.qa.rangiffler.model.TestIcon;
 import guru.qa.rangiffler.model.TestPrefix;
 import guru.qa.rangiffler.model.UserJson;
 import guru.qa.rangiffler.page.PeoplePage;
@@ -22,7 +23,7 @@ import org.junit.jupiter.api.Test;
 @WebTest
 @Tag("smoke")
 @Feature("People")
-@DisplayName(TestPrefix.UI + PeoplePage.ICON + "People")
+@DisplayName(TestPrefix.UI + TestIcon.PEOPLE + "People")
 @ParametersAreNonnullByDefault
 public class UpdatePeopleTest {
 

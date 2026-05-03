@@ -7,11 +7,12 @@ import static io.qameta.allure.SeverityLevel.TRIVIAL;
 import guru.qa.rangiffler.jupiter.annotation.ApiLogin;
 import guru.qa.rangiffler.jupiter.annotation.User;
 import guru.qa.rangiffler.jupiter.meta.WebTest;
+import guru.qa.rangiffler.model.TestIcon;
 import guru.qa.rangiffler.model.TestPrefix;
 import guru.qa.rangiffler.model.UserJson;
+import guru.qa.rangiffler.model.enums.PeopleTabSelector;
 import guru.qa.rangiffler.page.PeoplePage;
 import guru.qa.rangiffler.page.components.PeopleTab;
-import guru.qa.rangiffler.model.enums.PeopleTabSelector;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -23,7 +24,7 @@ import org.junit.jupiter.api.Test;
 @WebTest
 @Tag("smoke")
 @Feature("Outcome Invitations")
-@DisplayName(TestPrefix.UI + PeoplePage.ICON + "Outcome Invitations")
+@DisplayName(TestPrefix.UI + TestIcon.PEOPLE + "Outcome Invitations")
 @ParametersAreNonnullByDefault
 public class OutcomeInvitationsTest {
 

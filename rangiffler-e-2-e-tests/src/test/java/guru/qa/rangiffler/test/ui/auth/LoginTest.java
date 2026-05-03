@@ -2,9 +2,10 @@ package guru.qa.rangiffler.test.ui.auth;
 
 import static io.qameta.allure.SeverityLevel.BLOCKER;
 
-import guru.qa.rangiffler.model.TestPrefix;
 import guru.qa.rangiffler.jupiter.annotation.User;
 import guru.qa.rangiffler.jupiter.meta.WebTest;
+import guru.qa.rangiffler.model.TestIcon;
+import guru.qa.rangiffler.model.TestPrefix;
 import guru.qa.rangiffler.model.UserJson;
 import guru.qa.rangiffler.page.auth.LoginPage;
 import guru.qa.rangiffler.page.auth.WelcomePage;
@@ -20,7 +21,7 @@ import org.junit.jupiter.api.Test;
 @Tag("smoke")
 @Severity(BLOCKER)
 @Feature("Авторизация")
-@DisplayName(TestPrefix.UI + LoginPage.ICON + "Идентификация => Аутентификация => Авторизация")
+@DisplayName(TestPrefix.UI + TestIcon.LOGIN + "Идентификация => Аутентификация => Авторизация")
 @ParametersAreNonnullByDefault
 public class LoginTest {
 

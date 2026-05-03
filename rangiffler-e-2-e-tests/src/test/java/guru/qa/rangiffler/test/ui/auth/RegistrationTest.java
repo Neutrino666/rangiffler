@@ -3,9 +3,10 @@ package guru.qa.rangiffler.test.ui.auth;
 import static io.qameta.allure.SeverityLevel.BLOCKER;
 
 import guru.qa.rangiffler.helpers.RandomDataUtils;
-import guru.qa.rangiffler.model.TestPrefix;
 import guru.qa.rangiffler.jupiter.annotation.User;
 import guru.qa.rangiffler.jupiter.meta.WebTest;
+import guru.qa.rangiffler.model.TestIcon;
+import guru.qa.rangiffler.model.TestPrefix;
 import guru.qa.rangiffler.model.UserJson;
 import guru.qa.rangiffler.page.auth.RegistrationPage;
 import guru.qa.rangiffler.page.auth.WelcomePage;
@@ -23,7 +24,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 @Tag("smoke")
 @Severity(BLOCKER)
 @Feature("Авторизация")
-@DisplayName(TestPrefix.UI + RegistrationPage.ICON + "Регистрация")
+@DisplayName(TestPrefix.UI + TestIcon.REGISTRATION + "Регистрация")
 @ParametersAreNonnullByDefault
 public class RegistrationTest {
 

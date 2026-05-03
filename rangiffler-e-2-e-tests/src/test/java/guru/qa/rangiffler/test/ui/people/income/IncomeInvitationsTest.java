@@ -8,6 +8,7 @@ import static io.qameta.allure.SeverityLevel.TRIVIAL;
 import guru.qa.rangiffler.jupiter.annotation.ApiLogin;
 import guru.qa.rangiffler.jupiter.annotation.User;
 import guru.qa.rangiffler.jupiter.meta.WebTest;
+import guru.qa.rangiffler.model.TestIcon;
 import guru.qa.rangiffler.model.TestPrefix;
 import guru.qa.rangiffler.model.UserJson;
 import guru.qa.rangiffler.page.PeoplePage;
@@ -26,7 +27,7 @@ import org.junit.jupiter.api.Test;
 @Tag("smoke")
 @Severity(BLOCKER)
 @Feature("Income Invitations")
-@DisplayName(TestPrefix.UI + PeoplePage.ICON + "Income Invitations")
+@DisplayName(TestPrefix.UI + TestIcon.PEOPLE + "Income Invitations")
 @ParametersAreNonnullByDefault
 public class IncomeInvitationsTest {
 
