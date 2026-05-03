@@ -1,4 +1,4 @@
-package guru.qa.rangiffler.model;
+package guru.qa.rangiffler.model.enums;
 
 import guru.qa.rangiffler.jupiter.extension.allure.AllureDockerExtension;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -18,9 +18,14 @@ public enum Image {
 
   Image(String value) {
     final String imgPrefix = AllureDockerExtension.IN_DOCKER
-        ? "img/docker/profile/"
-        : "img/profile/";
+        ? "img/docker/"
+        : "img/";
     this.fileName = value;
     this.dirResources = imgPrefix + value;
+  }
+
+  @Override
+  public String toString() {
+    return this.getClass().getSimpleName() + "." + name();
   }
 }

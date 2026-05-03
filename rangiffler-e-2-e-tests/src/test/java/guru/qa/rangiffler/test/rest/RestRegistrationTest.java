@@ -3,6 +3,7 @@ package guru.qa.rangiffler.test.rest;
 import static io.qameta.allure.SeverityLevel.BLOCKER;
 
 import guru.qa.rangiffler.helpers.RandomDataUtils;
+import guru.qa.rangiffler.model.TestIcon;
 import guru.qa.rangiffler.model.TestPrefix;
 import guru.qa.rangiffler.service.impl.AuthApiClient;
 import io.qameta.allure.Feature;
@@ -17,7 +18,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 @Tag("smoke")
 @Severity(BLOCKER)
 @Feature("Авторизация")
-@DisplayName(TestPrefix.REST + "Registration")
+@DisplayName(TestPrefix.REST + TestIcon.REGISTRATION + "Registration")
 public final class RestRegistrationTest extends BaseRestTest {
 
   private final AuthApiClient authApiClient = new AuthApiClient();
@@ -25,7 +26,8 @@ public final class RestRegistrationTest extends BaseRestTest {
   @Test
   @DisplayName(TestPrefix.REST + "Регистрация нового пользователя")
   void newUserShouldRegisteredByApiCall1() {
-    authApiClient.register(RandomDataUtils.getRandomUserName(), RandomDataUtils.getRandomPassword(), HttpStatus.SC_CREATED);
+    authApiClient.register(RandomDataUtils.getRandomUserName(), RandomDataUtils.getRandomPassword(),
+        HttpStatus.SC_CREATED);
   }
 
   @ValueSource(strings = {"sd", "12345567890123"})

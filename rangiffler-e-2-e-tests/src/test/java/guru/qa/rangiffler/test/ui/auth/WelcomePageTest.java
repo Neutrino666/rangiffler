@@ -2,8 +2,9 @@ package guru.qa.rangiffler.test.ui.auth;
 
 import static io.qameta.allure.SeverityLevel.BLOCKER;
 
-import guru.qa.rangiffler.model.TestPrefix;
 import guru.qa.rangiffler.jupiter.meta.WebTest;
+import guru.qa.rangiffler.model.TestIcon;
+import guru.qa.rangiffler.model.TestPrefix;
 import guru.qa.rangiffler.page.auth.WelcomePage;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
@@ -16,7 +17,7 @@ import org.junit.jupiter.api.Test;
 @Tag("smoke")
 @Severity(BLOCKER)
 @Feature("Приветственная страница")
-@DisplayName(TestPrefix.UI + "Welcome")
+@DisplayName(TestPrefix.UI + TestIcon.WELCOME + "Welcome")
 @ParametersAreNonnullByDefault
 public class WelcomePageTest {
 

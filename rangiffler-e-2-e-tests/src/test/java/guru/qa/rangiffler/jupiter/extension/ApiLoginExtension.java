@@ -13,7 +13,7 @@ import guru.qa.rangiffler.jupiter.annotation.User;
 import guru.qa.rangiffler.model.TestData;
 import guru.qa.rangiffler.model.UserJson;
 import guru.qa.rangiffler.service.impl.AuthApiClient;
-import guru.qa.rangiffler.service.impl.UsersGraphQLClient;
+import guru.qa.rangiffler.service.impl.UsersClient;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
@@ -131,7 +131,7 @@ public final class ApiLoginExtension implements
     if (username.isEmpty() && password.isEmpty()) {
       throw new RuntimeException("Пароль и логин должны быть заданы");
     }
-    UsersGraphQLClient userClient = new UsersGraphQLClient(authApiClient.login(username, password));
+    UsersClient userClient = new UsersClient(authApiClient.login(username, password));
     final List<UserJson> income = userClient.invitationsQuery(0, Integer.MAX_VALUE, "");
     final List<UserJson> outcome = userClient.outcomeInvitationsQuery(0, Integer.MAX_VALUE, "");
     final List<UserJson> friends = userClient.friendsQuery(0, Integer.MAX_VALUE, "");
@@ -140,7 +140,8 @@ public final class ApiLoginExtension implements
         password,
         income,
         outcome,
-        friends
+        friends,
+        List.of()
     );
   }
 

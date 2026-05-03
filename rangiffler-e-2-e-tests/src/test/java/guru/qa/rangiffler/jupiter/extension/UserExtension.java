@@ -9,10 +9,11 @@ import guru.qa.rangiffler.jupiter.annotation.User;
 import guru.qa.rangiffler.model.TestData;
 import guru.qa.rangiffler.model.UserJson;
 import guru.qa.rangiffler.service.impl.AuthApiClient;
-import guru.qa.rangiffler.service.impl.UsersGraphQLClient;
+import guru.qa.rangiffler.service.impl.UsersClient;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.IntStream;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -40,24 +41,29 @@ public final class UserExtension implements
                 final String username = RandomDataUtils.getRandomUserName();
                 authApiClient.register(username, DEFAULT_PASSWORD);
                 final String token = authApiClient.login(username, DEFAULT_PASSWORD);
-                final UsersGraphQLClient usersGraphQLClient = new UsersGraphQLClient(token);
-                final UserJson user = usersGraphQLClient.currentUser();
+                final UsersClient usersClient = new UsersClient(token);
+                final UserJson user = usersClient.currentUser();
 
                 final List<UserJson> income = userAnno.incomeInvitations() > 0
-                    ? usersGraphQLClient.createIncomeInvitation(user, userAnno.incomeInvitations())
+                    ? usersClient.createIncomeInvitation(user, userAnno.incomeInvitations())
                     : List.of();
-                final List<UserJson> outcome = userAnno.incomeInvitations() > 0
-                    ? usersGraphQLClient.createOutcomeInvitation(userAnno.incomeInvitations())
+                final List<UserJson> outcome = userAnno.outcomeInvitations() > 0
+                    ? usersClient.createOutcomeInvitation(userAnno.outcomeInvitations())
                     : List.of();
-                final List<UserJson> friends = userAnno.incomeInvitations() > 0
-                    ? usersGraphQLClient.createFriends(user, userAnno.incomeInvitations())
+                final List<UserJson> friends = userAnno.friends() > 0
+                    ? usersClient.createFriends(user, userAnno.friends())
                     : List.of();
+                final List<UserJson> emptyPeople = IntStream.range(0, userAnno.emptyPeople())
+                    .mapToObj(u -> UsersClient.create(RandomDataUtils.getRandomUserName()))
+                    .map(UsersClient::currentUser)
+                    .toList();
 
                 final TestData testData = new TestData(
                     DEFAULT_PASSWORD,
                     income,
                     outcome,
-                    friends
+                    friends,
+                    emptyPeople
                 );
 
                 context.getStore(NAMESPACE).put(

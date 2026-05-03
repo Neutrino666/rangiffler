@@ -1,7 +1,7 @@
 package guru.qa.rangiffler.jupiter.annotation;
 
 import guru.qa.rangiffler.jupiter.extension.allure.ScreenShotTestExtension;
-import guru.qa.rangiffler.model.Image;
+import guru.qa.rangiffler.model.enums.Image;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

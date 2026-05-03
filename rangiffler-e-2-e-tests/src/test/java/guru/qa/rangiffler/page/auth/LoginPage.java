@@ -6,6 +6,7 @@ import static com.codeborne.selenide.Selenide.$;
 
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.rangiffler.helpers.SelenideUtils;
+import guru.qa.rangiffler.model.TestIcon;
 import guru.qa.rangiffler.page.BasePage;
 import guru.qa.rangiffler.page.TravelsPage;
 import io.qameta.allure.Step;
@@ -25,7 +26,7 @@ public final class LoginPage extends BasePage<LoginPage> {
   private final SelenideElement registerLink = $(".form__link").as("Ссылка на страницу регистрации");
   private final SelenideElement formError = $(".form__error").as("Ошибка в форме авторизации");
 
-  @Step("Авторизация username: '{username}' password: '{password}'")
+  @Step(TestIcon.LOGIN + "username: '{username}' password: '{password}'")
   public @Nonnull TravelsPage login(final String username, final String password) {
     setUsername(username);
     setPassword(password);
@@ -33,37 +34,37 @@ public final class LoginPage extends BasePage<LoginPage> {
     return new TravelsPage();
   }
 
-  @Step("Открытие страницы регистрации")
+  @Step(TestIcon.LOGIN + "Открытие страницы регистрации")
   public @Nonnull RegistrationPage openRegistrationPage() {
     registerLink.click();
     return new RegistrationPage();
   }
 
-  @Step("Ввод username: '{username}'")
+  @Step(TestIcon.LOGIN + "Ввод username: '{username}'")
   public @Nonnull LoginPage setUsername(final String username) {
     usernameInput.val(username);
     return this;
   }
 
-  @Step("Ввод password: '{password}'")
+  @Step(TestIcon.LOGIN + "Ввод password: '{password}'")
   public @Nonnull LoginPage setPassword(final String password) {
     passwordInput.val(password);
     return this;
   }
 
-  @Step("Клик submit")
+  @Step(TestIcon.LOGIN + "Клик submit")
   public @Nonnull LoginPage submit() {
     submitBtn.click();
     return this;
   }
 
-  @Step("Проверка текста ошибки: '{message}'")
+  @Step(TestIcon.LOGIN + "Проверка текста ошибки: '{message}'")
   public @Nonnull LoginPage checkError(final String message) {
     formError.shouldHave(text(message), visible);
     return this;
   }
 
-  @Step("Проверяем что страница прогрузилась")
+  @Step(TestIcon.LOGIN + "Проверяем что страница прогрузилась")
   public @Nonnull LoginPage checkThatPageLoaded() {
     SelenideUtils.visibleAndInteractable(usernameInput, passwordInput, submitBtn, registerLink);
     return this;

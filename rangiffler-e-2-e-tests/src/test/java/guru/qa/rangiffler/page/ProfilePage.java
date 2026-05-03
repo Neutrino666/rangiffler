@@ -11,8 +11,9 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.rangiffler.helpers.SelenideUtils;
-import guru.qa.rangiffler.model.Country;
-import guru.qa.rangiffler.model.Image;
+import guru.qa.rangiffler.model.TestIcon;
+import guru.qa.rangiffler.model.enums.Country;
+import guru.qa.rangiffler.model.enums.Image;
 import guru.qa.rangiffler.page.components.Header;
 import io.qameta.allure.Step;
 import java.awt.image.BufferedImage;
@@ -23,10 +24,9 @@ import lombok.Getter;
 @ParametersAreNonnullByDefault
 public final class ProfilePage extends BasePage<ProfilePage> {
 
-  public static final String ICON = "\uD83D\uDC64 ";
-  public static final String URL = CFG.frontUrl() + "profile";
+  public static final @Nonnull String URL = CFG.frontUrl() + "profile";
 
-  private final SelenideElement self = $(".MuiContainer-maxWidthLg").as(ICON);
+  private final SelenideElement self = $(".MuiContainer-maxWidthLg").as(TestIcon.PROFILE);
   private final SelenideElement title = self.$(".MuiTypography-h4").as("Title");
   private final SelenideElement avatarInput = self.$("#image__input").as("Avatar input");
   private final SelenideElement uploadedAvatar = self.$("img.MuiAvatar-img").as("Uploaded avatar");
@@ -45,47 +45,47 @@ public final class ProfilePage extends BasePage<ProfilePage> {
   @Getter
   private final Header header = new Header();
 
-  @Step(ICON + "Открываем")
+  @Step(TestIcon.PROFILE + "Открываем")
   public static @Nonnull ProfilePage open() {
     return Selenide.open(URL, ProfilePage.class);
   }
 
-  @Step(ICON + "Проверка загрузки")
+  @Step(TestIcon.PROFILE + "Проверка загрузки")
   public @Nonnull ProfilePage checkThatPageLoaded() {
     SelenideUtils.visible(self, title);
     avatarInput.shouldBe(exist);
     SelenideUtils.visibleAndInteractable(
-        usernameInput, firstnameInput, surnameInput, reset, surnameInput, save,locationInput
+        usernameInput, firstnameInput, surnameInput, reset, surnameInput, save, locationInput
     );
     header.checkThatComponentLoaded();
     return this;
   }
 
-  @Step(ICON + "Check is present fallback avatar")
+  @Step(TestIcon.PROFILE + "Check is present fallback avatar")
   public @Nonnull ProfilePage checkIsPresentFallbackAvatar() {
     fallbackAvatar.shouldBe(visible);
     return this;
   }
 
-  @Step(ICON + "Set firstname")
+  @Step(TestIcon.PROFILE + "Set firstname")
   public @Nonnull ProfilePage setAvatar(Image photo) {
     avatarInput.uploadFromClasspath(photo.getDirResources());
     return this;
   }
 
-  @Step(ICON + "Set firstname")
+  @Step(TestIcon.PROFILE + "Set firstname")
   public @Nonnull ProfilePage setFirstname(String firstname) {
     firstnameInput.setValue(firstname);
     return this;
   }
 
-  @Step(ICON + "Set surname")
+  @Step(TestIcon.PROFILE + "Set surname")
   public @Nonnull ProfilePage setSurname(String surname) {
     surnameInput.setValue(surname);
     return this;
   }
 
-  @Step(ICON + "Set country")
+  @Step(TestIcon.PROFILE + "Set country")
   public @Nonnull ProfilePage setLocation(Country country) {
     locationInput.click();
     locations.findBy(attribute("data-value", country.getCode()))
@@ -93,25 +93,25 @@ public final class ProfilePage extends BasePage<ProfilePage> {
     return this;
   }
 
-  @Step(ICON + "Check isPresent surname helper text")
+  @Step(TestIcon.PROFILE + "Check isPresent surname helper text")
   public @Nonnull ProfilePage checkIsPresentSurnameHelperText() {
     surnameHelperText.shouldBe(visible, text("Surname length has to be not longer that 100 symbols"));
     return this;
   }
 
-  @Step(ICON + "Check isPresent surname helper text")
+  @Step(TestIcon.PROFILE + "Check isPresent surname helper text")
   public @Nonnull ProfilePage checkIsPresentFirstnameHelperText() {
     firstnameHelperText.shouldBe(visible, text("First name length has to be not longer that 50 symbols"));
     return this;
   }
 
-  @Step(ICON + "Save")
+  @Step(TestIcon.PROFILE + "Save")
   public @Nonnull ProfilePage save() {
     save.click();
     return this;
   }
 
-  @Step(ICON + "check image diff")
+  @Step(TestIcon.PROFILE + "check image diff")
   public @Nonnull ProfilePage assertAvatar(final BufferedImage expected) {
     assertScreen(expected, uploadedAvatar);
     return this;

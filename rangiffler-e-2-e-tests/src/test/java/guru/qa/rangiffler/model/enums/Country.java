@@ -1,4 +1,4 @@
-package guru.qa.rangiffler.model;
+package guru.qa.rangiffler.model.enums;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import lombok.Getter;
@@ -15,4 +15,9 @@ public enum Country {
 
   private final String code;
   private final String name;
+
+  @Override
+  public String toString() {
+    return this.getClass().getSimpleName() + "." + name();
+  }
 }

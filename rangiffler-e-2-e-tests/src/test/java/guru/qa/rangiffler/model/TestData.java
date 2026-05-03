@@ -6,7 +6,8 @@ public record TestData(
     String password,
     List<UserJson> income,
     List<UserJson> outcome,
-    List<UserJson> friends
+    List<UserJson> friends,
+    List<UserJson> notFriends
 ) {
 
 }

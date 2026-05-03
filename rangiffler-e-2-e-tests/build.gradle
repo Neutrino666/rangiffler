@@ -43,7 +43,7 @@ allure {
 }
 
 apollo {
-    service("rangiffler"){
+    service("rangiffler") {
         generateKotlinModels.set(false)
         packageName.set("guru.qa")
         srcDir("src/test/graphql")
@@ -83,7 +83,7 @@ dependencies {
     testImplementation("com.squareup.retrofit2:converter-jackson:${retrofitVersion}") {
         exclude group: "com.squareup.okhttp3"
     }
-    testImplementation ("com.squareup.retrofit2:converter-scalars:${retrofitVersion}") {
+    testImplementation("com.squareup.retrofit2:converter-scalars:${retrofitVersion}") {
         exclude group: "com.squareup.okhttp3"
     }
     testImplementation "org.springframework.data:spring-data-commons:${springDataCommonsVersion}"
@@ -144,7 +144,7 @@ tasks.register('printVersion') {
     }
 }
 
-tasks.named {it == "generateRangifflerApolloSources"}.configureEach {
+tasks.named { it == "generateRangifflerApolloSources" }.configureEach {
     dependsOn("downloadRangifflerApolloSchemaFromIntrospection")
 }
 

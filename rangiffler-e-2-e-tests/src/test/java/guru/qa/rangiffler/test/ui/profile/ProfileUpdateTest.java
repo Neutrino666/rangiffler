@@ -7,9 +7,10 @@ import guru.qa.rangiffler.jupiter.annotation.ApiLogin;
 import guru.qa.rangiffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.rangiffler.jupiter.annotation.User;
 import guru.qa.rangiffler.jupiter.meta.WebTest;
-import guru.qa.rangiffler.model.Country;
-import guru.qa.rangiffler.model.Image;
+import guru.qa.rangiffler.model.TestIcon;
 import guru.qa.rangiffler.model.TestPrefix;
+import guru.qa.rangiffler.model.enums.Country;
+import guru.qa.rangiffler.model.enums.Image;
 import guru.qa.rangiffler.page.ProfilePage;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
@@ -23,7 +24,7 @@ import org.junit.jupiter.api.Test;
 @Tag("smoke")
 @Severity(BLOCKER)
 @Feature("Profile edit")
-@DisplayName(TestPrefix.UI + "Profile " + ProfilePage.ICON)
+@DisplayName(TestPrefix.UI + TestIcon.PROFILE + "Profile")
 @ParametersAreNonnullByDefault
 public class ProfileUpdateTest {
 

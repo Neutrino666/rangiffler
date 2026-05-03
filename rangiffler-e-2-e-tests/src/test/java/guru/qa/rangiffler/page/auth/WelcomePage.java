@@ -5,6 +5,7 @@ import static com.codeborne.selenide.Selenide.$;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.rangiffler.helpers.SelenideUtils;
+import guru.qa.rangiffler.model.TestIcon;
 import guru.qa.rangiffler.page.BasePage;
 import io.qameta.allure.Step;
 import javax.annotation.Nonnull;
@@ -15,7 +16,7 @@ import lombok.NoArgsConstructor;
 @ParametersAreNonnullByDefault
 public final class WelcomePage extends BasePage<LoginPage> {
 
-  public static final String URL = CFG.authUrl();
+  public static final @Nonnull String URL = CFG.authUrl();
 
   private final SelenideElement self = $("div .landing__wrapper").as("Приветственная страница");
 
@@ -25,25 +26,25 @@ public final class WelcomePage extends BasePage<LoginPage> {
   private final SelenideElement logo = self.$(".landing__logo").as("Логотип");
   private final SelenideElement siteTitle = self.$(".landing__header").as("Название сайта");
 
-  @Step("Открываем. Приветственную страницу")
+  @Step(TestIcon.WELCOME + "Открываем. Приветственную страницу")
   public static WelcomePage open() {
     return Selenide.open(URL, WelcomePage.class);
   }
 
-  @Step("Проверяем что страница прогрузилась")
+  @Step(TestIcon.WELCOME + "Проверяем что страница прогрузилась")
   public @Nonnull WelcomePage checkThatPageLoaded() {
     SelenideUtils.visible(self, logo, siteTitle);
     SelenideUtils.visibleAndInteractable(loginBtn, registerBtn);
     return this;
   }
 
-  @Step("Открываем страницу входа")
+  @Step(TestIcon.WELCOME + "Открываем страницу входа")
   public @Nonnull LoginPage goToLoginPage() {
     loginBtn.click();
     return new LoginPage();
   }
 
-  @Step("Открываем страницу регистрации")
+  @Step(TestIcon.WELCOME + "Открываем страницу регистрации")
   public @Nonnull RegistrationPage goToRegistrationPage() {
     registerBtn.click();
     return new RegistrationPage();

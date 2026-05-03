@@ -8,22 +8,24 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.rangiffler.config.Config;
 import guru.qa.rangiffler.helpers.ScreenDiffResult;
+import guru.qa.rangiffler.model.TestIcon;
 import io.qameta.allure.Step;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.imageio.ImageIO;
 
 @ParametersAreNonnullByDefault
 public abstract class BasePage<T extends BasePage<?>> {
 
-  protected static final Config CFG = Config.getInstance();
+  protected static final @Nonnull Config CFG = Config.getInstance();
 
-  protected final SelenideElement snackbar = $(".MuiAlert-message").as("Alert");
+  protected final @Nonnull SelenideElement snackbar = $(".MuiAlert-message").as("Alert");
 
   @SuppressWarnings("unchecked")
-  @Step("Check snackbar exist: '{text}'")
+  @Step(TestIcon.UNDEFINED + "Check snackbar exist: '{text}'")
   public T checkSnackbarText(String text) {
     snackbar.shouldHave(text(text));
     return (T) this;
@@ -52,5 +54,11 @@ public abstract class BasePage<T extends BasePage<?>> {
     } catch (IOException e) {
       throw new RuntimeException("Screen comparison failure: " + e);
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  public T refresh() {
+    Selenide.refresh();
+    return (T) this;
   }
 }

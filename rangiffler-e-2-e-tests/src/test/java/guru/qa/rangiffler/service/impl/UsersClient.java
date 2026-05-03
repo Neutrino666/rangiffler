@@ -9,9 +9,10 @@ import guru.qa.GetPeopleQuery;
 import guru.qa.GetUserQuery;
 import guru.qa.GetUserQuery.User;
 import guru.qa.rangiffler.helpers.RandomDataUtils;
-import guru.qa.rangiffler.model.TestPrefix;
 import guru.qa.rangiffler.jupiter.extension.UserExtension;
+import guru.qa.rangiffler.model.CountryJson;
 import guru.qa.rangiffler.model.FriendshipJson;
+import guru.qa.rangiffler.model.TestPrefix;
 import guru.qa.rangiffler.model.UserJson;
 import guru.qa.type.FriendshipAction;
 import guru.qa.type.FriendshipInput;
@@ -23,12 +24,20 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public final class UsersGraphQLClient extends GraphQLClient {
+public final class UsersClient extends GraphQLClient {
 
   private final String token;
 
-  public UsersGraphQLClient(String token) {
+  public UsersClient(String token) {
     this.token = token;
+  }
+
+  @Nonnull
+  public static UsersClient create(String username) {
+    AuthApiClient authClient = new AuthApiClient(null);
+    authClient.register(username, UserExtension.DEFAULT_PASSWORD);
+    final String token = authClient.login(username, UserExtension.DEFAULT_PASSWORD);
+    return new UsersClient(token);
   }
 
   @Nonnull
@@ -41,7 +50,11 @@ public final class UsersGraphQLClient extends GraphQLClient {
         userGql.firstname,
         userGql.surname,
         userGql.avatar,
-        userGql.location.code,
+        new CountryJson(
+            userGql.location.code,
+            userGql.location.name,
+            null
+        ),
         null,
         null
     );
@@ -66,7 +79,11 @@ public final class UsersGraphQLClient extends GraphQLClient {
                 userGql.firstname,
                 userGql.surname,
                 userGql.avatar,
-                userGql.location.code,
+                new CountryJson(
+                    userGql.location.code,
+                    userGql.location.name,
+                    userGql.location.flag
+                ),
                 userGql.friendStatus,
                 null
             )
@@ -93,7 +110,11 @@ public final class UsersGraphQLClient extends GraphQLClient {
                 userGql.firstname,
                 userGql.surname,
                 userGql.avatar,
-                userGql.location.code,
+                new CountryJson(
+                    userGql.location.code,
+                    userGql.location.name,
+                    userGql.location.flag
+                ),
                 userGql.friendStatus,
                 null
             )
@@ -120,7 +141,11 @@ public final class UsersGraphQLClient extends GraphQLClient {
                 userGql.firstname,
                 userGql.surname,
                 userGql.avatar,
-                userGql.location.code,
+                new CountryJson(
+                    userGql.location.code,
+                    userGql.location.name,
+                    userGql.location.flag
+                ),
                 userGql.friendStatus,
                 null
             )
@@ -146,7 +171,11 @@ public final class UsersGraphQLClient extends GraphQLClient {
                 userGql.firstname,
                 userGql.surname,
                 userGql.avatar,
-                userGql.location.code,
+                new CountryJson(
+                    userGql.location.code,
+                    userGql.location.name,
+                    userGql.location.flag
+                ),
                 userGql.friendStatus,
                 null
             )
@@ -175,11 +204,11 @@ public final class UsersGraphQLClient extends GraphQLClient {
   @Nonnull
   @Step(TestPrefix.GRAPHQL + "Создание входящих запросов дружбы")
   public List<UserJson> createIncomeInvitation(UserJson user, int count) {
-    final List<UsersGraphQLClient> result = IntStream.range(0, count)
+    final List<UsersClient> result = IntStream.range(0, count)
         .mapToObj(i -> create(RandomDataUtils.getRandomUserName()))
         .toList();
     result.forEach(u -> u.sendInvitation(user));
-    return result.stream().map(UsersGraphQLClient::currentUser).toList();
+    return result.stream().map(UsersClient::currentUser).toList();
   }
 
   @Nonnull
@@ -187,7 +216,7 @@ public final class UsersGraphQLClient extends GraphQLClient {
   public List<UserJson> createOutcomeInvitation(int count) {
     final List<UserJson> result = IntStream.range(0, count)
         .mapToObj(i -> create(RandomDataUtils.getRandomUserName()))
-        .map(UsersGraphQLClient::currentUser)
+        .map(UsersClient::currentUser)
         .toList();
     result.forEach(this::sendInvitation);
     return result;
@@ -199,14 +228,6 @@ public final class UsersGraphQLClient extends GraphQLClient {
     final List<UserJson> result = createIncomeInvitation(user, count);
     result.forEach(this::acceptFriend);
     return result;
-  }
-
-  @Nonnull
-  private UsersGraphQLClient create(String username) {
-    AuthApiClient authClient = new AuthApiClient(null);
-    authClient.register(username, UserExtension.DEFAULT_PASSWORD);
-    final String token = authClient.login(username, UserExtension.DEFAULT_PASSWORD);
-    return new UsersGraphQLClient(token);
   }
 
   @Nonnull

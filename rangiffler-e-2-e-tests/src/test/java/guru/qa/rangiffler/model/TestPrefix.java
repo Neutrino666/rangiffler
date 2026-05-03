@@ -7,7 +7,7 @@ public interface TestPrefix {
   String SCREEN = "[Screen] ";
 
   String GRAPHQL = "[GRAPHQL] ";
-  String GRPC = "[GRPC] ";
+  String GRPC = "[gRPC] ";
 
   String UI = "[UI] ";
   String UI_POSITIVE = UI + POSITIVE;

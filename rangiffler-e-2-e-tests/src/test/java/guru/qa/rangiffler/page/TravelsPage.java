@@ -8,6 +8,7 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.rangiffler.helpers.SelenideUtils;
+import guru.qa.rangiffler.model.TestIcon;
 import guru.qa.rangiffler.page.components.Header;
 import io.qameta.allure.Step;
 import javax.annotation.Nonnull;
@@ -17,24 +18,23 @@ import lombok.Getter;
 @ParametersAreNonnullByDefault
 public final class TravelsPage extends BasePage<TravelsPage> {
 
-  public static final String ICON = "\uD83C\uDF0E ";
-  public static final String URL = CFG.frontUrl() + "my-travels";
+  public static final @Nonnull String URL = CFG.frontUrl() + "my-travels";
 
-  private final SelenideElement self = $(".MuiContainer-maxWidthLg").as(ICON);
-  private final SelenideElement map = self.$("div .worldmap__figure-container").as("Карта: " + ICON);
+  private final SelenideElement self = $(".MuiContainer-maxWidthLg").as(TestIcon.TRAVELS);
+  private final SelenideElement map = self.$("div .worldmap__figure-container").as("Карта: " + TestIcon.TRAVELS);
   private final SelenideElement addPhotoBtn = self.$("div .worldmap__figure-container + div button")
       .as("Кнопка: Add photo");
   private final ElementsCollection travelsSwitchButtons = self.$$(".MuiToggleButtonGroup-root button")
       .as("Кнопки: с/без друзей");
   private final SelenideElement title = $(".MuiTypography-h4").as(this.getClass().getSimpleName() + " title");
-  private final ElementsCollection pageChangeButtons = self.$$(".MuiGrid-spacing-xs-3 + div button")
+  private final ElementsCollection prevNextButtons = self.$$(".MuiGrid-spacing-xs-3 + div button")
       .as("Кнопки: previous и next");
   private final ElementsCollection photoCards = self.$$(".MuiPaper-elevation").as("Список фото");
 
   @Getter
   private final Header header = new Header();
 
-  @Step(ICON + "Проверка загрузки")
+  @Step(TestIcon.TRAVELS + "Проверка загрузки")
   public @Nonnull TravelsPage checkThatPageLoaded() {
     SelenideUtils.visible(self, map, addPhotoBtn, title);
     travelsSwitchButtons.shouldHave(size(2))
@@ -44,7 +44,7 @@ public final class TravelsPage extends BasePage<TravelsPage> {
     return this;
   }
 
-  @Step(ICON + "Открываем")
+  @Step(TestIcon.TRAVELS + "Открываем")
   public static @Nonnull TravelsPage open() {
     return Selenide.open(URL, TravelsPage.class);
   }
