@@ -17,6 +17,8 @@ import lombok.NoArgsConstructor;
 @ParametersAreNonnullByDefault
 public final class LoginPage extends BasePage<LoginPage> {
 
+  public static final @Nonnull String ICON = "\uD83D\uDD12 ";
+
   public static final @Nonnull String URL = CFG.authUrl() + "login";
 
   private final SelenideElement usernameInput = $("input[ name = 'username' ]").as("Поле ввода: логин");

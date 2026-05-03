@@ -11,8 +11,8 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.rangiffler.helpers.SelenideUtils;
-import guru.qa.rangiffler.model.Country;
-import guru.qa.rangiffler.model.Image;
+import guru.qa.rangiffler.model.enums.Country;
+import guru.qa.rangiffler.model.enums.Image;
 import guru.qa.rangiffler.page.components.Header;
 import io.qameta.allure.Step;
 import java.awt.image.BufferedImage;
@@ -23,8 +23,8 @@ import lombok.Getter;
 @ParametersAreNonnullByDefault
 public final class ProfilePage extends BasePage<ProfilePage> {
 
-  public static final String ICON = "\uD83D\uDC64 ";
-  public static final String URL = CFG.frontUrl() + "profile";
+  public static final @Nonnull String ICON = "\uD83E\uDDD1 ";
+  public static final @Nonnull String URL = CFG.frontUrl() + "profile";
 
   private final SelenideElement self = $(".MuiContainer-maxWidthLg").as(ICON);
   private final SelenideElement title = self.$(".MuiTypography-h4").as("Title");

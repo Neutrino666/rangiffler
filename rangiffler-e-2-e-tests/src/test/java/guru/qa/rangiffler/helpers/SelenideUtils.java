@@ -16,7 +16,7 @@ public final class SelenideUtils {
   }
 
   public static void visible(SelenideElement... els) {
-    Stream.of(els).forEach(el -> el.shouldBe(visible));;
+    Stream.of(els).forEach(el -> el.shouldBe(visible));
   }
 
   public static void exist(SelenideElement... els) {

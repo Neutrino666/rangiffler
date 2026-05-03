@@ -15,7 +15,9 @@ import lombok.NoArgsConstructor;
 @ParametersAreNonnullByDefault
 public final class WelcomePage extends BasePage<LoginPage> {
 
-  public static final String URL = CFG.authUrl();
+  public static final @Nonnull String ICON = "\uD83E\uDD17 ";
+
+  public static final @Nonnull String URL = CFG.authUrl();
 
   private final SelenideElement self = $("div .landing__wrapper").as("Приветственная страница");
 

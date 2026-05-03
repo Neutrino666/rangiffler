@@ -1,8 +1,6 @@
 package guru.qa.rangiffler.page.auth;
 
-import static com.codeborne.selenide.Condition.interactable;
 import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 import com.codeborne.selenide.Selenide;
@@ -10,7 +8,6 @@ import com.codeborne.selenide.SelenideElement;
 import guru.qa.rangiffler.helpers.SelenideUtils;
 import guru.qa.rangiffler.page.BasePage;
 import io.qameta.allure.Step;
-import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import lombok.NoArgsConstructor;
@@ -18,6 +15,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @ParametersAreNonnullByDefault
 public final class RegistrationPage extends BasePage<LoginPage> {
+
+  public static final @Nonnull String ICON = "\uD83D\uDD11 ";
 
   public static final @Nonnull String URL = CFG.authUrl() + "register";
 

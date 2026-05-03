@@ -23,7 +23,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 @Tag("smoke")
 @Severity(BLOCKER)
 @Feature("Авторизация")
-@DisplayName(TestPrefix.UI + "Регистрация")
+@DisplayName(TestPrefix.UI + RegistrationPage.ICON + "Регистрация")
 @ParametersAreNonnullByDefault
 public class RegistrationTest {
 

@@ -18,4 +18,6 @@ public @interface User {
   int incomeInvitations() default 0;
 
   int outcomeInvitations() default 0;
+
+  int emptyPeople() default 0;
 }

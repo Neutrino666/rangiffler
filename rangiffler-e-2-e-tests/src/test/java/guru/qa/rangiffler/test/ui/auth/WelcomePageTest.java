@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 @Tag("smoke")
 @Severity(BLOCKER)
 @Feature("Приветственная страница")
-@DisplayName(TestPrefix.UI + "Welcome")
+@DisplayName(TestPrefix.UI + WelcomePage.ICON + "Welcome")
 @ParametersAreNonnullByDefault
 public class WelcomePageTest {
 

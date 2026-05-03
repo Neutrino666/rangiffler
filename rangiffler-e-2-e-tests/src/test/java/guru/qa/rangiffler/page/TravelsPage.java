@@ -17,8 +17,8 @@ import lombok.Getter;
 @ParametersAreNonnullByDefault
 public final class TravelsPage extends BasePage<TravelsPage> {
 
-  public static final String ICON = "\uD83C\uDF0E ";
-  public static final String URL = CFG.frontUrl() + "my-travels";
+  public static final @Nonnull String ICON = "\uD83C\uDF0E ";
+  public static final @Nonnull String URL = CFG.frontUrl() + "my-travels";
 
   private final SelenideElement self = $(".MuiContainer-maxWidthLg").as(ICON);
   private final SelenideElement map = self.$("div .worldmap__figure-container").as("Карта: " + ICON);
@@ -27,7 +27,7 @@ public final class TravelsPage extends BasePage<TravelsPage> {
   private final ElementsCollection travelsSwitchButtons = self.$$(".MuiToggleButtonGroup-root button")
       .as("Кнопки: с/без друзей");
   private final SelenideElement title = $(".MuiTypography-h4").as(this.getClass().getSimpleName() + " title");
-  private final ElementsCollection pageChangeButtons = self.$$(".MuiGrid-spacing-xs-3 + div button")
+  private final ElementsCollection prevNextButtons = self.$$(".MuiGrid-spacing-xs-3 + div button")
       .as("Кнопки: previous и next");
   private final ElementsCollection photoCards = self.$$(".MuiPaper-elevation").as("Список фото");
 

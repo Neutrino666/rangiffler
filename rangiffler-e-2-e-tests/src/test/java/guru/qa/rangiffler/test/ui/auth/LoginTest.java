@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 @Tag("smoke")
 @Severity(BLOCKER)
 @Feature("Авторизация")
-@DisplayName(TestPrefix.UI + "Идентификация => Аутентификация => Авторизация")
+@DisplayName(TestPrefix.UI + LoginPage.ICON + "Идентификация => Аутентификация => Авторизация")
 @ParametersAreNonnullByDefault
 public class LoginTest {
 
@@ -45,6 +45,16 @@ public class LoginTest {
   @DisplayName(TestPrefix.UI_NEGATIVE + "Ошибка не валидных логина / пароля")
   void userShouldStayOnLoginPageAfterLoginWithBadCredentials() {
     loginPage.setUsername("notExistUser")
+        .setPassword("wrongPass")
+        .submit()
+        .checkError("Bad credentials");
+  }
+
+  @User
+  @Test
+  @DisplayName(TestPrefix.UI_NEGATIVE + "Ошибка не валидного пароля")
+  void userShouldStayOnLoginPageAfterLoginWithBadPassword(UserJson user) {
+    loginPage.setUsername(user.getUsername())
         .setPassword("wrongPass")
         .submit()
         .checkError("Bad credentials");

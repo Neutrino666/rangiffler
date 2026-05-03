@@ -18,11 +18,11 @@ import org.junit.jupiter.api.Test;
 @Tag("smoke")
 @Severity(BLOCKER)
 @Feature("Profile")
-@DisplayName(TestPrefix.UI + "Profile " + ProfilePage.ICON)
+@DisplayName(TestPrefix.UI + ProfilePage.ICON + "Profile")
 @ParametersAreNonnullByDefault
 public class ProfileTest {
 
-  @User
+  @User(incomeInvitations = 2)
   @Test
   @ApiLogin
   @DisplayName(TestPrefix.UI_POSITIVE + "Просмотр страницы")
