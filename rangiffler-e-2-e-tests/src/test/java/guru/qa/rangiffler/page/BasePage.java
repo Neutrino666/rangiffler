@@ -25,7 +25,7 @@ public abstract class BasePage<T extends BasePage<?>> {
   protected final @Nonnull SelenideElement snackbar = $(".MuiAlert-message").as("Alert");
 
   @SuppressWarnings("unchecked")
-  @Step(TestIcon.UNDEFINED + "Check snackbar exist: '{text}'")
+  @Step(TestIcon.SNACKBAR + "Check snackbar exist: '{text}'")
   public T checkSnackbarText(String text) {
     snackbar.shouldHave(text(text));
     return (T) this;

@@ -19,6 +19,6 @@ public interface TestIcon {
   @Nonnull
   String WELCOME = "\uD83E\uDD17 ";
   @Nonnull
-  String UNDEFINED = "❓ ";
+  String SNACKBAR = "\uD83D\uDD14 ";
 
 }
