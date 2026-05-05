@@ -7,7 +7,7 @@ import static com.codeborne.selenide.Condition.matchText;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
-import static guru.qa.rangiffler.condition.PeopleCondition.containsAllPeopleInAnyOrder;
+import static guru.qa.rangiffler.condition.PeopleCondition.peopleInAnyOrder;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
@@ -91,7 +91,7 @@ public final class PeopleTab extends BaseComponent<Header> {
 
   @Step(TestIcon.PEOPLE + "Проверка наполнения таблицы")
   public PeopleTab assertPeople(List<UserJson> expectedPeople) {
-    people.shouldHave(containsAllPeopleInAnyOrder(expectedPeople));
+    people.shouldHave(peopleInAnyOrder(expectedPeople));
     return this;
   }
 

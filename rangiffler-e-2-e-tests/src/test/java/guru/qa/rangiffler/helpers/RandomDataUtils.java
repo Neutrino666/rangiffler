@@ -20,6 +20,11 @@ public final class RandomDataUtils {
   }
 
   @Nonnull
+  public static String getRandomTravelDescription() {
+    return "travel with " + faker.funnyName().name();
+  }
+
+  @Nonnull
   public static String getRandomSurname() {
     return faker.name().lastName();
   }

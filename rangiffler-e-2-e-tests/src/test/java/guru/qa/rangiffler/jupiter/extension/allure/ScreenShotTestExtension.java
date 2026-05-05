@@ -33,8 +33,8 @@ public final class ScreenShotTestExtension implements
     TestExecutionExceptionHandler,
     AfterEachCallback {
 
-  public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(
-      ScreenShotTestExtension.class);
+  public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace
+      .create(ScreenShotTestExtension.class);
 
   public static final ObjectMapper objectMapper = new ObjectMapper();
 

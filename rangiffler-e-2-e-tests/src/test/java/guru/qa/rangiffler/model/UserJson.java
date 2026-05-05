@@ -1,18 +1,19 @@
 package guru.qa.rangiffler.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import guru.qa.type.FriendStatus;
 import java.util.UUID;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@NoArgsConstructor
+@AllArgsConstructor
+@ParametersAreNonnullByDefault
 public final class UserJson {
 
   UUID id;
@@ -21,10 +22,9 @@ public final class UserJson {
   String surname;
   String avatar;
   CountryJson country;
-  @ToString.Exclude
+  @Nullable
   FriendStatus friendshipStatus;
-
-  @JsonIgnore
+  @Nullable
   TestData testData;
 
   public UserJson addTestData(TestData testData) {

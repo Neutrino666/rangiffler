@@ -1,6 +1,7 @@
 package guru.qa.rangiffler.jupiter.extension;
 
 import static guru.qa.rangiffler.jupiter.extension.TestMethodContextExtension.context;
+import static io.qameta.allure.Allure.step;
 
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.WebDriverRunner;
@@ -11,10 +12,13 @@ import guru.qa.rangiffler.jupiter.annotation.ApiLogin;
 import guru.qa.rangiffler.jupiter.annotation.Token;
 import guru.qa.rangiffler.jupiter.annotation.User;
 import guru.qa.rangiffler.model.TestData;
+import guru.qa.rangiffler.model.TestIcon;
 import guru.qa.rangiffler.model.UserJson;
 import guru.qa.rangiffler.service.impl.AuthApiClient;
 import guru.qa.rangiffler.service.impl.UsersClient;
+import io.qameta.allure.Step;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -54,18 +58,20 @@ public final class ApiLoginExtension implements
   public void beforeEach(final ExtensionContext context) throws Exception {
     AnnotationUtils.findTestMethodAnnotation(ApiLogin.class)
         .ifPresent(
-            apiLogin -> {
-              final UserJson fakeUser = findUser(apiLogin);
-              ThreadSafeCookieStore.INSTANCE.removeAll();
-              final String token = authApiClient.login(
-                  fakeUser.getUsername(),
-                  fakeUser.getTestData().password()
-              );
-              setToken(token);
-              if (setupBrowser) {
-                openMainPageInSelenide(token);
-              }
-            }
+            apiLogin ->
+                step(TestIcon.BEFORE + "Авторизация", () -> {
+                  final UserJson fakeUser = findUser(apiLogin);
+                  ThreadSafeCookieStore.INSTANCE.removeAll();
+                  final String token = authApiClient.login(
+                      fakeUser.getUsername(),
+                      Objects.requireNonNull(fakeUser.getTestData())
+                          .password()
+                  );
+                  setToken(token);
+                  if (setupBrowser) {
+                    openMainPageInSelenide(token);
+                  }
+                })
         );
   }
 
@@ -119,19 +125,20 @@ public final class ApiLoginExtension implements
             .formatted(User.class.getSimpleName(), ApiLogin.class.getSimpleName());
         throw new IllegalArgumentException(errorMsg);
       }
+      final TestData testData = collectTestData(apiLogin.username(), apiLogin.password());
       fakeUser = new UserJson();
       fakeUser.setUsername(apiLogin.username());
-      fakeUser.addTestData(collectTestData(apiLogin.username(), apiLogin.password()));
-      UserExtension.setUser(fakeUser);
-      return new UserJson();
+      final UserJson existUser = fakeUser.addTestData(testData);
+      UserExtension.setUser(existUser);
+      return existUser;
     }
   }
 
-  private TestData collectTestData(String username, String password) {
+  private @Nonnull TestData collectTestData(String username, String password) {
     if (username.isEmpty() && password.isEmpty()) {
       throw new RuntimeException("Пароль и логин должны быть заданы");
     }
-    UsersClient userClient = new UsersClient(authApiClient.login(username, password));
+    final UsersClient userClient = new UsersClient(authApiClient.login(username, password));
     final List<UserJson> income = userClient.invitationsQuery(0, Integer.MAX_VALUE, "");
     final List<UserJson> outcome = userClient.outcomeInvitationsQuery(0, Integer.MAX_VALUE, "");
     final List<UserJson> friends = userClient.friendsQuery(0, Integer.MAX_VALUE, "");
@@ -141,10 +148,13 @@ public final class ApiLoginExtension implements
         income,
         outcome,
         friends,
+        List.of(),
+        List.of(),
         List.of()
     );
   }
 
+  @Step(TestIcon.BEFORE + "Старт авторизованного браузера")
   private void openMainPageInSelenide(String token) {
     Selenide.open(CFG.frontUrl());
     Selenide.localStorage().setItem("id_token", token);
