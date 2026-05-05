@@ -8,6 +8,7 @@ import guru.qa.rangiffler.jupiter.annotation.Photo;
 import guru.qa.rangiffler.jupiter.annotation.User;
 import guru.qa.rangiffler.jupiter.meta.WebTest;
 import guru.qa.rangiffler.model.PhotoCardJson;
+import guru.qa.rangiffler.model.PhotoJson;
 import guru.qa.rangiffler.model.TestIcon;
 import guru.qa.rangiffler.model.TestPrefix;
 import guru.qa.rangiffler.model.UserJson;
@@ -37,7 +38,7 @@ public class UpdatePhotoTest {
   @ApiLogin
   @DisplayName(TestPrefix.UI_POSITIVE + "[Only my travels] Просмотр формы редактирования фото: мои")
   void shouldBeExistMyTravelsPhotoEditForm(UserJson user) {
-    final PhotoCardJson myPhoto = user.getTestData().myPhotos().getFirst();
+    final PhotoJson myPhoto = user.getTestData().myPhotos().getFirst();
     TravelsPage.open()
         .getPhotoGallery()
         .findPhotoCardByText(myPhoto.description())
@@ -55,7 +56,7 @@ public class UpdatePhotoTest {
   @ApiLogin
   @DisplayName(TestPrefix.UI_POSITIVE + "[Only my travels] Редактирование фото")
   void shouldBeEditedMyTravelsPhoto(UserJson user) {
-    final PhotoCardJson myPhoto = user.getTestData().myPhotos().getFirst();
+    final PhotoJson myPhoto = user.getTestData().myPhotos().getFirst();
     final PhotoCardJson update = new PhotoCardJson(
         TravelPhotoImage.ALMATY,
         myPhoto.likes(),
@@ -70,7 +71,7 @@ public class UpdatePhotoTest {
         .checkSnackbarText("Post updated")
         .refresh()
         .getPhotoGallery()
-        .exactlyPhotoCardsInAnyOrder(update);
+        .exactlyPhotoCardsInAnyOrder(PhotoJson.fromPhotoCard(update));
   }
 
   @User(
@@ -83,7 +84,7 @@ public class UpdatePhotoTest {
   @ApiLogin
   @DisplayName(TestPrefix.UI_POSITIVE + "[With friends] Редактирование фото")
   void shouldBeEditedMyTravelsPhotoFronWithFriends(UserJson user) {
-    final PhotoCardJson myPhoto = user.getTestData().myPhotos().getFirst();
+    final PhotoJson myPhoto = user.getTestData().myPhotos().getFirst();
     final PhotoCardJson update = new PhotoCardJson(
         TravelPhotoImage.ALMATY,
         myPhoto.likes(),
@@ -100,6 +101,53 @@ public class UpdatePhotoTest {
         .refresh()
         .clickWithFriends()
         .getPhotoGallery()
-        .exactlyPhotoCardsInAnyOrder(update);
+        .exactlyPhotoCardsInAnyOrder(PhotoJson.fromPhotoCard(update));
+  }
+
+  @User(
+      myPhotos = @Photo(
+          img = TravelPhotoImage.BAIKAL,
+          country = Country.RU,
+          description = "my photo")
+  )
+  @Test
+  @ApiLogin
+  @DisplayName(TestPrefix.UI_POSITIVE + "[Only my travels] Лайк своего фото")
+  void shouldBeSuccessLikeMyTravelsPhoto(UserJson user) {
+    final PhotoJson myPhoto = user.getTestData().myPhotos().getFirst();
+    TravelsPage.open()
+        .getPhotoGallery()
+        .findPhotoCardByText(myPhoto.description())
+        .tapLike()
+        .getTravelsPage()
+        .checkSnackbarText("Post was succesfully liked")
+        .refresh()
+        .getPhotoGallery()
+        .exactlyPhotoCardsInAnyOrder(myPhoto.setLikes(1));
+  }
+
+  @User(
+      friends = 1,
+      friendsPhotos = @Photo(
+          img = TravelPhotoImage.BAIKAL,
+          country = Country.RU,
+          description = "friend photo")
+  )
+  @Test
+  @ApiLogin
+  @DisplayName(TestPrefix.UI_POSITIVE + "[Only my travels] Лайк фото друга")
+  void shouldBeSuccessLikeFriendTravelsPhoto(UserJson user) {
+    final PhotoJson myPhoto = user.getTestData().friendPhotos().getFirst();
+    TravelsPage.open()
+        .clickWithFriends()
+        .getPhotoGallery()
+        .findPhotoCardByText(myPhoto.description())
+        .tapLike()
+        .getTravelsPage()
+        .checkSnackbarText("Post was succesfully liked")
+        .refresh()
+        .clickWithFriends()
+        .getPhotoGallery()
+        .exactlyPhotoCardsInAnyOrder(myPhoto.setLikes(1));
   }
 }

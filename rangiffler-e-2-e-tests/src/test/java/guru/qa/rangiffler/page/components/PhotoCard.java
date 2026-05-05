@@ -3,6 +3,7 @@ package guru.qa.rangiffler.page.components;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.rangiffler.model.TestIcon;
+import guru.qa.rangiffler.page.TravelsPage;
 import io.qameta.allure.Step;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -13,7 +14,7 @@ public final class PhotoCard extends BaseComponent<Header> {
       .as("heart before likes");
   private final SelenideElement src = self.$(".photo-card__image").as("Image src");
   private final SelenideElement description = self.$(".photo-card__content").as("Description");
-  private final SelenideElement likeBtn = self.$(".MuiIconButton-sizeSmall").as("like button");
+  private final SelenideElement likeBtn = self.$("[aria-label='like']").as("like button");
 
   private final SelenideElement deleteBtn = self.$(".MuiButton-outlinedPrimary").as("Delete button");
   private final SelenideElement editBtn = self.$(".MuiButton-containedPrimary").as("Edit button");
@@ -36,5 +37,15 @@ public final class PhotoCard extends BaseComponent<Header> {
   public FormEditPhoto clickEdit() {
     editBtn.click();
     return new FormEditPhoto();
+  }
+
+  @Step(TestIcon.TRAVEL_PHOTO + "Лайк фото")
+  public PhotoCard tapLike() {
+    likeBtn.click();
+    return this;
+  }
+
+  public TravelsPage getTravelsPage() {
+    return new TravelsPage();
   }
 }

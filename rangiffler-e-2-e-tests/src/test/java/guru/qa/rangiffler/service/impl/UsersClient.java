@@ -5,17 +5,18 @@ import guru.qa.FriendshipActionMutation.Friendship;
 import guru.qa.GetFriendsQuery;
 import guru.qa.GetInvitationsQuery;
 import guru.qa.GetOutcomeInvitationsQuery;
-import guru.qa.GetPeopleQuery;
 import guru.qa.GetUserQuery;
 import guru.qa.rangiffler.helpers.RandomDataUtils;
 import guru.qa.rangiffler.jupiter.annotation.Photo;
 import guru.qa.rangiffler.jupiter.extension.UserExtension;
 import guru.qa.rangiffler.model.CountryJson;
 import guru.qa.rangiffler.model.FriendshipJson;
+import guru.qa.rangiffler.model.PhotoJson;
 import guru.qa.rangiffler.model.UserJson;
 import guru.qa.type.FriendshipAction;
 import guru.qa.type.FriendshipInput;
 import io.qameta.allure.Step;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.IntStream;
@@ -23,11 +24,14 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import lombok.Getter;
 
 @ParametersAreNonnullByDefault
 public final class UsersClient extends GraphQLClient {
 
   private final String token;
+  @Getter
+  private final List<PhotoJson> createdPhotos = new ArrayList<>();
 
   public UsersClient(String token) {
     this.token = token;
@@ -39,13 +43,21 @@ public final class UsersClient extends GraphQLClient {
     AuthApiClient authClient = new AuthApiClient(null);
     authClient.register(username, UserExtension.DEFAULT_PASSWORD);
     final String token = authClient.login(username, UserExtension.DEFAULT_PASSWORD);
+    return new UsersClient(token).createPhotos(photos);
+  }
+
+  public UsersClient createPhotos(@Nullable Photo[] photos) {
     if (photos != null) {
-      Stream.of(photos).forEach(photo ->
-          new PhotoGraphQlClient(token)
-              .createPhoto(photo.img(), photo.country(), photo.description())
-      );
+      List<PhotoJson> result = Stream.of(photos)
+          .map(photo ->
+              new PhotoGraphQlClient(token)
+                  .createPhoto(photo.img(), photo.country(), photo.description())
+          )
+          .map(PhotoJson::fromGraphQlCreatedPhoto)
+          .toList();
+      createdPhotos.addAll(result);
     }
-    return new UsersClient(token);
+    return this;
   }
 
   @Nonnull
@@ -162,36 +174,6 @@ public final class UsersClient extends GraphQLClient {
   }
 
   @Nonnull
-  @Step("Получаем: Всех пользователей")
-  public List<UserJson> peopleQuery(Integer page, Integer size, String searchQuery) {
-    GetPeopleQuery peopleQuery = GetPeopleQuery.builder()
-        .page(page)
-        .size(size)
-        .searchQuery(searchQuery)
-        .build();
-    return response(peopleQuery, token)
-        .users
-        .edges.stream()
-        .map(e -> e.node)
-        .map(userGql -> new UserJson(
-                UUID.fromString(userGql.id),
-                userGql.username,
-                userGql.firstname,
-                userGql.surname,
-                userGql.avatar,
-                new CountryJson(
-                    userGql.location.code,
-                    userGql.location.name,
-                    userGql.location.flag
-                ),
-                userGql.friendStatus,
-                null
-            )
-        )
-        .toList();
-  }
-
-  @Nonnull
   @Step("Получаем: входящие запросы дружбы")
   public List<UserJson> createIncomeInvitation(UserJson user, int count, @Nullable Photo[] photos) {
     final List<UsersClient> result = IntStream.range(0, count)
@@ -246,10 +228,5 @@ public final class UsersClient extends GraphQLClient {
   @Nonnull
   public FriendshipJson sendInvitation(UserJson requester) {
     return friendshipMutation(requester, FriendshipAction.ADD);
-  }
-
-  @Nonnull
-  public FriendshipJson declineInvitation(UserJson requester) {
-    return friendshipMutation(requester, FriendshipAction.REJECT);
   }
 }
