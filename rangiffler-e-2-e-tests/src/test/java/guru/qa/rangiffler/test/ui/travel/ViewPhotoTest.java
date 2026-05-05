@@ -6,7 +6,7 @@ import guru.qa.rangiffler.jupiter.annotation.ApiLogin;
 import guru.qa.rangiffler.jupiter.annotation.Photo;
 import guru.qa.rangiffler.jupiter.annotation.User;
 import guru.qa.rangiffler.jupiter.meta.WebTest;
-import guru.qa.rangiffler.model.PhotoCardJson;
+import guru.qa.rangiffler.model.PhotoJson;
 import guru.qa.rangiffler.model.TestIcon;
 import guru.qa.rangiffler.model.TestPrefix;
 import guru.qa.rangiffler.model.UserJson;
@@ -29,7 +29,7 @@ public class ViewPhotoTest {
   @User
   @Test
   @ApiLogin
-  @DisplayName(TestPrefix.UI_POSITIVE + "Просмотр моих путешествий без фото")
+  @DisplayName(TestPrefix.UI_POSITIVE + "[Only my travels] Просмотр моих путешествий без фото")
   void shouldBeEmptyMyTravelsPhoto() {
     TravelsPage.open()
         .getPhotoGallery()
@@ -39,7 +39,7 @@ public class ViewPhotoTest {
   @User
   @Test
   @ApiLogin
-  @DisplayName(TestPrefix.UI_POSITIVE + "Просмотр путешествий друзей без фото")
+  @DisplayName(TestPrefix.UI_POSITIVE + "[With friends] Просмотр путешествий друзей без фото")
   void shouldBeEmptyFriendsTravelPhoto() {
     TravelsPage.open()
         .clickWithFriends()
@@ -56,9 +56,9 @@ public class ViewPhotoTest {
   )
   @Test
   @ApiLogin
-  @DisplayName(TestPrefix.UI_POSITIVE + "Просмотр путешествий с фото: мои")
+  @DisplayName(TestPrefix.UI_POSITIVE + "[With friends] Просмотр путешествий с фото: мои")
   void shouldBeExistMyTravelsPhoto(UserJson user) {
-    final PhotoCardJson myPhoto = user.getTestData().myPhotos().getFirst();
+    final PhotoJson myPhoto = user.getTestData().myPhotos().getFirst();
     TravelsPage.open()
         .clickWithFriends()
         .getPhotoGallery()
@@ -70,6 +70,7 @@ public class ViewPhotoTest {
           img = TravelPhotoImage.BAIKAL,
           country = Country.RU,
           description = "my photo"),
+      hasLikeMyPhoto = true,
       friends = 1,
       friendsPhotos = @Photo(
           img = TravelPhotoImage.ALMATY,
@@ -78,11 +79,10 @@ public class ViewPhotoTest {
   )
   @Test
   @ApiLogin
-  @DisplayName(TestPrefix.UI_POSITIVE + "Просмотр путешествий с фото: мои и друзей")
-  void shouldBeExistMyAndFriendTravelsPhoto(UserJson user) {
-    final PhotoCardJson myPhoto = user.getTestData().myPhotos().getFirst();
-    final PhotoCardJson friendPhoto = user.getTestData().friendPhotos().getFirst();
-    ;
+  @DisplayName(TestPrefix.UI_POSITIVE + "[With friends] Просмотр путешествий с фото и лайком")
+  void shouldBeExistMyAndFriendTravelsPhotoWithLikes(UserJson user) {
+    final PhotoJson myPhoto = user.getTestData().myPhotos().getFirst();
+    final PhotoJson friendPhoto = user.getTestData().friendPhotos().getFirst();
     TravelsPage.open()
         .clickWithFriends()
         .getPhotoGallery()

@@ -10,8 +10,8 @@ public record TestData(
     List<UserJson> outcome,
     List<UserJson> friends,
     List<UserJson> notFriends,
-    List<PhotoCardJson> myPhotos,
-    List<PhotoCardJson> friendPhotos
+    List<PhotoJson> myPhotos,
+    List<PhotoJson> friendPhotos
 ) {
 
 }

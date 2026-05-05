@@ -43,17 +43,18 @@ public class GrpcPhotoClient {
 
   public PhotoResponse updatePhoto(final PhotoInput photo, final UUID userId) {
     return grpcCall.execute(() ->
-        stub.updatePhoto(PhotoRequest.newBuilder()
-            .setId(photo.getId())
-            .setUserId(userId.toString())
-            .setSrc(photo.getSrc())
-            .setCountry(
-                CountryRequest.newBuilder()
-                    .setCode(photo.getCountry().getCode())
-                    .build()
-            )
-            .setDescription(photo.getDescription())
-            .build())
+        stub.updatePhoto(
+            PhotoRequest.newBuilder()
+                .setId(photo.getId())
+                .setUserId(userId.toString())
+                .setSrc(photo.getSrc())
+                .setCountry(
+                    CountryRequest.newBuilder()
+                        .setCode(photo.getCountry().getCode())
+                        .build()
+                )
+                .setDescription(photo.getDescription())
+                .build())
     );
   }
 

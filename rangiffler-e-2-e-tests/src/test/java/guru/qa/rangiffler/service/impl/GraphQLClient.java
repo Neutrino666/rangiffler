@@ -31,7 +31,7 @@ public abstract class GraphQLClient {
         .okHttpClient(
             new OkHttpClient.Builder()
                 .addInterceptor(new AllureOkHttp3())
-                .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(Level.BODY))
+                .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(Level.NONE))
                 .build()
         )
         .build();
