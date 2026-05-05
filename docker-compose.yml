@@ -178,7 +178,7 @@ services:
       - EXECUTION_TYPE=${EXECUTION_TYPE:-regress}
       - BROWSER=${BROWSER}
     volumes:
-      - ./rangiffler-e-2-e-tests/.screen-output/screenshots/selenoid:/home/gradle/rangiffler-ng-10/rangiffler-e-2-e-tests/.screen-output/screenshots/selenoid
+      - ./rangiffler-e-2-e-tests/.screen-output/screenshots/selenoid:/home/gradle/rangiffler/rangiffler-e-2-e-tests/.screen-output/screenshots/selenoid
       - ./logs:/home/gradle/rangiffler-ng-10/logs
     depends_on:
       frontend.rangiffler.dc:

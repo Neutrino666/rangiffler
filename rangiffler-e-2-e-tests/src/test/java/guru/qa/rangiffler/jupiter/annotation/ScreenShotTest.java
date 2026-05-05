@@ -1,7 +1,7 @@
 package guru.qa.rangiffler.jupiter.annotation;
 
 import guru.qa.rangiffler.jupiter.extension.allure.ScreenShotTestExtension;
-import guru.qa.rangiffler.model.enums.Image;
+import guru.qa.rangiffler.model.enums.Screensont;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(ScreenShotTestExtension.class)
 public @interface ScreenShotTest {
 
-  Image value() default Image.PROFILE_CYBER_DUCK;
+  Screensont value() default Screensont.PROFILE_CYBER_DUCK;
 
   boolean rewriteExpected() default false;
 }

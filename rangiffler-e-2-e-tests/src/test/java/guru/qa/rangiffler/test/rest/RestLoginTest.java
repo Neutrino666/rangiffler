@@ -26,6 +26,6 @@ public final class RestLoginTest extends BaseRestTest {
   @DisplayName(TestPrefix.REST + "Валидный токен")
   void shouldBeValidToken(@Token String token) {
     assertThat(token).hasSizeGreaterThanOrEqualTo(730)
-        .matches("^Bearer [\\w\\d_.-]{90,}$");
+        .matches("^Bearer [\\w_.-]{90,}$");
   }
 }

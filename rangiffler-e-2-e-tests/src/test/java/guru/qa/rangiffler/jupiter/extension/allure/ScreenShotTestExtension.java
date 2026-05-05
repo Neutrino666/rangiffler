@@ -76,6 +76,13 @@ public final class ScreenShotTestExtension implements
   public void handleTestExecutionException(ExtensionContext context, Throwable throwable)
       throws Throwable {
     if (throwable.getMessage().contains("Отличия в скриншоте не превышают допустимую погрешность: ")) {
+      AnnotationUtils.findTestMethodAnnotation(ScreenShotTest.class)
+          .ifPresent(anno -> {
+                if (anno.rewriteExpected()) {
+                  updateResourceFile(anno.value().getScreenOutput());
+                }
+              }
+          );
       addAttachment();
     }
     throw throwable;
@@ -126,7 +133,7 @@ public final class ScreenShotTestExtension implements
   }
 
   private void updateResourceFile(String path) {
-    File file = new File("src/test/resources/" + path);
+    File file = new File(path);
     BufferedImage actual = storeGet(Type.ACTUAL);
     try {
       ImageIO.write(actual, "png", file);
