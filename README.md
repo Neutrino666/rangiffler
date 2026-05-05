@@ -1,5 +1,7 @@
 # Rangiffler
 
+<img src="/rangiffler-gql-client/src/assets/deer-logo.svg" width="300">
+
 Микросервисный web сайт посвященный путешествиям. С возможностью добавления друзей
 и публикаций фото которые будут доступны друзьям для просмотра и лайков. В целом я тут экспериментировал как в
 песочнице.
@@ -349,4 +351,5 @@ UI будет доступен по ссылке
 
 #### 5. Allure-ui доступен по адресу: http://localhost:5252/
 
-<img src="/rangiffler-gql-client/src/assets/deer-logo.svg" width="250">
+<img src="readme-resources/allure-docker-report.png" width="500">
+
