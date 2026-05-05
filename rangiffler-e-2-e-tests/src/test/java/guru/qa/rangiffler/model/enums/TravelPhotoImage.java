@@ -17,9 +17,8 @@ public enum TravelPhotoImage {
   private final String extension;
 
   TravelPhotoImage(String value) {
-    final String imgPrefix = "img/";
     this.fileName = value;
-    this.dirResources = imgPrefix + value;
+    this.dirResources = "img/" + value;
     String extension = Stream.of(this.fileName.split("\\."))
         .toList()
         .getLast();

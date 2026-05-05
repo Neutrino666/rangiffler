@@ -43,6 +43,12 @@ enum LocalConfig implements Config {
     return "http://localhost:8091/";
   }
 
+  @NotNull
+  @Override
+  public String screenshotBaseDir() {
+    return "screenshots/local/";
+  }
+
   @Nonnull
   @Override
   public String allureDockerUrl() {

@@ -13,6 +13,7 @@ import guru.qa.rangiffler.page.components.FormAddNewPhoto;
 import guru.qa.rangiffler.page.components.Header;
 import guru.qa.rangiffler.page.components.PhotoGallery;
 import io.qameta.allure.Step;
+import java.awt.image.BufferedImage;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import lombok.Getter;
@@ -71,6 +72,12 @@ public final class TravelsPage extends BasePage<TravelsPage> {
         .setDescription(description)
         .setPhoto(img)
         .save();
+    return this;
+  }
+
+  @Step(TestIcon.TRAVELS + "check map image diff")
+  public @Nonnull TravelsPage assertScreen(final BufferedImage expected) {
+    assertScreen(expected, map, 500);
     return this;
   }
 }

@@ -34,5 +34,8 @@ public interface Config {
   String geoUrl();
 
   @Nonnull
+  String screenshotBaseDir();
+
+  @Nonnull
   String allureDockerUrl();
 }

@@ -13,7 +13,7 @@ import com.codeborne.selenide.SelenideElement;
 import guru.qa.rangiffler.helpers.SelenideUtils;
 import guru.qa.rangiffler.model.TestIcon;
 import guru.qa.rangiffler.model.enums.Country;
-import guru.qa.rangiffler.model.enums.Image;
+import guru.qa.rangiffler.model.enums.Screensont;
 import guru.qa.rangiffler.page.components.Header;
 import io.qameta.allure.Step;
 import java.awt.image.BufferedImage;
@@ -68,7 +68,7 @@ public final class ProfilePage extends BasePage<ProfilePage> {
   }
 
   @Step(TestIcon.PROFILE + "Set firstname")
-  public @Nonnull ProfilePage setAvatar(Image photo) {
+  public @Nonnull ProfilePage setAvatar(Screensont photo) {
     avatarInput.uploadFromClasspath(photo.getDirResources());
     return this;
   }

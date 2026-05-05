@@ -10,7 +10,7 @@ import guru.qa.rangiffler.jupiter.meta.WebTest;
 import guru.qa.rangiffler.model.TestIcon;
 import guru.qa.rangiffler.model.TestPrefix;
 import guru.qa.rangiffler.model.enums.Country;
-import guru.qa.rangiffler.model.enums.Image;
+import guru.qa.rangiffler.model.enums.Screensont;
 import guru.qa.rangiffler.page.ProfilePage;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
@@ -49,7 +49,7 @@ public class ProfileUpdateTest {
   void uploadedAvatarIsNotHaveDifference(BufferedImage expected) {
     ProfilePage.open()
         .checkThatPageLoaded()
-        .setAvatar(Image.PROFILE_CYBER_DUCK)
+        .setAvatar(Screensont.PROFILE_CYBER_DUCK)
         .save()
         .assertAvatar(expected);
   }

@@ -43,6 +43,12 @@ enum DockerConfig implements Config {
     return "http://geo.rangiffler.dc:8091/";
   }
 
+  @NotNull
+  @Override
+  public String screenshotBaseDir() {
+    return "screenshots/selenoid/";
+  }
+
   @Nonnull
   @Override
   public String allureDockerUrl() {
