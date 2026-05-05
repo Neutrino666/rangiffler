@@ -49,7 +49,7 @@ public class ProfileUpdateTest {
   void uploadedAvatarIsNotHaveDifference(BufferedImage expected) {
     ProfilePage.open()
         .checkThatPageLoaded()
-        .setAvatar(Image.CYBER_DUCK)
+        .setAvatar(Image.PROFILE_CYBER_DUCK)
         .save()
         .assertAvatar(expected);
   }

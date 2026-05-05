@@ -35,8 +35,7 @@ public abstract class BasePage<T extends BasePage<?>> {
     assertScreen(expected, actualLocator, 0);
   }
 
-  protected void assertScreen(BufferedImage expected, SelenideElement actualLocator,
-      Integer waitMills) {
+  protected void assertScreen(BufferedImage expected, SelenideElement actualLocator, Integer waitMills) {
     Selenide.sleep(waitMills);
     try {
       BufferedImage actual = ImageIO.read(Objects.requireNonNull(
@@ -57,6 +56,7 @@ public abstract class BasePage<T extends BasePage<?>> {
   }
 
   @SuppressWarnings("unchecked")
+  @Step("Обновление страницы")
   public T refresh() {
     Selenide.refresh();
     return (T) this;

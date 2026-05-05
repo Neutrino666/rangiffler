@@ -15,7 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(ScreenShotTestExtension.class)
 public @interface ScreenShotTest {
 
-  Image value() default Image.CYBER_DUCK;
+  Image value() default Image.PROFILE_CYBER_DUCK;
 
   boolean rewriteExpected() default false;
 }

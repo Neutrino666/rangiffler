@@ -7,12 +7,11 @@ import guru.qa.GetInvitationsQuery;
 import guru.qa.GetOutcomeInvitationsQuery;
 import guru.qa.GetPeopleQuery;
 import guru.qa.GetUserQuery;
-import guru.qa.GetUserQuery.User;
 import guru.qa.rangiffler.helpers.RandomDataUtils;
+import guru.qa.rangiffler.jupiter.annotation.Photo;
 import guru.qa.rangiffler.jupiter.extension.UserExtension;
 import guru.qa.rangiffler.model.CountryJson;
 import guru.qa.rangiffler.model.FriendshipJson;
-import guru.qa.rangiffler.model.TestPrefix;
 import guru.qa.rangiffler.model.UserJson;
 import guru.qa.type.FriendshipAction;
 import guru.qa.type.FriendshipInput;
@@ -20,7 +19,9 @@ import io.qameta.allure.Step;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
@@ -33,17 +34,24 @@ public final class UsersClient extends GraphQLClient {
   }
 
   @Nonnull
-  public static UsersClient create(String username) {
+  @Step("Создание пользователя")
+  public static UsersClient create(String username, @Nullable Photo[] photos) {
     AuthApiClient authClient = new AuthApiClient(null);
     authClient.register(username, UserExtension.DEFAULT_PASSWORD);
     final String token = authClient.login(username, UserExtension.DEFAULT_PASSWORD);
+    if (photos != null) {
+      Stream.of(photos).forEach(photo ->
+          new PhotoGraphQlClient(token)
+              .createPhoto(photo.img(), photo.country(), photo.description())
+      );
+    }
     return new UsersClient(token);
   }
 
   @Nonnull
-  @Step(TestPrefix.GRAPHQL + "Текущий пользователь")
+  @Step("Получаем данные пользователя")
   public UserJson currentUser() {
-    User userGql = response(new GetUserQuery(), token).user;
+    GetUserQuery.User userGql = response(new GetUserQuery(), token).user;
     return new UserJson(
         UUID.fromString(userGql.id),
         userGql.username,
@@ -61,7 +69,7 @@ public final class UsersClient extends GraphQLClient {
   }
 
   @Nonnull
-  @Step(TestPrefix.GRAPHQL + "Друзья")
+  @Step("Получаем друзей")
   public List<UserJson> friendsQuery(Integer page, Integer size, String searchQuery) {
     GetFriendsQuery friendsQuery = GetFriendsQuery.builder()
         .page(page)
@@ -92,7 +100,7 @@ public final class UsersClient extends GraphQLClient {
   }
 
   @Nonnull
-  @Step(TestPrefix.GRAPHQL + "Входящие запросы дружбы")
+  @Step("Получаем Входящие запросы дружбы")
   public List<UserJson> invitationsQuery(Integer page, Integer size, String searchQuery) {
     GetInvitationsQuery invitationsQuery = GetInvitationsQuery.builder()
         .page(page)
@@ -123,7 +131,7 @@ public final class UsersClient extends GraphQLClient {
   }
 
   @Nonnull
-  @Step(TestPrefix.GRAPHQL + "Исходящие запросы дружбы")
+  @Step("Получаем Исходящие запросы дружбы")
   public List<UserJson> outcomeInvitationsQuery(Integer page, Integer size, String searchQuery) {
     GetOutcomeInvitationsQuery outcomeInvitationsQuery = GetOutcomeInvitationsQuery.builder()
         .page(page)
@@ -154,7 +162,7 @@ public final class UsersClient extends GraphQLClient {
   }
 
   @Nonnull
-  @Step(TestPrefix.GRAPHQL + "Все пользователи")
+  @Step("Получаем: Всех пользователей")
   public List<UserJson> peopleQuery(Integer page, Integer size, String searchQuery) {
     GetPeopleQuery peopleQuery = GetPeopleQuery.builder()
         .page(page)
@@ -184,7 +192,36 @@ public final class UsersClient extends GraphQLClient {
   }
 
   @Nonnull
-  public FriendshipJson friendshipMutation(UserJson targetUser, FriendshipAction action) {
+  @Step("Получаем: входящие запросы дружбы")
+  public List<UserJson> createIncomeInvitation(UserJson user, int count, @Nullable Photo[] photos) {
+    final List<UsersClient> result = IntStream.range(0, count)
+        .mapToObj(i -> create(RandomDataUtils.getRandomUserName(), photos))
+        .toList();
+    result.forEach(u -> u.sendInvitation(user));
+    return result.stream().map(UsersClient::currentUser).toList();
+  }
+
+  @Nonnull
+  @Step("Получаем: исходящие запросы дружбы")
+  public List<UserJson> createOutcomeInvitation(int count) {
+    final List<UserJson> result = IntStream.range(0, count)
+        .mapToObj(i -> create(RandomDataUtils.getRandomUserName(), null))
+        .map(UsersClient::currentUser)
+        .toList();
+    result.forEach(this::sendInvitation);
+    return result;
+  }
+
+  @Nonnull
+  @Step("Создание друзей")
+  public List<UserJson> createFriends(UserJson user, int count, @Nullable Photo[] photos) {
+    final List<UserJson> result = createIncomeInvitation(user, count, photos);
+    result.forEach(this::acceptFriend);
+    return result;
+  }
+
+  @Nonnull
+  private FriendshipJson friendshipMutation(UserJson targetUser, FriendshipAction action) {
     FriendshipActionMutation friendshipMutation = FriendshipActionMutation.builder()
         .input(
             FriendshipInput.builder()
@@ -199,35 +236,6 @@ public final class UsersClient extends GraphQLClient {
         friendship.username,
         friendship.friendStatus
     );
-  }
-
-  @Nonnull
-  @Step(TestPrefix.GRAPHQL + "Создание входящих запросов дружбы")
-  public List<UserJson> createIncomeInvitation(UserJson user, int count) {
-    final List<UsersClient> result = IntStream.range(0, count)
-        .mapToObj(i -> create(RandomDataUtils.getRandomUserName()))
-        .toList();
-    result.forEach(u -> u.sendInvitation(user));
-    return result.stream().map(UsersClient::currentUser).toList();
-  }
-
-  @Nonnull
-  @Step(TestPrefix.GRAPHQL + "Создание исходящих запросов дружбы")
-  public List<UserJson> createOutcomeInvitation(int count) {
-    final List<UserJson> result = IntStream.range(0, count)
-        .mapToObj(i -> create(RandomDataUtils.getRandomUserName()))
-        .map(UsersClient::currentUser)
-        .toList();
-    result.forEach(this::sendInvitation);
-    return result;
-  }
-
-  @Nonnull
-  @Step(TestPrefix.GRAPHQL + "Создание друзей")
-  public List<UserJson> createFriends(UserJson user, int count) {
-    final List<UserJson> result = createIncomeInvitation(user, count);
-    result.forEach(this::acceptFriend);
-    return result;
   }
 
   @Nonnull

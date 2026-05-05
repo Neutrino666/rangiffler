@@ -34,7 +34,7 @@ public final class ProfilePage extends BasePage<ProfilePage> {
   private final SelenideElement usernameInput = self.$("#username").as("Username input");
   private final SelenideElement firstnameInput = self.$("#firstname").as("Firstname input");
   private final SelenideElement surnameInput = self.$("#surname").as("Surname input");
-  private final SelenideElement locationInput = self.$("#location").as("Location dropdown");
+  private final SelenideElement locationDropdown = self.$("#location").as("Location dropdown");
   private final SelenideElement reset = self.$("button[type='button']").as("Reset");
   private final SelenideElement save = self.$("button[type='submit']").as("Submit");
   private final SelenideElement surnameHelperText = self.$("#surname-helper-text").as("Surname helper text");
@@ -55,7 +55,7 @@ public final class ProfilePage extends BasePage<ProfilePage> {
     SelenideUtils.visible(self, title);
     avatarInput.shouldBe(exist);
     SelenideUtils.visibleAndInteractable(
-        usernameInput, firstnameInput, surnameInput, reset, surnameInput, save, locationInput
+        usernameInput, firstnameInput, surnameInput, reset, surnameInput, save, locationDropdown
     );
     header.checkThatComponentLoaded();
     return this;
@@ -87,7 +87,7 @@ public final class ProfilePage extends BasePage<ProfilePage> {
 
   @Step(TestIcon.PROFILE + "Set country")
   public @Nonnull ProfilePage setLocation(Country country) {
-    locationInput.click();
+    locationDropdown.click();
     locations.findBy(attribute("data-value", country.getCode()))
         .click();
     return this;

@@ -6,14 +6,17 @@ import static guru.qa.rangiffler.jupiter.extension.TestMethodContextExtension.co
 import guru.qa.rangiffler.helpers.AnnotationUtils;
 import guru.qa.rangiffler.helpers.RandomDataUtils;
 import guru.qa.rangiffler.jupiter.annotation.User;
+import guru.qa.rangiffler.model.PhotoCardJson;
 import guru.qa.rangiffler.model.TestData;
+import guru.qa.rangiffler.model.TestIcon;
 import guru.qa.rangiffler.model.UserJson;
-import guru.qa.rangiffler.service.impl.AuthApiClient;
 import guru.qa.rangiffler.service.impl.UsersClient;
+import io.qameta.allure.Step;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -30,45 +33,15 @@ public final class UserExtension implements
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(
       UserExtension.class);
   public static final String DEFAULT_PASSWORD = "12345";
-  private final AuthApiClient authApiClient = new AuthApiClient();
 
   @Override
   public void beforeEach(ExtensionContext context) {
     AnnotationUtils.findTestMethodAnnotation(User.class)
-        .ifPresent(
-            userAnno -> {
-              if (userAnno.username().isEmpty()) {
-                final String username = RandomDataUtils.getRandomUserName();
-                authApiClient.register(username, DEFAULT_PASSWORD);
-                final String token = authApiClient.login(username, DEFAULT_PASSWORD);
-                final UsersClient usersClient = new UsersClient(token);
-                final UserJson user = usersClient.currentUser();
-
-                final List<UserJson> income = userAnno.incomeInvitations() > 0
-                    ? usersClient.createIncomeInvitation(user, userAnno.incomeInvitations())
-                    : List.of();
-                final List<UserJson> outcome = userAnno.outcomeInvitations() > 0
-                    ? usersClient.createOutcomeInvitation(userAnno.outcomeInvitations())
-                    : List.of();
-                final List<UserJson> friends = userAnno.friends() > 0
-                    ? usersClient.createFriends(user, userAnno.friends())
-                    : List.of();
-                final List<UserJson> emptyPeople = IntStream.range(0, userAnno.emptyPeople())
-                    .mapToObj(u -> UsersClient.create(RandomDataUtils.getRandomUserName()))
-                    .map(UsersClient::currentUser)
-                    .toList();
-
-                final TestData testData = new TestData(
-                    DEFAULT_PASSWORD,
-                    income,
-                    outcome,
-                    friends,
-                    emptyPeople
-                );
-
+        .ifPresent(anno -> {
+              if (anno.username().isEmpty()) {
                 context.getStore(NAMESPACE).put(
                     context.getUniqueId(),
-                    user.addTestData(testData)
+                    createTestUsers(anno)
                 );
               }
             }
@@ -102,5 +75,41 @@ public final class UserExtension implements
         context().getUniqueId(),
         user
     );
+  }
+
+  @Step(TestIcon.BEFORE + "Создание тестового окружения")
+  private static UserJson createTestUsers(User userAnno) {
+    final String username = RandomDataUtils.getRandomUserName();
+    final UsersClient usersClient = UsersClient.create(username, userAnno.myPhotos());
+    final UserJson user = usersClient.currentUser();
+
+    final List<UserJson> income = userAnno.incomeInvitations() > 0
+        ? usersClient.createIncomeInvitation(user, userAnno.incomeInvitations(), null)
+        : List.of();
+    final List<UserJson> outcome = userAnno.outcomeInvitations() > 0
+        ? usersClient.createOutcomeInvitation(userAnno.outcomeInvitations())
+        : List.of();
+    final List<UserJson> friends = userAnno.friends() > 0
+        ? usersClient.createFriends(user, userAnno.friends(), userAnno.friendsPhotos())
+        : List.of();
+    final List<UserJson> emptyPeople = IntStream.range(0, userAnno.emptyPeople())
+        .mapToObj(u -> UsersClient.create(RandomDataUtils.getRandomUserName(), null))
+        .map(UsersClient::currentUser)
+        .toList();
+
+    final List<PhotoCardJson> myPhotos = Stream.of(userAnno.myPhotos()).map(PhotoCardJson::fromPhotoAnno).toList();
+    final List<PhotoCardJson> friendsPhotos = Stream.of(userAnno.friendsPhotos()).map(PhotoCardJson::fromPhotoAnno)
+        .toList();
+
+    final TestData testData = new TestData(
+        UserExtension.DEFAULT_PASSWORD,
+        income,
+        outcome,
+        friends,
+        emptyPeople,
+        myPhotos,
+        friendsPhotos
+    );
+    return user.addTestData(testData);
   }
 }

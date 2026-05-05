@@ -4,7 +4,9 @@ import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.logevents.SelenideLogger;
+import guru.qa.rangiffler.model.TestIcon;
 import io.qameta.allure.Allure;
+import io.qameta.allure.Step;
 import io.qameta.allure.selenide.AllureSelenide;
 import java.io.ByteArrayInputStream;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -68,6 +70,7 @@ public final class BrowserExtension implements
   }
 
   @Override
+  @Step(TestIcon.AFTER + "Закрываем все браузеры")
   public void afterEach(ExtensionContext context) throws Exception {
     while (WebDriverRunner.hasWebDriverStarted()) {
       Selenide.closeWebDriver();
