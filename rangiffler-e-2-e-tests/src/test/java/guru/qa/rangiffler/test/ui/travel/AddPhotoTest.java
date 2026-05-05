@@ -29,10 +29,11 @@ public class AddPhotoTest {
   @User
   @Test
   @ApiLogin
-  @DisplayName(TestPrefix.UI_POSITIVE + "Добавление путешествия с фото")
-  void shouldBeCreatedTravelPhoto() {
+  @DisplayName(TestPrefix.UI_POSITIVE + "[With friends] Добавление путешествия с фото")
+  void shouldBeCreatedTravelPhotoFromWithFriends() {
     final String description = RandomDataUtils.getRandomTravelDescription();
     TravelsPage.open()
+        .clickWithFriends()
         .addPhoto(TravelPhotoImage.NEW_YORK, Country.US, description)
         .checkSnackbarText("New post created");
   }
@@ -40,7 +41,7 @@ public class AddPhotoTest {
   @User
   @Test
   @ApiLogin
-  @DisplayName(TestPrefix.UI_NEGATIVE + "Добавление путешествия без фото")
+  @DisplayName(TestPrefix.UI_NEGATIVE + "[Only my travels] Добавление путешествия без фото")
   void shouldBeErrorWhenCreateWithoutPhoto() {
     final String description = RandomDataUtils.getRandomTravelDescription();
     TravelsPage.open()

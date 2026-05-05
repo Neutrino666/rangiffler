@@ -6,10 +6,12 @@ import static guru.qa.rangiffler.jupiter.extension.TestMethodContextExtension.co
 import guru.qa.rangiffler.helpers.AnnotationUtils;
 import guru.qa.rangiffler.helpers.RandomDataUtils;
 import guru.qa.rangiffler.jupiter.annotation.User;
-import guru.qa.rangiffler.model.PhotoCardJson;
+import guru.qa.rangiffler.model.PhotoJson;
 import guru.qa.rangiffler.model.TestData;
 import guru.qa.rangiffler.model.TestIcon;
 import guru.qa.rangiffler.model.UserJson;
+import guru.qa.rangiffler.service.impl.AuthApiClient;
+import guru.qa.rangiffler.service.impl.PhotoGraphQlClient;
 import guru.qa.rangiffler.service.impl.UsersClient;
 import io.qameta.allure.Step;
 import java.util.List;
@@ -30,8 +32,7 @@ public final class UserExtension implements
     BeforeEachCallback,
     ParameterResolver {
 
-  public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(
-      UserExtension.class);
+  public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(UserExtension.class);
   public static final String DEFAULT_PASSWORD = "12345";
 
   @Override
@@ -82,6 +83,7 @@ public final class UserExtension implements
     final String username = RandomDataUtils.getRandomUserName();
     final UsersClient usersClient = UsersClient.create(username, userAnno.myPhotos());
     final UserJson user = usersClient.currentUser();
+    List<PhotoJson> myPhotos = usersClient.getCreatedPhotos();
 
     final List<UserJson> income = userAnno.incomeInvitations() > 0
         ? usersClient.createIncomeInvitation(user, userAnno.incomeInvitations(), null)
@@ -97,19 +99,26 @@ public final class UserExtension implements
         .map(UsersClient::currentUser)
         .toList();
 
-    final List<PhotoCardJson> myPhotos = Stream.of(userAnno.myPhotos()).map(PhotoCardJson::fromPhotoAnno).toList();
-    final List<PhotoCardJson> friendsPhotos = Stream.of(userAnno.friendsPhotos()).map(PhotoCardJson::fromPhotoAnno)
+    if (userAnno.hasLikeMyPhoto()) {
+      myPhotos.forEach(myPhoto ->
+          friends.forEach(f ->
+              new PhotoGraphQlClient(new AuthApiClient().login(f.getUsername(), DEFAULT_PASSWORD))
+                  .updateLike(myPhoto, f.getId())
+          ));
+      myPhotos = myPhotos.stream().map(m -> m.setLikes(friends.size())).toList();
+    }
+    final List<PhotoJson> friendsPhotos = Stream.of(userAnno.friendsPhotos()).map(PhotoJson::fromPhotoAnno)
         .toList();
-
-    final TestData testData = new TestData(
-        UserExtension.DEFAULT_PASSWORD,
-        income,
-        outcome,
-        friends,
-        emptyPeople,
-        myPhotos,
-        friendsPhotos
+    return user.addTestData(
+        new TestData(
+            DEFAULT_PASSWORD,
+            income,
+            outcome,
+            friends,
+            emptyPeople,
+            myPhotos,
+            friendsPhotos
+        )
     );
-    return user.addTestData(testData);
   }
 }

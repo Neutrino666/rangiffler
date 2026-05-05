@@ -9,7 +9,7 @@ import com.codeborne.selenide.Driver;
 import com.codeborne.selenide.WebElementsCondition;
 import com.codeborne.selenide.ex.UIAssertionError;
 import com.codeborne.selenide.impl.CollectionSource;
-import guru.qa.rangiffler.model.PhotoCardJson;
+import guru.qa.rangiffler.model.PhotoJson;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -23,9 +23,9 @@ import org.opentest4j.AssertionFailedError;
 @ParametersAreNonnullByDefault
 public class PhotoCardCondition {
 
-  public static @Nonnull WebElementsCondition exactlyPhotoCardsInAnyOrder(PhotoCardJson... photos) {
+  public static @Nonnull WebElementsCondition exactlyPhotoCardsInAnyOrder(PhotoJson... photos) {
     return new WebElementsCondition() {
-      private final List<List<String>> expected = Stream.of(photos).map(PhotoCardJson::toExpectedCondition).toList();
+      private final List<List<String>> expected = Stream.of(photos).map(PhotoJson::toExpectedCondition).toList();
 
       @Override
       public @Nonnull String toString() {

@@ -11,6 +11,8 @@ public @interface User {
 
   String username() default "";
 
+  boolean hasLikeMyPhoto() default false;
+
   Photo[] myPhotos() default {};
 
   int friends() default 0;

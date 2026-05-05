@@ -5,7 +5,7 @@ import static com.codeborne.selenide.Selenide.$;
 
 import com.codeborne.selenide.ElementsCollection;
 import guru.qa.rangiffler.condition.PhotoCardCondition;
-import guru.qa.rangiffler.model.PhotoCardJson;
+import guru.qa.rangiffler.model.PhotoJson;
 import guru.qa.rangiffler.model.TestIcon;
 import guru.qa.rangiffler.page.TravelsPage;
 import io.qameta.allure.Step;
@@ -26,8 +26,8 @@ public final class PhotoGallery extends BaseComponent<Header> {
 
   @Nonnull
   @Step(TestIcon.TRAVEL_PHOTO + "Проверяем наличие всех фото в любой последовательности")
-  public PhotoGallery exactlyPhotoCardsInAnyOrder(PhotoCardJson... photoCardsJson) {
-    photoCards.shouldHave(PhotoCardCondition.exactlyPhotoCardsInAnyOrder(photoCardsJson));
+  public PhotoGallery exactlyPhotoCardsInAnyOrder(PhotoJson... photos) {
+    photoCards.shouldHave(PhotoCardCondition.exactlyPhotoCardsInAnyOrder(photos));
     return this;
   }
 

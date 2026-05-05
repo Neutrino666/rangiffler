@@ -3,12 +3,14 @@ package guru.qa.rangiffler.service.impl;
 import guru.qa.CreatePhotoMutation;
 import guru.qa.LikePhotoMutation;
 import guru.qa.rangiffler.helpers.ImageUtils;
+import guru.qa.rangiffler.model.PhotoJson;
 import guru.qa.rangiffler.model.enums.Country;
 import guru.qa.rangiffler.model.enums.TravelPhotoImage;
 import guru.qa.type.CountryInput;
 import guru.qa.type.LikeInput;
 import guru.qa.type.PhotoInput;
 import io.qameta.allure.Step;
+import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -37,22 +39,18 @@ public class PhotoGraphQlClient extends GraphQLClient {
     ).photo;
   }
 
+  @Nonnull
   @Step("Обновляем: лайк")
-  public LikePhotoMutation.Photo updateLike(
-      UUID ownerId,
-      UUID requestedId,
-      TravelPhotoImage img,
-      Country country,
-      String description) {
+  public LikePhotoMutation.Photo updateLike(PhotoJson photo, UUID requesterId) {
     return response(
         LikePhotoMutation.builder()
             .input(
                 PhotoInput.builder()
-                    .id(ownerId.toString())
-                    .src(ImageUtils.base64(img))
-                    .country(CountryInput.builder().code(country.getCode()).build())
-                    .description(description)
-                    .like(LikeInput.builder().user(requestedId.toString()).build())
+                    .id(Objects.requireNonNull(photo.id()).toString())
+                    .src(photo.src())
+                    .country(CountryInput.builder().code(photo.country().code()).build())
+                    .description(photo.description())
+                    .like(LikeInput.builder().user(requesterId.toString()).build())
                     .build()
             )
             .build(),
